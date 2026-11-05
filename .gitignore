@@ -1,0 +1,18 @@
+# OS and tooling
+.DS_Store
+node_modules/
+__pycache__/
+*.pyc
+.env
+*.log
+
+# Internal documentation: never published. This repo goes public at launch,
+# and anything committed once stays in its history.
+CLAUDE.md
+tasks/
+docs/
+
+# Build output and local test runs
+dist/
+*.zip
+output/
