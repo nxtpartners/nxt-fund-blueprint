@@ -9,6 +9,7 @@ https://github.com/nxtpartners/nxt-fund-blueprint
 ![Runs in: Claude Code](https://img.shields.io/badge/Runs_in-Claude_Code-191919?style=for-the-badge&logo=claude&logoColor=white)
 ![Python: scoring and chart](https://img.shields.io/badge/Python-scoring_and_chart-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![HTML and SVG: blueprint](https://img.shields.io/badge/HTML_and_SVG-blueprint-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-2E7D32?style=for-the-badge)
 
 Most AI conversations at a PE firm start with a tool and go looking for a use. Partners and COOs carry the real picture: where deal teams lose hours, which reports get rebuilt every quarter, which steps nobody would miss. This project bets that a short, structured conversation can surface that picture and turn it into a credible first plan, without a workshop or a consultant in the room. It is the first stage of how NXT Partners AI works with PE firms, and it is free to use.
 
@@ -79,5 +80,9 @@ README.md                      This file
 | Skill and question set | Not started |
 | Scoring and chart | Not started |
 | Claude directory listing | Not started |
+
+## License
+
+Released under the [MIT License](LICENSE).
 
 Created by NXT Partners AI, [info@nxtpartners.ai](mailto:info@nxtpartners.ai)
