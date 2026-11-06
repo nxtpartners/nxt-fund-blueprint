@@ -6,7 +6,7 @@ from urllib.parse import quote
 
 from .enums import Horizon, Nature, Quadrant, Verdict
 
-VERSION = "0.9.1"
+VERSION = "0.11.1"
 
 SKILL_DIR = Path(__file__).resolve().parents[2]
 CATALOG_PATH = SKILL_DIR / "references" / "catalog.json"
@@ -26,7 +26,8 @@ DEMO_LABEL = "pe.nxtpartners.ai"
 DEMO_URL = f"https://{DEMO_LABEL}"
 DEMO_TEXT = "See a demo at "
 SITE_NAME = "NXT Partners AI"
-CLOSING_TITLE = "Help with implementation"
+CLOSING_TITLE = "Want a second opinion on this plan?"
+CLOSING_BODY = "This plan rests on one person's answers and fixed rules. NXT Partners AI can test it with your team, correct what is wrong, and help you carry out the moves you keep. If that would help, email us this report and tell us which move you would start with."
 
 # Answer fields. A firm-level field is answered once, a detail field once per work area.
 FIRM_FIELDS = ("strategy", "aum", "team", "fund_stage", "thesis", "pressure", "ai_stage", "ai_adoption", "ai_results", "ai_obstacle", "systems", "policy", "trust", "capacity", "region", "budget")
@@ -43,7 +44,7 @@ KEY_NATURE = "nature"
 KEY_USES_AI = "uses_ai"
 KEY_KPI_LINK = "kpi_link"
 KPI_LINK_RELEVANCE = {"direct": 3, "some": 1, "none": 0}
-CUSTOM_DEFAULT_RELEVANCE = 1
+CUSTOM_DEFAULT_RELEVANCE = 0
 CUSTOM_NAME_MAX = 80
 KEY_THESIS_SUMMARY = "thesis_summary"
 KEY_THESIS_FOCUS = "thesis_focus"
@@ -65,7 +66,7 @@ MAX_WORKSTREAMS = 4
 NEUTRAL_ANSWERS = {
     "strategy": "multi", "aum": "500m_2b", "team": "15_50", "fund_stage": "several", "thesis": "operational",
     "pressure": "lean", "ai_stage": "none", "ai_adoption": "under_10", "ai_results": "unmeasured", "ai_obstacle": "owner", "region": "other", "budget": "unset", "ai_here": "none", "systems": "connected", "policy": "pilot", "trust": "experimenting", "capacity": "ops_lead",
-    "hours": "5_20", "data": "spreadsheets", "owner": "mid", "error_cost": "unsure", "usage": "unsure",
+    "hours": "20_60", "data": "spreadsheets", "owner": "mid", "error_cost": "unsure", "usage": "unsure",
 }
 
 # Scoring model.
@@ -74,8 +75,8 @@ IMPACT_WEIGHT_VOLUME = 0.25
 IMPACT_WEIGHT_SENIORITY = 0.10
 IMPACT_UNRELATED_FACTOR = 0.5
 IMPACT_BOOST = 0.08
-HOURS_VOLUME = {"under_5": 0.1, "5_20": 0.4, "20_60": 0.7, "over_60": 1.0}
-HOURS_RANGE = {"under_5": (0, 5), "5_20": (5, 20), "20_60": (20, 60), "over_60": (60, None)}
+HOURS_VOLUME = {"under_20": 0.2, "20_60": 0.5, "60_200": 0.8, "over_200": 1.0}
+HOURS_RANGE = {"under_20": (0, 20), "20_60": (20, 60), "60_200": (60, 200), "over_200": (200, None)}
 OWNER_SENIORITY = {"partners": 1.0, "mid": 0.65, "junior": 0.35, "operations": 0.45}
 RELEVANCE_MAX = 3
 
@@ -90,22 +91,20 @@ THESIS_WORKSTREAMS = {
 }
 STAGE_AREAS = {"raising": ("investors",), "deploying": ("investing",), "harvesting": ("portfolio",), "several": ()}
 
-BASE_WEEKS = {Verdict.REMOVE: 2.0, Verdict.OPTIMIZE: 4.0, Verdict.AUTOMATE: 6.0, Verdict.ADD_AI: 6.0, Verdict.AGENTIC: 10.0}
+BASE_WEEKS = {Verdict.REMOVE: 5.0, Verdict.OPTIMIZE: 6.0, Verdict.AUTOMATE: 6.0, Verdict.ADD_AI: 6.0, Verdict.AGENTIC: 16.0}
 BUILD_ON_WEEKS = {"task": 3.0, "adhoc": 3.0, "pilot": 6.0, "deployed": 4.0}
 TECH_VERDICTS = (Verdict.AUTOMATE, Verdict.ADD_AI, Verdict.AGENTIC)
 AI_VERDICTS = (Verdict.ADD_AI, Verdict.AGENTIC)
 WEEKS_DATA = {"system": 1.0, "spreadsheets": 1.25, "documents": 1.25, "heads": 1.5}
 WEEKS_SYSTEMS = {"integrated": 0.9, "connected": 1.0, "disconnected": 1.4, "manual": 1.25}
-WEEKS_POLICY = {"approved": 1.0, "pilot": 1.15, "none": 1.5, "restricted": 2.0}
+WEEKS_POLICY = {"approved": 1.0, "pilot": 1.15, "none": 1.25, "restricted": 2.0}
 WEEKS_TRUST = {"daily": 0.9, "experimenting": 1.0, "skeptical": 1.25, "resistant": 1.5}
-WEEKS_CAPACITY = {"in_house": 0.85, "ops_lead": 1.1, "partner": 0.9, "nobody": 1.4}
+WEEKS_CAPACITY = {"in_house": 0.85, "ops_lead": 1.1, "partner": 0.9, "nobody": 1.25}
 WEEKS_SEVERE_ERROR = 1.4
 WEEKS_EXPERIENCE = {"none": 1.1, "individuals": 1.0, "pilots": 0.95, "deployed": 0.85}
 WEEKS_RESULTS = {"measured": 0.9, "unmeasured": 1.0, "mixed": 1.05, "disappointing": 1.15}
-WEEKS_MIN_FACTOR = 0.6
+WEEKS_MIN_FACTOR = 0.9
 WEEKS_EFFORT = {"low": 0.7, "medium": 1.0, "high": 1.3}
-WEEKS_SMALL_TEAM = 1.15
-SMALL_TEAM = "under_15"
 
 WEEKS_NOW = 30 / 7
 WEEKS_NEXT = 90 / 7
@@ -128,13 +127,13 @@ IMPACT_MAX = 5.0
 # Shipped copy. No em dashes in anything a reader sees.
 VERDICT_LABELS = {
     Verdict.AUTOMATE: "Automate", Verdict.ADD_AI: "Add AI", Verdict.OPTIMIZE: "Optimize",
-    Verdict.AGENTIC: "Add agentic AI", Verdict.REMOVE: "Remove", Verdict.BUILD_ON: "Build on existing AI", Verdict.LEAVE: "Leave with people",
+    Verdict.AGENTIC: "Let AI run the steps (agentic AI)", Verdict.REMOVE: "Remove", Verdict.BUILD_ON: "Build on existing AI", Verdict.LEAVE: "Leave with people",
 }
 VERDICT_DEFINITIONS = {
     Verdict.AUTOMATE: "Fixed rules, no AI needed",
     Verdict.ADD_AI: "AI drafts, a person reviews",
     Verdict.OPTIMIZE: "Fix the process first",
-    Verdict.AGENTIC: "An agent runs steps, a person approves",
+    Verdict.AGENTIC: "AI runs the steps, a person approves",
     Verdict.REMOVE: "Stop doing it",
     Verdict.BUILD_ON: "AI is already here, improve it",
     Verdict.LEAVE: "Human judgment stays",
@@ -143,28 +142,54 @@ VERDICT_REASONS = {
     Verdict.AUTOMATE: "It follows fixed rules, so ordinary automation can do it without AI.",
     Verdict.ADD_AI: "It needs reading and drafting that rules cannot handle, so AI prepares the work and a person reviews it.",
     Verdict.AGENTIC: "It runs across several systems, so an agent can carry the steps while a person approves anything that leaves the firm.",
-    Verdict.REMOVE: "You said the output is rarely used, so test stopping it before spending anything on it.",
+    Verdict.REMOVE: "You said the output of this work area is rarely used. Check that this holds for this task, then test stopping it before spending anything on it.",
     Verdict.LEAVE: "The value here comes from human judgment or relationships, so this stays with your people.",
 }
-REASON_REQUIRED = "You said the output is rarely used, but this work may be required or mistakes could be serious, so simplify it to the minimum instead of stopping it."
+REASON_REQUIRED = "You said the output of this work area is rarely used. That may not hold for this task, and it may be required, so simplify it to the minimum instead of stopping it."
 REQUIRED_SOLUTION = "Check what is actually required, and cut the process back to that minimum before spending anything on it."
-REQUIRED_FIRST_STEP = "List who receives this output and which obligation requires it."
+REQUIRED_FIRST_STEP = "Ask who uses the output of this task, and who would notice if it were cut back."
 REASON_HEADS = "You said the knowledge is mostly in people's heads, so it needs writing down before automation or AI can help."
 REASON_RESTRICTED = "Your policy restricts AI today, so the best available gain is a simpler process."
 REASON_RESTRICTED_IN_USE = "You said AI is used here, and also that your policy restricts it. Settle that before anything else."
-RESTRICTED_IN_USE_SOLUTION = "Bring this use under your policy, or pause it, before doing anything more with AI here."
-RESTRICTED_IN_USE_FIRST_STEP = "Ask your CCO to review how AI is used on this task today."
+RESTRICTED_IN_USE_SOLUTION = "Bring any AI use here under your policy, or pause it, before doing anything more with AI."
+RESTRICTED_IN_USE_FIRST_STEP = "Ask whoever leads compliance to review how AI is used on this task today."
 REASON_SEVERE_MULTI = "It runs across several tools, and mistakes could be costly or their cost is unclear, so AI should prepare the work and a person should carry it out."
 REASON_TRUST = "You said your team is resistant to AI output, so start with AI that prepares work under full review, not an agent."
-REASON_NOT_READY = "Start with AI that prepares the work. An agent makes more sense once the firm has some experience with AI and someone owns it."
-REASON_AI_UNKNOWN = "You did not say whether AI is already used here, so check that first. "
-AI_UNKNOWN_FIRST_STEP = "Check whether anyone already uses AI on this task."
+REASON_NO_AGENT = "This work needs a person's decision at each step, so AI prepares it and a person carries it out."
+REASON_CONTROL = "You said the output of this work area is rarely used, but this work is a control, so keep it and make it simpler."
+CONTROL_SOLUTION = "Keep the control, remove duplicate steps, and agree the minimum with whoever leads compliance."
+REASON_ASSUMED = "You said AI is used somewhere in this work area, but not on which tasks. Check whether this is one of them."
+REASON_ASSUMED_RESTRICTED = "You said AI is used somewhere in this work area, and that your policy restricts it. Settle that first."
+ASSUMED_SOLUTION_LEAD = "Find out whether AI is used here. If it is: "
+AI_UNKNOWN_CARD = "AI use here not confirmed"
+AI_UNKNOWN_TABLE = " (check current AI use)"
+CREDIT_NOTE = "This task list was written mainly for equity investing, so some credit work may be missing."
+CLOSING_CAPACITY = {"partner": "You said an outside firm would carry out this work.", "nobody": "You said nobody is set to carry out this work yet."}
+REASON_NO_POLICY = "You said the firm has no AI policy, so start with AI that prepares the work. Consider an agent once a policy is in place."
+REASON_POLICY_UNKNOWN = "You did not say whether the firm has an AI policy, so start with AI that prepares the work."
+REASON_NO_AI_YET = "You said the firm does not use AI yet, so start with AI that prepares the work."
+REASON_STAGE_UNKNOWN = "You did not say how far along AI is at the firm, so start with AI that prepares the work."
+REASON_NO_OWNER = "You said nobody would carry out this work yet, so start with AI that prepares it. An agent needs someone responsible for it."
+REASON_MANUAL = "You said most work runs on Excel and email, so an agent has little to connect to. Start with AI that prepares the work."
+REASON_DOCS_PLAIN = "The rules are clear, but the information sits in documents, so AI extracts it, fixed checks verify it, and a person handles exceptions."
+REASON_DOCS_REVIEW = "The rules are clear, but the information sits in documents, and mistakes here matter or the task may be required. AI extracts the information, and a person checks it."
+DOCS_REVIEW_SUFFIX = " A person reviews every item AI extracts."
+REASON_CUSTOM_RULES = "You said it follows fixed rules, so ordinary automation may be enough. If its information sits in documents, AI may be needed to read them first."
+AI_UNKNOWN_NOTE = "You did not say whether AI is already used here"
+AI_UNKNOWN_ACTION = "Ask the people doing {area} whether they already use AI there."
+KPI_BASELINE_ACTION = "Record today's figure for {kpi}, so you can tell later whether this plan worked."
+NEUTRAL_FIRST_STEP = "Map how this task runs today, and mark the slowest step."
 AI_ASSUMED_NOTE = "AI is used somewhere in this work area, but you did not say on which tasks"
+ASSUMED_FIRST_STEP = "Find out whether AI is used on this task, and how."
+INFORMAL_STAGE = "adhoc"
 PREPARE_PREFIX = "AI prepares each step for a person to carry out. "
 NEUTRAL_CHECK = "The current owner reviews any change to this process."
 OPTIMIZE_RELEVANCE = "Prepares the ground for later work on {kpi}"
 REMOVE_RELEVANCE = "Frees time for other work"
-LOW_EFFORT_IMPACT_CAP = 3.6
+LOW_EFFORT_IMPACT_CAP = 2.4
+LINKED_OPTIMIZE_IMPACT = 3.0
+LINKED_RELEVANCE_MIN = 2
+DEPLOYED_IMPACT_CAP = 3.6
 
 BUILD_ON_TEXT = {
     ("task", "any"): ("You said AI is already used on this task.", "Review how it is used, and agree one approved approach with clear review.", "Ask who uses AI on this task, and how."),
@@ -177,19 +202,22 @@ BUILD_ON_TEXT = {
 }
 DEFAULT_IN_USE_STAGE = "task"
 GOAL_PREFIX = "The goal: "
+DEPLOYED_GOAL_PREFIX = "Check your setup against this standard: "
 
 ROUTE_LABEL = "How to get there"
 ROUTES = {
-    (Verdict.AUTOMATE, "low"): "Start with the automation in software you already pay for",
+    (Verdict.AUTOMATE, "low"): "Check first whether software you already have can do this. If not, price a small workflow tool",
     (Verdict.AUTOMATE, "mid"): "Automation in your existing software, or a workflow tool if that falls short",
-    (Verdict.AUTOMATE, "high"): "A workflow tool, or a connection built for you",
+    (Verdict.AUTOMATE, "high"): "Software that moves work between your tools by set rules, or a custom link between your systems",
     (Verdict.ADD_AI, "low"): "An approved AI chat tool, with shared templates",
     (Verdict.ADD_AI, "mid"): "A specialist tool, if one fits, before building anything",
-    (Verdict.ADD_AI, "high"): "A specialist tool, or something built on your own documents",
+    (Verdict.ADD_AI, "high"): "A specialist tool, or one set up to read your own documents",
     (Verdict.AGENTIC, "low"): "A small trial on one workflow before committing budget",
     (Verdict.AGENTIC, "mid"): "A trial on one workflow, with outside help if needed",
     (Verdict.AGENTIC, "high"): "Built in-house or with a partner, connected to your software",
     (Verdict.BUILD_ON, "any"): "Keep your current tools for now, and decide on any change after measuring them",
+    (Verdict.BUILD_ON, "informal"): "Move this work onto an approved tool first",
+    (Verdict.ADD_AI, "careful"): "A specialist tool or an add-on to your current software, with a person checking the output",
     (Verdict.OPTIMIZE, "any"): "No new technology needed yet",
     (Verdict.REMOVE, "any"): "No technology needed",
 }
@@ -210,10 +238,8 @@ REGION_NOTES = {
 REMOVE_SOLUTION = "Stop this work or cut it back, after checking with the people who receive it. If few would notice it stopping, automating it may not be worth it."
 REMOVE_FIRST_STEP = "Check whether anything requires this work. If nothing does, skip one cycle, tell the recipients, and record who asks for it."
 REMOVE_CHECK = "Keep anything required by regulation, your LPA, or a side letter."
-HEADS_SOLUTION = "Write the process down before adding technology: the steps, the decisions, and where the information comes from."
-HEADS_FIRST_STEP = "Have the person who does this most often write down the steps and decisions."
+HEADS_SOLUTION = "Get what people know out of their heads and into one shared place before adding technology."
 RESTRICTED_SOLUTION = "Simplify the process and templates now, then revisit AI once policy allows it."
-RESTRICTED_FIRST_STEP = "Ask your CCO which AI uses could be allowed, starting with internal, non-confidential documents."
 CUSTOM_SOLUTIONS = {
     Nature.RULES: "Write the rules down and automate the routine path, sending exceptions to the owner.",
     Nature.DRAFTING: "Have AI prepare a first draft from your source material, with citations, for the owner to review.",
@@ -222,26 +248,26 @@ CUSTOM_SOLUTIONS = {
 }
 CUSTOM_FIRST_STEP = "Write down this task's inputs, decisions, and who receives the result."
 CUSTOM_PREPARE_SOLUTION = "Have AI gather the information and prepare the work, and have the owner carry out each step."
-CUSTOM_CHECK = "The current owner reviews results until error rates are known."
+CUSTOM_CHECK = "The current owner reviews the results."
 CUSTOM_TAG = "Added by you"
 
 DATA_PHRASES = {"system": "in a proper system", "spreadsheets": "in spreadsheets and email", "documents": "in PDFs and documents", "heads": "in people's heads"}
 OWNER_PHRASES = {"partners": "partners or principals", "mid": "VPs and associates", "junior": "analysts", "operations": "finance, IR, or ops staff"}
-HOURS_PHRASES = {"under_5": "under 5 hours", "5_20": "5 to 20 hours", "20_60": "20 to 60 hours", "over_60": "over 60 hours"}
+HOURS_PHRASES = {"under_20": "under 20 hours", "20_60": "20 to 60 hours", "60_200": "60 to 200 hours", "over_200": "over 200 hours"}
 RELEVANCE_PHRASES = {3: "Estimated direct effect on {kpi}", 2: "Estimated strong link to {kpi}", 1: "Estimated some effect on {kpi}", 0: "No direct link to {kpi} expected"}
 RELEVANCE_NOT_ASSESSED = "Link to {kpi} not assessed"
 
 FIRM_WIDE_LABEL = "Firm-wide"
 FIRM_WIDE_OWNER = "COO or managing partner"
-FIRM_WIDE_SPEED = "Aim to settle within 30 days"
-NEXT_30_MAX_FOUNDATIONS = 2
+FIRM_WIDE_SPEED = "Start within 30 days"
+NEXT_30_MAX_FOUNDATIONS = 3
 PLAIN_TERMS = (
     ("Automation", "Software that follows fixed rules, the same way every time. Where rules are enough, you may not need AI at all."),
-    ("AI that drafts", "Software that can read documents and write a first version, much like a junior colleague. A person reviews the result before it is used."),
+    ("AI that drafts", "Software that can read documents and write a first version. A person reviews the result before it is used."),
     ("Agentic AI", "AI that carries out several steps in a row across your tools, such as requesting a file, checking it, and loading it. In this plan, a person approves anything that leaves the firm."),
     ("Trial", "A small, time-limited test with a few people, to learn whether something works before the whole team uses it."),
     ("First working version", "The point when a real team can use it on real work. Refinement continues after that."),
-    ("Human check", "The step where a named person reviews the output. Accountability stays with people, not software."),
+    ("Human check", "The step where a named person reviews the output. That person remains responsible."),
 )
 TIMELINE_MARKS = ("Today", "30 days", "90 days", "180 days", "Later")
 
@@ -251,18 +277,18 @@ HORIZON_SPANS = {Horizon.NOW: "Under 30 days, estimated", Horizon.NEXT: "30 to 9
 QUADRANT_LABELS = {Quadrant.QUICK_WINS: "Quick wins", Quadrant.STRATEGIC_BETS: "Strategic bets", Quadrant.FILL_INS: "Fill-ins", Quadrant.DEPRIORITIZE: "Deprioritize"}
 
 SHADOW_FOUNDATION = ("Bring existing AI use under a policy", "You said people use AI, and that the firm has no AI policy. Confidential data may be reaching tools you have not approved. Set rules before adding anything new.", "Agree which AI tools are approved, and what data may go into them.")
-SHADOW_RESTRICTED_FOUNDATION = ("Settle how existing AI use fits your policy", "You said people use AI, and also that your policy restricts it. Find out what is happening in practice, and decide what is allowed.", "Ask your CCO to review how AI is used today, against your policy.")
+SHADOW_RESTRICTED_FOUNDATION = ("Settle how existing AI use fits your policy", "You said people use AI, and also that your policy restricts it. Find out what is happening in practice, and decide what is allowed.", "Ask whoever leads compliance to review how AI is used today, against your policy.")
 FOUNDATIONS = {
     ("ai_results", "unmeasured"): ("Measure what you already have", "You said AI is useful, but not measured. Without a starting measure, you cannot tell which work to expand.", "Pick two measures and start recording them for your current AI work."),
     ("ai_results", "disappointing"): ("Find out why earlier AI work fell short", "You described results so far as disappointing. Review what fell short before starting something new: the use case, the data, or the adoption.", "List what was tried, and the reason each effort fell short."),
-    ("ai_obstacle", "data"): ("Connect your core data", "You named data as the main obstacle. Look first for a connection that several items below depend on.", "List which items below depend on the same data."),
+    ("ai_obstacle", "data"): ("Fix your core data", "You named data quality or access as the main obstacle. Find the one data source that several moves rely on.", "List the data your first moves rely on, and pick one source to clean up."),
     ("ai_obstacle", "trust"): ("Build trust with visible checks", "You named trust as the main obstacle. Show sources in every output, and keep review with your senior people at first.", "Agree which outputs must show their sources, and who reviews them."),
-    ("ai_obstacle", "security"): ("Settle security and compliance early", "You named this as the main obstacle. Agree approved tools and data rules with your CCO before any trial begins.", "Meet your CCO to agree approved tools and data rules."),
+    ("ai_obstacle", "security"): ("Settle security and compliance early", "You named this as the main obstacle. Agree approved tools and data rules with whoever leads compliance before any trial begins.", "Meet whoever leads compliance to agree approved tools and data rules."),
     ("ai_obstacle", "owner"): ("Name an owner", "You named ownership as the main obstacle. Name one accountable person and protect time for them.", "Name one accountable person, and protect time for them."),
-    ("policy", "none"): ("Agree an AI policy", "AI items below are held back without one. A short list of approved tools and data rules is enough to start.", "Write a one-page list of approved tools and data rules."),
-    ("policy", "restricted"): ("Revisit the AI restriction", "AI items are held back until your policy allows them. Ask your CCO which low-risk uses could be approved first.", "Ask your CCO which low-risk AI uses could be approved first."),
-    ("systems", "disconnected"): ("Connect your core data", "You said your software tools do not share data. Look first for a connection that several items below depend on.", "List which items below depend on the same data."),
-    ("systems", "manual"): ("Give key data one home", "You said most work runs on Excel and email. Pick one dataset to centralize first, and let the first item below decide which.", "Choose the one dataset to centralize first."),
+    ("policy", "none"): ("Agree an AI policy", "Any AI work is held back without one. A short list of approved tools and data rules is enough to start.", "Write a one-page list of approved tools and data rules."),
+    ("policy", "restricted"): ("Keep AI on hold for now", "Nothing in this plan needs AI, so your policy can stay as it is. If the team later wants AI, ask whoever leads compliance which low-risk uses could be approved.", "Confirm with whoever leads compliance that the moves below fit your policy."),
+    ("systems", "disconnected"): ("Connect your core data", "You said your software tools do not share data. Find the one data source that several moves rely on.", "List the data your first moves rely on, and pick one source to clean up."),
+    ("systems", "manual"): ("Keep one master copy of your most-used data", "You said most work runs on Excel and email. Pick one dataset to centralize first, and let your first move decide which.", "Choose the one dataset to centralize first."),
     ("trust", "skeptical"): ("Win over the skeptics", "Pick one item that a skeptical senior person cares about, and measure it next to the current process.", "Pick one item that a skeptical senior person cares about."),
     ("trust", "resistant"): ("Start with work people dislike", "With a resistant team, begin with tasks nobody wants to keep, and leave review power with them.", "Ask the team which routine tasks they would most like to lose."),
     ("capacity", "nobody"): ("Name an owner", "Nobody is assigned to implement this yet, so the plan has no one to carry it out. Name one accountable person first.", "Name one accountable person, and protect time for them."),

@@ -11,7 +11,7 @@ from .data import Library
 from .enums import AiStage, Horizon, Quadrant, Verdict
 from .models import Answers, ScoredActivity
 from .plot import render_plot, timeline_share
-from .scoring import Plan, impact_level, lower_first
+from .scoring import Plan, effect_text, impact_level, lower_first
 from .styles import data_uri, stylesheet
 
 esc = html.escape
@@ -29,7 +29,9 @@ def section(number: int, title: str, body: str) -> str:
 
 
 def hours_text(plan: Plan) -> str:
-    return f"{plan.hours_low}+" if plan.hours_high is None else f"{plan.hours_low} to {plan.hours_high}"
+    if plan.hours_high is None:
+        return f"At least {plan.hours_low}"
+    return f"Up to {plan.hours_high}" if plan.hours_low == 0 else f"{plan.hours_low} to {plan.hours_high}"
 
 
 def plural(count: int, word: str) -> str:
@@ -50,20 +52,40 @@ def headline(plan: Plan) -> str:
     if not plan.top:
         return "Your answers point to work that should stay with your people"
     item = plan.top[0]
-    return HEADLINE_VERBS[item.verdict].format(label=lower_first(item.label))
+    label = lower_first(item.label)
+    if item.ai_assumed and item.restricted_in_use:
+        return f"Your first move is to settle how AI is used in {lower_first(item.workstream_label)}"
+    if item.ai_assumed and item.verdict == Verdict.BUILD_ON:
+        return f"Your first move is to review how AI is used in {lower_first(item.workstream_label)}, starting with {label}"
+    if item.restricted_in_use:
+        return f"Your first move is to settle how AI is used for {label}"
+    if item.quadrant == Quadrant.DEPRIORITIZE and item.effect_rated:
+        return f"Nothing here ranks highly against your KPI, so start with {label}"
+    if item.ai_unknown:
+        return f"Your first move is to check whether AI is already used for {label}, and if not, to add it"
+    return HEADLINE_VERBS[item.verdict].format(label=label)
 
 
 def standfirst(plan: Plan, kpi: str) -> str:
-    within = sum(1 for item in plan.plotted if item.weeks is not None and item.weeks < c.WEEKS_NEXT)
     total = len(plan.plotted)
     if not total:
         return "The work you selected depends on judgment and relationships, so it stays with your people. To find work to automate, run this again on your more repetitive tasks."
-    lead = f"It ranks highest on estimated speed and likely effect on {lower_first(kpi)}, based on your answers."
+    top = plan.top[0]
+    lead = f"It ranks first when we weigh its likely effect on {lower_first(kpi)} against the estimated time, based on your answers." if top.kpi_linked else "It ranks first on the estimated time and the hours involved, based on your answers."
+    if len(plan.top) > 1 and plan.top[1].impact == top.impact and plan.top[1].weeks == top.weeks:
+        lead += f" It ties with {lower_first(plan.top[1].label)} under our rules, so start with whichever causes more trouble today."
+    software = [item for item in plan.plotted if item.verdict in c.TECH_VERDICTS]
+    if not software:
+        return f"{lead} None of the moves below adds new software, so these are process changes you could start soon."
+    within = sum(1 for item in software if item.weeks < c.WEEKS_NEXT)
+    if len(software) == 1:
+        timing = "could reach a first working version within 90 days" if within else "would take over 90 days"
+        return f"{lead} Under our planning rules, the one move that adds software {timing}, if worked on alone."
+    count = plural(len(software), "move")
     if within == 0:
-        return f"{lead} Under our planning rules, no move below reaches a first working version within 90 days, so the blockers under Where you stand come first."
-    share = plural(total, "move") if within == total else f"{within} of the {plural(total, 'move')}"
-    prefix = "all " if within == total and total > 1 else ""
-    return f"{lead} Under our planning rules, {prefix}{share} below can reach a first working version within 90 days."
+        return f"{lead} Under our planning rules, the {count} that add software would each take over 90 days."
+    share = f"each of the {count}" if within == len(software) else f"{within} of the {count}"
+    return f"{lead} Under our planning rules, {share} that add software could reach a first working version within 90 days if worked on alone.{' Choose two or three to start.' if len(plan.plotted) > 3 else ''}"
 
 
 def told(answers: Answers, field: str) -> bool:
@@ -95,7 +117,7 @@ def opening(answers: Answers, plan: Plan, library: Library, kpi: str) -> str:
     if plan.hours_known:
         glance.append(f"{hours_text(plan)} hours a month reported")
     if plan.plotted:
-        glance += [plural(len(plan.plotted), "move"), f"{plural(quick, 'possible quick win')}, estimated"]
+        glance += [plural(len(plan.plotted), "move"), f"{plural(quick, 'higher-effect move')} within 90 days, estimated"]
     if stops:
         glance.append(f"{stops} to stop, or leave with people")
     rows.append(("At a glance", " · ".join(glance)))
@@ -108,11 +130,12 @@ def recommendation(plan: Plan) -> str:
         return ""
     moves = []
     for index, item in enumerate(plan.top, start=1):
+        unknown = f"<span>{esc(c.AI_UNKNOWN_CARD)}</span>" if item.ai_unknown else ""
         thesis = f'<p><span class="lead">For your thesis.</span> {esc(item.thesis_note)}</p>' if item.thesis_note else ""
         moves.append(
             f'<li><span class="no">Move {index}</span><h3>{esc(item.label)}</h3><p>{esc(item.solution)}</p>'
             f'<p><span class="lead">First step.</span> {esc(item.first_step)}</p>{thesis}'
-            f'<p class="meta"><span>{esc(c.VERDICT_LABELS[item.verdict])} · {esc(item.speed_label)}, estimated</span><span>{esc(item.relevance_note)}</span></p></li>'
+            f'<p class="meta"><span>{esc(c.VERDICT_LABELS[item.verdict])} · {esc(item.speed_label)}, estimated</span><span>{esc(item.relevance_note)}</span>{unknown}</p></li>'
         )
     return f'<ol class="moves">{"".join(moves)}</ol>'
 
@@ -133,8 +156,10 @@ def position(answers: Answers, plan: Plan, library: Library) -> str:
         rows.append(("Main obstacle", c.OBSTACLE_PHRASES[answers.ai_obstacle]))
     if told(answers, "policy"):
         rows.append(("AI policy", library.option_label("policy", answers.policy)))
+    if told(answers, "budget"):
+        rows.append(("Budget", library.option_label("budget", answers.budget)))
     ledger = "".join(f"<div><dt>{esc(key)}</dt><dd>{esc(value)}</dd></div>" for key, value in rows)
-    existing = [item for item in plan.items if item.ai_note]
+    existing = [item for item in plan.items if item.ai_note and not item.ai_unknown]
     existing_html = ""
     if existing:
         lines = "".join(f'<li><span class="lead">{esc(item.label)}.</span> {esc(item.ai_note)}.</li>' for item in existing)
@@ -161,7 +186,7 @@ def priorities(plan: Plan, kpi: str) -> str:
     key = "".join(f'<li><span class="mono soft">{item.number}</span><span>{esc(item.label)}</span></li>' for item in plan.plotted)
     return (
         f'<figure class="flush">{render_plot(plan.plotted, kpi)}{legend(plan)}<ol class="plot-key">{key}</ol>'
-        f'<figcaption class="note">Speed is the estimated time to a first working version. Impact is the estimated effect on {esc(lower_first(kpi))}. Both are planning estimates, explained in the notes, not measurements.</figcaption></figure>'
+        f'<figcaption class="note">Speed is the estimated time to a first working version, or to finish a process change. Effect is the estimated effect on {esc(lower_first(kpi))}. Both are planning estimates, explained in the notes, not measurements.</figcaption></figure>'
     )
 
 
@@ -172,14 +197,14 @@ def roadmap(plan: Plan) -> str:
     for horizon in Horizon:
         rows = sorted((item for item in plan.plotted if item.horizon == horizon), key=lambda item: (item.verdict != Verdict.REMOVE, item.number))
         body = "".join(f'<li><span class="mono soft">{item.number}</span><span>{esc(item.label)}<br><span class="small soft">{esc(c.VERDICT_LABELS[item.verdict])}</span></span></li>' for item in rows)
-        body = f"<ul>{body}</ul>" if body else '<p class="soft small gap-top">No items at this stage.</p>'
+        body = f"<ul>{body}</ul>" if body else '<p class="soft small gap-top">Nothing reaches a first working version this soon. See Your next 30 days for what starts now.</p>'
         columns.append(f'<div><h3>{esc(c.HORIZON_LABELS[horizon])}</h3><small>{esc(c.HORIZON_SPANS[horizon])}</small>{body}</div>')
-    return f'<div class="stages">{"".join(columns)}</div>'
+    return f'<p class="sec-lede soft">Each estimate assumes the move is worked on alone. Running several at once takes longer.</p><div class="stages">{"".join(columns)}</div>'
 
 
 def detail_row(item: ScoredActivity) -> str:
     planned = item.verdict != Verdict.LEAVE
-    speed = f'<span class="col">{esc(item.speed_label)}, estimated</span><span class="col">{impact_level(item.impact)} impact, estimated</span>' if planned else '<span class="col"></span><span class="col"></span>'
+    speed = f'<span class="col">{esc(item.speed_label)}, estimated</span><span class="col">{esc(effect_text(item.impact, item.effect_rated))}</span>' if planned else '<span class="col"></span><span class="col"></span>'
     fields = [("Why", item.reason), ("What changes for your team", item.solution)]
     if item.route:
         fields.append((c.ROUTE_LABEL, item.route))
@@ -200,7 +225,7 @@ def detail_row(item: ScoredActivity) -> str:
     )
 
 
-TABLE_HEAD = '<div class="table-head" aria-hidden="true"><span></span><span>Activity</span><span>Verdict</span><span>First version</span><span>Impact</span><span></span></div>'
+TABLE_HEAD = '<div class="table-head" aria-hidden="true"><span></span><span>Activity</span><span>Recommendation</span><span>Estimated time</span><span>Effect on your KPI</span><span></span></div>'
 
 
 def details_table(plan: Plan) -> str:
@@ -209,27 +234,32 @@ def details_table(plan: Plan) -> str:
     groups: Dict[str, List[ScoredActivity]] = {}
     for item in plan.plotted:
         groups.setdefault(item.workstream_label, []).append(item)
-    blocks = "".join(f'<div class="group"><h3>{esc(label)}</h3><p>{esc(items[0].evidence)}</p><div class="rows">{"".join(detail_row(item) for item in items)}</div></div>' for label, items in groups.items())
-    return f'<p class="sec-lede soft">Open a row to see why, what changes for your team, the first step, and who should own it.</p>{TABLE_HEAD}{blocks}'
+    blocks = "".join(f'<div class="group"><h3>{esc(label)}</h3>{f"<p>{esc(items[0].evidence)}</p>" if items[0].evidence else ""}<div class="rows">{"".join(detail_row(item) for item in items)}</div></div>' for label, items in groups.items())
+    return f'<p class="sec-lede soft">Open a row to see why, what changes for your team, the first step, and who should own it. Effect is rated only against the KPI you chose, so a task can matter to the firm and still rate Low here.</p>{TABLE_HEAD}{blocks}'
 
 
 def people(plan: Plan) -> str:
     if not plan.people:
         return ""
-    return f'<p class="sec-lede soft">AI should not take these over. Knowing where not to use it is part of the plan.</p><div class="rows">{"".join(detail_row(item) for item in plan.people)}</div>'
+    return f'<p class="sec-lede soft">These stay with your people.</p><div class="rows">{"".join(detail_row(item) for item in plan.people)}</div>'
 
 
 def notes(answers: Answers, plan: Plan) -> str:
     rows = [
         c.METHOD_NOTE,
         "The answers behind this report come from one person. Other people at your firm may see it differently.",
+        "We did not estimate cost. Ask for a price on your first move before committing.",
         "This is operational guidance generated with AI. It is not investment, legal, tax, or compliance advice, so have the right people review it before acting.",
         c.REGION_NOTES[answers.region],
     ]
+    if answers.strategy == "credit":
+        rows.append(c.CREDIT_NOTE)
     if plan.not_assessed:
         rows.append("Not assessed in this run: " + ", ".join(plan.not_assessed) + ".")
     if answers.assumed:
         rows.append("You skipped these, so a neutral assumption was used: " + ", ".join(answers.assumed) + ".")
+    if answers.ai_assumed_areas:
+        rows.append("You did not say which tasks use AI in " + ", ".join(answers.ai_assumed_areas) + ", so its routine tasks were treated as using AI.")
     return f'<ol class="notes">{"".join(f"<li><span>{esc(row)}</span></li>" for row in rows)}</ol>'
 
 
@@ -243,15 +273,12 @@ def public_sources(answers: Answers) -> str:
     return f'<p class="sec-lede soft">Found on public websites and confirmed by you during this assessment.</p><ol class="notes">{rows}</ol>'
 
 
-def next_30_days(plan: Plan) -> str:
+def next_30_days(plan: Plan, kpi: str) -> str:
     rows = [("", action, c.FIRM_WIDE_OWNER) for _, _, action in plan.foundations[: c.NEXT_30_MAX_FOUNDATIONS]]
-    seen = {action for _, action, _ in rows}
-    for item in plan.top:
-        if item.first_step not in seen:
-            seen.add(item.first_step)
-            rows.append((item.label, item.first_step, item.owner_role))
-    if not rows:
-        return ""
+    rows.append(("", c.KPI_BASELINE_ACTION.format(kpi=lower_first(kpi)), c.FIRM_WIDE_OWNER))
+    unknown_areas = list(dict.fromkeys(item.workstream_label for item in plan.items if item.ai_unknown))
+    rows += [("", c.AI_UNKNOWN_ACTION.format(area=lower_first(area)), c.FIRM_WIDE_OWNER) for area in unknown_areas]
+    rows += [(item.label, item.first_step, item.owner_role) for item in plan.top]
     lines = "".join(
         f'<li><span class="mono soft">{index}</span><span>{f"<span class=lead>{esc(task)}.</span> " if task else ""}{esc(action)}</span><span class="owner">{esc(owner)}</span></li>'
         for index, (task, action, owner) in enumerate(rows, start=1)
@@ -269,6 +296,8 @@ def timeline_row(number: str, label: str, speed: str, share: float, color: str, 
 
 
 def department_roadmap(plan: Plan) -> str:
+    if not plan.plotted and not plan.foundations:
+        return ""
     marks = "".join(f'<span style="left:{index * 100 / (len(c.TIMELINE_MARKS) - 1):.0f}%">{esc(mark)}</span>' for index, mark in enumerate(c.TIMELINE_MARKS))
     axis = f'<div class="tl-axis" aria-hidden="true"><span class="small soft">Project and suggested owner</span><div class="tl-scale">{marks}</div></div>'
     groups = []
@@ -281,7 +310,7 @@ def department_roadmap(plan: Plan) -> str:
     for label, items in departments.items():
         rows = "".join(timeline_row(str(item.number), item.label, f"{c.VERDICT_LABELS[item.verdict]} · {item.speed_label}, estimated", timeline_share(item.weeks), t.VERDICT_COLORS[item.verdict], item.verdict in t.VERDICT_HOLLOW) for item in sorted(items, key=lambda row: row.weeks))
         groups.append(f'<div class="tl-group"><h3>{esc(label)}</h3><p class="owner">Suggested owner: {esc(items[0].owner_role)}</p>{rows}</div>')
-    return f'<p class="sec-lede soft">The same plan by department, so each owner can see their part. Each line shows the estimated period for a first working version.</p><div class="timeline">{axis}{"".join(groups)}</div>'
+    return f'<p class="sec-lede soft">The same plan by department, so each owner can see their part. Each line shows the estimated period for this move.</p><div class="timeline">{axis}{"".join(groups)}</div>'
 
 
 def plain_terms() -> str:
@@ -289,10 +318,12 @@ def plain_terms() -> str:
     return f'<dl class="terms">{rows}</dl>'
 
 
-def closing(logo: str) -> str:
+def closing(logo: str, answers: Answers) -> str:
+    capacity = "" if "capacity" in answers.skipped else c.CLOSING_CAPACITY.get(answers.capacity, "")
+    body = f"{capacity} {c.CLOSING_BODY}".strip()
     return (
         f'<section class="close" aria-labelledby="close-title"><img class="logo" src="{logo}" alt="{c.SITE_NAME}"><h2 id="close-title">{esc(c.CLOSING_TITLE)}</h2>'
-        f'<p>{esc(c.SITE_NAME)} can validate these priorities with your team, design the solutions, and implement them.</p>'
+        f'<p>{esc(body)}</p>'
         f'<div class="actions"><a class="button" href="mailto:{c.CONTACT_EMAIL}?subject={c.CONTACT_SUBJECT}">Email {c.CONTACT_EMAIL}</a>'
         f'<a href="{c.DEMO_URL}">{c.DEMO_TEXT}{c.DEMO_LABEL}</a></div></section>'
     )
@@ -303,7 +334,7 @@ def render_blueprint(answers: Answers, plan: Plan, library: Library, today: dt.d
     logo = data_uri(c.LOGO_PATH, "image/png")
     registry = [
         ("Recommendation", recommendation(plan)),
-        ("Your next 30 days", next_30_days(plan)),
+        ("Your next 30 days", next_30_days(plan, kpi)),
         ("Where you stand", position(answers, plan, library)),
         ("Speed against your KPI", priorities(plan, kpi)),
         ("Roadmap", roadmap(plan)),
@@ -316,7 +347,7 @@ def render_blueprint(answers: Answers, plan: Plan, library: Library, today: dt.d
     ]
     numbered = [(title, content) for title, content in registry if content]
     sections = "".join(section(number, title, content) for number, (title, content) in enumerate(numbered, start=1))
-    body = opening(answers, plan, library, kpi) + sections + closing(logo)
+    body = opening(answers, plan, library, kpi) + sections + closing(logo, answers)
     return (
         '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
         f"<title>Fund Blueprint by {esc(c.SITE_NAME)}</title><style>{stylesheet()}</style></head><body><div class=\"page\">"
@@ -332,8 +363,9 @@ def render_summary(answers: Answers, plan: Plan, library: Library) -> str:
     lines = [f"KPI: {kpi_label}", f"Reported hours a month: {hours_text(plan) if plan.hours_known else 'not answered'}", "", "| # | Activity | Id | Verdict | Speed, estimated | Impact, estimated |", "|---|---|---|---|---|---|"]
     for item in plan.items:
         speed = item.speed_label or "Not applicable"
-        impact = impact_level(item.impact) if item.verdict != Verdict.LEAVE else "Not applicable"
-        lines.append(f"| {item.number} | {item.label} | {item.activity_id} | {c.VERDICT_LABELS[item.verdict]} | {speed} | {impact} |")
+        impact = effect_text(item.impact, item.effect_rated) if item.verdict != Verdict.LEAVE else "Not applicable"
+        verdict = c.VERDICT_LABELS[item.verdict] + (c.AI_UNKNOWN_TABLE if item.ai_unknown else "")
+        lines.append(f"| {item.number} | {item.label} | {item.activity_id} | {verdict} | {speed} | {impact} |")
     return "\n".join(lines)
 
 

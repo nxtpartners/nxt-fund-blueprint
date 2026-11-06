@@ -7,7 +7,7 @@ from typing import List, Optional, Set, Tuple
 
 from . import constants as c
 from .data import Library
-from .enums import AiHere, AiResults, AiStage, Capacity, DataHome, ErrorCost, Horizon, Nature, Policy, Quadrant, Trust, Usage, Verdict
+from .enums import AiHere, AiStage, Capacity, DataHome, ErrorCost, Horizon, Nature, Policy, Quadrant, Systems, Trust, Usage, Verdict
 from .models import Activity, Answers, ScoredActivity, WorkstreamAnswers
 
 HUMAN_NATURES = (Nature.JUDGMENT, Nature.RELATIONSHIP)
@@ -36,20 +36,28 @@ class Plan:
         return self.plotted[:3]
 
 
-def build_on_text(work: WorkstreamAnswers, answers: Answers) -> Tuple[str, str, str]:
+def stage_for(activity: Activity, work: WorkstreamAnswers) -> str:
+    """A custom task's AI use is its own answer, separate from the work area's."""
+    if activity.custom or work.ai_here == AiHere.NONE.value:
+        return c.DEFAULT_IN_USE_STAGE
+    return work.ai_here
+
+
+def build_on_text(activity: Activity, work: WorkstreamAnswers, answers: Answers) -> Tuple[str, str, str]:
     """Reason, solution, and first step for AI that already exists in this work."""
     table = c.BUILD_ON_TEXT
-    stage = in_use_stage(work)
+    stage = stage_for(activity, work)
     return table.get((stage, answers.ai_results)) or table[(stage, "any")]
 
 
-def in_use_stage(work: WorkstreamAnswers) -> str:
-    """A custom task can use AI even where the work area as a whole does not."""
-    return c.DEFAULT_IN_USE_STAGE if work.ai_here == AiHere.NONE.value else work.ai_here
-
-
-def route_for(verdict: Verdict, answers: Answers) -> str:
-    return c.ROUTES.get((verdict, "any")) or c.ROUTES.get((verdict, c.BUDGET_TIER[answers.budget]), "")
+def route_for(activity: Activity, verdict: Verdict, work: WorkstreamAnswers, answers: Answers) -> str:
+    informal = stage_for(activity, work) == c.INFORMAL_STAGE or (stage_for(activity, work) == c.DEFAULT_IN_USE_STAGE and answers.policy != Policy.APPROVED.value)
+    if verdict == Verdict.BUILD_ON and informal:
+        return c.ROUTES[(Verdict.BUILD_ON, "informal")]
+    tier = c.BUDGET_TIER[answers.budget]
+    if verdict == Verdict.ADD_AI and tier == "low" and (activity.nature == Nature.MULTI_SYSTEM or serious_documents(activity, work)):
+        return c.ROUTES[(Verdict.ADD_AI, "careful")]
+    return c.ROUTES.get((verdict, "any")) or c.ROUTES.get((verdict, tier), "")
 
 
 def in_use_ids(work: WorkstreamAnswers, activities: List[Activity]) -> Set[str]:
@@ -66,6 +74,10 @@ def in_use_ids(work: WorkstreamAnswers, activities: List[Activity]) -> Set[str]:
     return found
 
 
+def risky(work: WorkstreamAnswers) -> bool:
+    return work.error_cost in (ErrorCost.SEVERE.value, ErrorCost.UNSURE.value)
+
+
 def decide_verdict(activity: Activity, work: WorkstreamAnswers, answers: Answers, in_use: bool) -> Tuple[Verdict, str]:
     """Ordered on purpose: never automate a step that should not exist, and never add what is already there."""
     nature = activity.nature
@@ -73,46 +85,69 @@ def decide_verdict(activity: Activity, work: WorkstreamAnswers, answers: Answers
     if nature in HUMAN_NATURES:
         return Verdict.LEAVE, c.VERDICT_REASONS[Verdict.LEAVE]
     if work.usage == Usage.RARELY.value:
-        if activity.required or activity.custom or work.error_cost in (ErrorCost.SEVERE.value, ErrorCost.UNSURE.value):
+        if activity.control:
+            return Verdict.OPTIMIZE, c.REASON_CONTROL
+        if activity.required or activity.custom or risky(work):
             return Verdict.OPTIMIZE, c.REASON_REQUIRED
         return Verdict.REMOVE, c.VERDICT_REASONS[Verdict.REMOVE]
     if in_use and restricted:
         return Verdict.OPTIMIZE, c.REASON_RESTRICTED_IN_USE
     if in_use:
-        return Verdict.BUILD_ON, build_on_text(work, answers)[0]
+        return Verdict.BUILD_ON, build_on_text(activity, work, answers)[0]
     if work.data == DataHome.HEADS.value:
         return Verdict.OPTIMIZE, c.REASON_HEADS
     if nature == Nature.RULES:
-        if work.data == DataHome.DOCUMENTS.value:
+        if activity.custom:
+            return Verdict.AUTOMATE, c.REASON_CUSTOM_RULES
+        if work.data == DataHome.DOCUMENTS.value and activity.reads_documents:
             if restricted:
                 return Verdict.OPTIMIZE, c.REASON_RESTRICTED
-            return Verdict.ADD_AI, "The rules are clear, but the information sits in documents, so AI extracts it and fixed checks verify it."
+            if activity.required or risky(work):
+                return Verdict.ADD_AI, c.REASON_DOCS_REVIEW
+            return Verdict.ADD_AI, c.REASON_DOCS_PLAIN
         return Verdict.AUTOMATE, c.VERDICT_REASONS[Verdict.AUTOMATE]
     if restricted:
         return Verdict.OPTIMIZE, c.REASON_RESTRICTED
     if nature == Nature.DRAFTING:
         return Verdict.ADD_AI, c.VERDICT_REASONS[Verdict.ADD_AI]
-    if activity.no_agent or work.error_cost in (ErrorCost.SEVERE.value, ErrorCost.UNSURE.value):
+    if activity.no_agent:
+        return Verdict.ADD_AI, c.REASON_NO_AGENT
+    if risky(work):
         return Verdict.ADD_AI, c.REASON_SEVERE_MULTI
     if answers.trust == Trust.RESISTANT.value:
         return Verdict.ADD_AI, c.REASON_TRUST
-    no_policy = answers.policy == Policy.NONE.value or "policy" in answers.skipped
-    if answers.ai_stage == AiStage.NONE.value or answers.capacity == Capacity.NOBODY.value or no_policy:
-        return Verdict.ADD_AI, c.REASON_NOT_READY
+    not_ready = readiness_reason(answers)
+    if not_ready:
+        return Verdict.ADD_AI, not_ready
     return Verdict.AGENTIC, c.VERDICT_REASONS[Verdict.AGENTIC]
+
+
+def readiness_reason(answers: Answers) -> str:
+    """The reason shown must name the condition that actually applies."""
+    if "policy" in answers.skipped:
+        return c.REASON_POLICY_UNKNOWN
+    if answers.policy == Policy.NONE.value:
+        return c.REASON_NO_POLICY
+    if "ai_stage" in answers.skipped:
+        return c.REASON_STAGE_UNKNOWN
+    if answers.ai_stage == AiStage.NONE.value:
+        return c.REASON_NO_AI_YET
+    if "capacity" not in answers.skipped and answers.capacity == Capacity.NOBODY.value:
+        return c.REASON_NO_OWNER
+    if "systems" not in answers.skipped and answers.systems == Systems.MANUAL.value:
+        return c.REASON_MANUAL
+    return ""
 
 
 def estimate_weeks(activity: Activity, verdict: Verdict, work: WorkstreamAnswers, answers: Answers) -> float:
     """Delays add up rather than multiply: several blockers can share one fix."""
     if verdict == Verdict.BUILD_ON:
         drag = (c.WEEKS_POLICY[answers.policy] - 1) + (c.WEEKS_TRUST[answers.trust] - 1)
-        return round(c.BUILD_ON_WEEKS[in_use_stage(work)] * max(1.0 + drag, c.WEEKS_MIN_FACTOR), 1)
+        return round(c.BUILD_ON_WEEKS[stage_for(activity, work)] * max(1.0 + drag, c.WEEKS_MIN_FACTOR), 1)
     weeks = c.BASE_WEEKS[verdict]
     if verdict not in c.TECH_VERDICTS:
         return weeks
     drag = (c.WEEKS_DATA[work.data] - 1) + (c.WEEKS_SYSTEMS[answers.systems] - 1) + (c.WEEKS_CAPACITY[answers.capacity] - 1)
-    if answers.team == c.SMALL_TEAM:
-        drag += c.WEEKS_SMALL_TEAM - 1
     if verdict in c.AI_VERDICTS:
         drag += (c.WEEKS_POLICY[answers.policy] - 1) + (c.WEEKS_TRUST[answers.trust] - 1)
         drag += (c.WEEKS_EXPERIENCE[answers.ai_stage] - 1) + (c.WEEKS_RESULTS[answers.ai_results] - 1)
@@ -156,6 +191,10 @@ def impact_level(impact: float) -> str:
     return c.IMPACT_LEVELS[-1][1]
 
 
+def effect_text(impact: float, rated: bool) -> str:
+    return f"{impact_level(impact)} effect on your KPI, estimated" if rated else "Effect not rated"
+
+
 def lower_first(label: str) -> str:
     """Lowercase for use mid-sentence, but keep acronyms such as LP, DDQ, and NDAs."""
     first = label.split()[0]
@@ -191,36 +230,64 @@ def base_solution(activity: Activity, verdict: Verdict) -> str:
     return c.CUSTOM_PREPARE_SOLUTION if activity.custom else activity.solution
 
 
+def serious_documents(activity: Activity, work: WorkstreamAnswers) -> bool:
+    return (activity.required or risky(work)) and work.data == DataHome.DOCUMENTS.value
+
+
+def not_ready_for_ai_step(answers: Answers) -> bool:
+    return answers.policy in (Policy.NONE.value, Policy.RESTRICTED.value) or "policy" in answers.skipped
+
+
+def plan_first_step(activity: Activity, answers: Answers) -> str:
+    """Keep the specific step unless it needs AI that this firm is not ready to use."""
+    if activity.first_step_uses_ai and not_ready_for_ai_step(answers):
+        return c.NEUTRAL_FIRST_STEP
+    if activity.first_step_if_no_ai and answers.ai_stage == AiStage.NONE.value:
+        return activity.first_step_if_no_ai
+    return activity.first_step
+
+
 def tailored_text(activity: Activity, verdict: Verdict, reason: str, work: WorkstreamAnswers, answers: Answers, in_use: bool) -> Tuple[str, str, str]:
     solution = base_solution(activity, verdict)
+    step = plan_first_step(activity, answers)
     if verdict == Verdict.BUILD_ON:
-        _, lead, first_step = build_on_text(work, answers)
-        return f"{lead} {c.GOAL_PREFIX}{solution}", first_step, activity.check
+        _, lead, first_step = build_on_text(activity, work, answers)
+        prefix = c.DEPLOYED_GOAL_PREFIX if stage_for(activity, work) == AiHere.DEPLOYED.value else c.GOAL_PREFIX
+        text = f"{lead} {prefix}{solution}"
+        return text + (c.DOCS_REVIEW_SUFFIX if serious_documents(activity, work) else ""), first_step, activity.check
     if verdict == Verdict.REMOVE:
         return c.REMOVE_SOLUTION, c.REMOVE_FIRST_STEP, c.REMOVE_CHECK
+    if reason == c.REASON_CONTROL:
+        return c.CONTROL_SOLUTION, step, activity.check
     if reason == c.REASON_REQUIRED:
         return c.REQUIRED_SOLUTION, c.REQUIRED_FIRST_STEP, c.REMOVE_CHECK
     if reason == c.REASON_RESTRICTED_IN_USE:
         return c.RESTRICTED_IN_USE_SOLUTION, c.RESTRICTED_IN_USE_FIRST_STEP, c.NEUTRAL_CHECK
     if reason == c.REASON_HEADS:
-        return c.HEADS_SOLUTION, c.HEADS_FIRST_STEP, c.NEUTRAL_CHECK
+        return c.HEADS_SOLUTION, step, c.NEUTRAL_CHECK
     if reason == c.REASON_RESTRICTED:
-        return c.RESTRICTED_SOLUTION, c.RESTRICTED_FIRST_STEP, c.NEUTRAL_CHECK
+        return c.RESTRICTED_SOLUTION, step, c.NEUTRAL_CHECK
     if verdict == Verdict.LEAVE and (in_use or answers.policy == Policy.RESTRICTED.value):
         return AI_CLAUSE.sub("", solution), activity.first_step, activity.check
+    text = solution
     if verdict == Verdict.ADD_AI and activity.nature == Nature.MULTI_SYSTEM and not activity.custom:
-        return c.PREPARE_PREFIX + solution, activity.first_step, activity.check
-    return solution, activity.first_step, activity.check
+        text = c.PREPARE_PREFIX + text
+    if verdict == Verdict.ADD_AI and serious_documents(activity, work):
+        text += c.DOCS_REVIEW_SUFFIX
+    return text, step, activity.check
 
 
-def relevance_note(verdict: Verdict, phrase: str, kpi_text: str) -> str:
+def relevance_note(activity: Activity, verdict: Verdict, reason: str, phrase: str, answers: Answers, kpi_text: str) -> str:
     """Writing a process down or stopping work does not itself move a KPI, so it never says it does."""
     if verdict == Verdict.LEAVE:
         return ""
-    if verdict == Verdict.OPTIMIZE:
-        return c.OPTIMIZE_RELEVANCE.format(kpi=kpi_text)
-    if verdict == Verdict.REMOVE:
+    relevance, assessed = relevance_for(activity, answers)
+    if verdict == Verdict.REMOVE or reason == c.REASON_REQUIRED:
         return c.REMOVE_RELEVANCE
+    if verdict == Verdict.OPTIMIZE and assessed and relevance >= c.LINKED_RELEVANCE_MIN:
+        return c.RELEVANCE_PHRASES[1].format(kpi=kpi_text)
+    if verdict == Verdict.OPTIMIZE and assessed and relevance > 0:
+        return c.OPTIMIZE_RELEVANCE.format(kpi=kpi_text)
     return phrase.format(kpi=kpi_text)
 
 
@@ -246,7 +313,7 @@ def evidence_for(work: WorkstreamAnswers, answers: Answers) -> str:
     if told("data"):
         parts.append(f"mostly {c.DATA_PHRASES[work.data]}")
     if told("owner"):
-        parts.append(f"led by {c.OWNER_PHRASES[work.owner]}")
+        parts.append(f"mostly done by {c.OWNER_PHRASES[work.owner]}")
     return f"You reported: {', '.join(parts)}." if parts else ""
 
 
@@ -254,18 +321,25 @@ def foundations_for(answers: Answers) -> List[Tuple[str, str, str]]:
     uses_ai = answers.ai_stage != AiStage.NONE.value and "ai_stage" not in answers.skipped
     no_policy = answers.policy == Policy.NONE.value and "policy" not in answers.skipped
     restricted = answers.policy == Policy.RESTRICTED.value
+    approved = answers.policy == Policy.APPROVED.value
     found: List[Tuple[str, str, str]] = []
     if uses_ai and no_policy:
         found.append(c.SHADOW_FOUNDATION)
     elif uses_ai and restricted:
         found.append(c.SHADOW_RESTRICTED_FOUNDATION)
-    for field in ("ai_results", "policy", "ai_obstacle", "systems", "trust", "capacity"):
+    for field in ("capacity", "ai_obstacle", "ai_results", "policy", "systems", "trust"):
+        value = getattr(answers, field)
         if field in answers.skipped or (field == "policy" and uses_ai) or (field == "ai_results" and not uses_ai):
             continue
-        item = c.FOUNDATIONS.get((field, getattr(answers, field)))
+        if restricted and not uses_ai and (field == "trust" or (field == "ai_obstacle" and value != "owner")):
+            continue
+        if approved and field == "ai_obstacle" and value == "security":
+            continue
+        item = c.FOUNDATIONS.get((field, value))
         if item and all(item[0] != existing[0] for existing in found):
             found.append(item)
-    return found
+    owner_first = sorted(found, key=lambda row: row[0] != "Name an owner")
+    return owner_first
 
 
 def score_answers(library: Library, answers: Answers) -> Plan:
@@ -294,25 +368,39 @@ def score_answers(library: Library, answers: Answers) -> Plan:
             in_use = activity.id in using
             verdict, reason = decide_verdict(activity, work, answers, in_use)
             impact, phrase = estimate_impact(activity, work, answers, meta["area"])
-            if verdict in (Verdict.OPTIMIZE, Verdict.REMOVE):
+            if verdict == Verdict.OPTIMIZE and reason != c.REASON_REQUIRED and relevance_for(activity, answers)[0] >= c.LINKED_RELEVANCE_MIN:
+                impact = min(impact, c.LINKED_OPTIMIZE_IMPACT)
+            elif verdict in (Verdict.OPTIMIZE, Verdict.REMOVE):
                 impact = min(impact, c.LOW_EFFORT_IMPACT_CAP)
+            if verdict == Verdict.BUILD_ON and stage_for(activity, work) == AiHere.DEPLOYED.value:
+                impact = min(impact, c.DEPLOYED_IMPACT_CAP)
             solution, first_step, check = tailored_text(activity, verdict, reason, work, answers, in_use)
-            custom_unknown = activity.custom and custom_flags.get(activity.id) is None and answers.ai_stage != AiStage.NONE.value
-            if (unknown_area or custom_unknown) and not in_use and verdict in c.AI_VERDICTS:
-                reason = c.REASON_AI_UNKNOWN + reason
-                first_step = c.AI_UNKNOWN_FIRST_STEP
+            could_use_ai = answers.ai_stage != AiStage.NONE.value or "ai_stage" in answers.skipped
+            unknown = (custom_flags.get(activity.id) is None and could_use_ai) if activity.custom else (unknown_area or ("ai_stage" in answers.skipped and work.ai_here == AiHere.NONE.value and f"{work.id}.ai_here" in answers.skipped))
+            ai_unknown = unknown and not in_use and verdict in c.AI_VERDICTS
             people = verdict == Verdict.LEAVE
             weeks = None if people else estimate_weeks(activity, verdict, work, answers)
             note = ""
+            ai_assumed = in_use and assumed_all and not activity.custom
             if in_use:
-                note = c.AI_ASSUMED_NOTE if assumed_all and not activity.custom else c.HERE_PHRASES[in_use_stage(work)]
+                note = c.AI_ASSUMED_NOTE if ai_assumed else c.HERE_PHRASES[stage_for(activity, work)]
+            if ai_assumed and verdict == Verdict.BUILD_ON:
+                reason, first_step = c.REASON_ASSUMED, c.ASSUMED_FIRST_STEP
+                solution = c.ASSUMED_SOLUTION_LEAD + solution
+            restricted_in_use = reason == c.REASON_RESTRICTED_IN_USE
+            if ai_assumed and restricted_in_use:
+                reason, first_step = c.REASON_ASSUMED_RESTRICTED, c.ASSUMED_FIRST_STEP
+            if ai_unknown:
+                note = c.AI_UNKNOWN_NOTE
             items.append(ScoredActivity(
                 0, activity.label, meta["label"], verdict, reason, evidence,
-                relevance_note(verdict, phrase, kpi_text), solution, first_step, check,
+                relevance_note(activity, verdict, reason, phrase, answers, kpi_text), solution, first_step, check,
                 weeks, "" if people else speed_label(weeks), impact,
                 None if people else horizon_for(weeks), None if people else quadrant_for(weeks, impact), activity.custom,
                 activity_id=activity.id, thesis_note=answers.thesis_notes.get(activity.id, ""),
-                route="" if people else route_for(verdict, answers),
+                route="" if people else route_for(activity, verdict, work, answers),
+                ai_assumed=ai_assumed, ai_unknown=ai_unknown, restricted_in_use=restricted_in_use,
+                effect_rated=relevance_for(activity, answers)[1], kpi_linked=relevance_for(activity, answers)[0] > 0 and verdict not in (Verdict.OPTIMIZE, Verdict.REMOVE),
                 ai_note=note, owner_role=meta["owner"],
             ))
 

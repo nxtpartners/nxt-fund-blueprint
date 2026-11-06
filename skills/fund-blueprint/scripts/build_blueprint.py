@@ -35,12 +35,16 @@ def main() -> int:
         with open(args.answers, encoding="utf-8") as handle:
             raw = json.load(handle)
         answers = parse_answers(library, raw)
-    except (OSError, ValueError) as error:
+    except (OSError, ValueError, RecursionError) as error:
         print(f"ANSWER ERROR: {error}", file=sys.stderr)
         return 2
 
     plan = score_answers(library, answers)
-    Path(args.output).write_text(render_blueprint(answers, plan, library, dt.date.today()), encoding="utf-8")
+    try:
+        Path(args.output).write_text(render_blueprint(answers, plan, library, dt.date.today()), encoding="utf-8")
+    except OSError as error:
+        print(f"OUTPUT ERROR: could not write the report to {args.output}: {error}", file=sys.stderr)
+        return 3
     print(f"BLUEPRINT WRITTEN: {args.output}\n")
     print(render_summary(answers, plan, library))
     print("\nEMAIL DRAFT (show only if the user asks for it):\n")

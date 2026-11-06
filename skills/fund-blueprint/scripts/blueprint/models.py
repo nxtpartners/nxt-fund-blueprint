@@ -22,11 +22,15 @@ class Activity:
     effort: str = "medium"
     required: bool = False
     no_agent: bool = False
+    reads_documents: bool = False
+    first_step_uses_ai: bool = False
+    control: bool = False
+    first_step_if_no_ai: str = ""
     kpi_link: Optional[str] = None
 
     @classmethod
     def from_dict(cls, row: Dict[str, Any]) -> "Activity":
-        return cls(row["id"], row["workstream"], row["label"], Nature(row["nature"]), dict(row["kpis"]), row["solution"], row["first_step"], row["check"], effort=row.get("effort", "medium"), required=bool(row.get("required")), no_agent=bool(row.get("no_agent")))
+        return cls(row["id"], row["workstream"], row["label"], Nature(row["nature"]), dict(row["kpis"]), row["solution"], row["first_step"], row["check"], effort=row.get("effort", "medium"), required=bool(row.get("required")), no_agent=bool(row.get("no_agent")), reads_documents=bool(row.get("reads_documents")), first_step_uses_ai=bool(row.get("first_step_uses_ai")), control=bool(row.get("control")), first_step_if_no_ai=row.get("first_step_if_no_ai", ""))
 
     def to_dict(self) -> Dict[str, Any]:
         out = asdict(self)
@@ -80,6 +84,7 @@ class Answers:
     workstreams: List[WorkstreamAnswers]
     assumed: List[str] = field(default_factory=list)
     skipped: List[str] = field(default_factory=list)
+    ai_assumed_areas: List[str] = field(default_factory=list)
     ai_tools: List[str] = field(default_factory=list)
     firm_name: str = ""
     public_facts: List[Dict[str, str]] = field(default_factory=list)
@@ -113,6 +118,11 @@ class ScoredActivity:
     custom: bool
     activity_id: str = ""
     route: str = ""
+    ai_assumed: bool = False
+    ai_unknown: bool = False
+    restricted_in_use: bool = False
+    effect_rated: bool = True
+    kpi_linked: bool = True
     owner_role: str = ""
     ai_note: str = ""
     thesis_note: str = ""

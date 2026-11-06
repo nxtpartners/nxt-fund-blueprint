@@ -33,7 +33,7 @@
   {
    "id": "fundraise_conversion",
    "pressure": "raise",
-   "label": "First meeting to commitment rate"
+   "label": "LP meetings that move to the next stage"
   },
   {
    "id": "fundraise_readiness",
@@ -101,7 +101,8 @@
       },
       {
        "id": "credit",
-       "label": "Private credit"
+       "label": "Private credit",
+       "description": "The task list is written mainly for equity investing, so some tasks may not fit"
       },
       {
        "id": "multi",
@@ -232,7 +233,7 @@
      "id": "thesis_detail",
      "type": "open",
      "header": "Your thesis",
-     "text": "In a sentence or two, what is your investment thesis? For example: sector, company size, and how you win. Please do not name companies or investors."
+     "text": "In a sentence or two, what is your investment thesis? For example: sector, company size, and how you win. Please do not name portfolio companies or investors."
     },
     {
      "id": "thesis_focus",
@@ -430,7 +431,7 @@
      "id": "bottleneck",
      "type": "open",
      "header": "One task",
-     "text": "If you could take one recurring task off your team tomorrow, what would it be? Please do not name people, companies, or investors."
+     "text": "If you could take one recurring task off your team tomorrow, what would it be? Please do not name people, portfolio companies, or investors."
     },
     {
      "id": "areas",
@@ -500,23 +501,23 @@
     {
      "id": "hours",
      "header": "Hours",
-     "text": "About how many hours a month does this work take in {workstream}, across everyone?",
+     "text": "About how many hours does this work take in {workstream} in a typical month, across everyone?",
      "options": [
       {
-       "id": "under_5",
-       "label": "Under 5 hours"
-      },
-      {
-       "id": "5_20",
-       "label": "5 to 20 hours"
+       "id": "under_20",
+       "label": "Under 20 hours"
       },
       {
        "id": "20_60",
        "label": "20 to 60 hours"
       },
       {
-       "id": "over_60",
-       "label": "Over 60 hours"
+       "id": "60_200",
+       "label": "60 to 200 hours"
+      },
+      {
+       "id": "over_200",
+       "label": "Over 200 hours"
       }
      ]
     },
@@ -710,7 +711,7 @@
       },
       {
        "id": "partner",
-       "label": "An outside partner"
+       "label": "An outside firm"
       },
       {
        "id": "nobody",
@@ -744,7 +745,7 @@
     {
      "id": "budget",
      "header": "Budget",
-     "text": "What could the firm invest in this over 12 months?",
+     "text": "What could the firm invest in this over 12 months? This shapes which kind of tool we suggest.",
      "options": [
       {
        "id": "unset",
@@ -857,7 +858,7 @@
   "personalize": {
    "id": "personalize",
    "header": "Personalize",
-   "text": "Would you like me to look up your firm's public information, so you answer fewer questions?",
+   "text": "Would you like me to look up your firm's public information, so the plan can reflect it?",
    "options": [
     {
      "id": "yes",
@@ -933,11 +934,83 @@
     },
     {
      "id": "cco_questions",
-     "label": "List questions for my CCO"
+     "label": "List questions for compliance"
     },
     {
      "id": "nxt_summary",
      "label": "Summary to send to NXT Partners AI"
+    }
+   ]
+  },
+  "confirm_thesis": {
+   "id": "confirm_thesis",
+   "header": "Thesis",
+   "text": "I read your thesis as: {sentence}",
+   "options": [
+    {
+     "id": "yes",
+     "label": "Correct"
+    },
+    {
+     "id": "refine",
+     "label": "Close, but let me refine it"
+    },
+    {
+     "id": "drop",
+     "label": "Leave it out"
+    }
+   ]
+  },
+  "confirm_match": {
+   "id": "confirm_match",
+   "header": "Task",
+   "text": "That sounds like {task}, in {work_area}.",
+   "options": [
+    {
+     "id": "yes",
+     "label": "Correct"
+    },
+    {
+     "id": "different",
+     "label": "No, it is different"
+    },
+    {
+     "id": "drop",
+     "label": "Leave it out"
+    }
+   ]
+  },
+  "confirm_new_task": {
+   "id": "confirm_new_task",
+   "header": "Task",
+   "text": "I read that as: {task}",
+   "options": [
+    {
+     "id": "yes",
+     "label": "Correct"
+    },
+    {
+     "id": "listed",
+     "label": "Closer to a listed task"
+    },
+    {
+     "id": "drop",
+     "label": "Leave it out"
+    }
+   ]
+  },
+  "confirm_option": {
+   "id": "confirm_option",
+   "header": "Check",
+   "text": "I read that as: {option}",
+   "options": [
+    {
+     "id": "yes",
+     "label": "Correct"
+    },
+    {
+     "id": "choose",
+     "label": "Let me choose"
     }
    ]
   }

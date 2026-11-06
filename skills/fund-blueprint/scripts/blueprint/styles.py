@@ -75,7 +75,7 @@ h3{{font-family:{t.FONT_BODY};font-weight:600;font-size:{t.TEXT_ITEM};line-heigh
 .stages small{{display:block;font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT}}}
 .stages ul{{margin-top:.7rem;display:grid;gap:.55rem}}
 .stages li{{display:grid;grid-template-columns:2em 1fr;line-height:1.35}}
-.table-head,summary{{display:grid;grid-template-columns:2em minmax(11rem,1fr) 10.5rem 7.5rem 4.5rem 1.2rem;gap:.15rem .75rem;align-items:baseline}}
+.table-head,summary{{display:grid;grid-template-columns:2em minmax(11rem,1fr) 10.5rem 7.5rem 7rem 1.2rem;gap:.15rem .75rem;align-items:baseline}}
 .table-head{{font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT};padding-bottom:.4rem;border-bottom:1px solid {t.COLOR_INK}}}
 @container (max-width:{t.RAIL_BREAKPOINT}){{.table-head{{display:none}}summary{{grid-template-columns:2em 1fr 1.2rem}}summary .col{{grid-column:2;font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT}}}summary .toggle{{grid-column:3;grid-row:1}}}}
 .group{{margin-top:{t.SPACE_BLOCK}}}

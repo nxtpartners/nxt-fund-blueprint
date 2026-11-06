@@ -50,6 +50,7 @@ class ErrorCost(str, Enum):
 
 
 class Policy(str, Enum):
+    APPROVED = "approved"
     NONE = "none"
     RESTRICTED = "restricted"
 
@@ -68,14 +69,8 @@ class AiStage(str, Enum):
 
 class AiHere(str, Enum):
     NONE = "none"
+    DEPLOYED = "deployed"
 
 
-class AiResults(str, Enum):
-    MEASURED = "measured"
-    DISAPPOINTING = "disappointing"
-
-
-class Tier(str, Enum):
-    LOW = "low"
-    MID = "mid"
-    HIGH = "high"
+class Systems(str, Enum):
+    MANUAL = "manual"

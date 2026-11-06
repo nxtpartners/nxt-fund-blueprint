@@ -95,7 +95,9 @@ def parse_answers(library: Library, raw: Any) -> Answers:
     require_type(raw, dict, "The answers file")
     assumed: List[str] = []
     skipped: List[str] = []
+    ai_assumed_areas: List[str] = []
     uses_ai = raw.get("ai_stage") not in (None, AiStage.NONE.value)
+    firm_has_no_ai = raw.get("ai_stage") == AiStage.NONE.value
     firm: Dict[str, str] = {}
     for field in c.FIRM_FIELDS:
         allowed = library.thesis_options(raw.get("strategy")) if field == "thesis" else None
@@ -125,7 +127,7 @@ def parse_answers(library: Library, raw: Any) -> Answers:
         label = library.workstreams[workstream_id]["label"]
         where = f" in {label}"
         details = {
-            field: closed_answer(library, row, field, assumed, skipped, where, key=f"{workstream_id}.{field}", expected=(uses_ai or field != "ai_here"))
+            field: closed_answer(library, row, field, assumed, skipped, where, key=f"{workstream_id}.{field}", expected=(not firm_has_no_ai or field != "ai_here"))
             for field in c.DETAIL_FIELDS
         }
         activities = string_list(row, c.KEY_ACTIVITIES, f"Tasks in '{workstream_id}'")
@@ -138,11 +140,13 @@ def parse_answers(library: Library, raw: Any) -> Answers:
         custom = [clean_custom(item, workstream_id) for item in custom_rows]
         if not activities and not custom:
             raise AnswerError(f"Work area '{workstream_id}' needs at least one task. Ask the tasks question again.")
+        if firm_has_no_ai and (details["ai_here"] != AiHere.NONE.value or any(item[c.KEY_USES_AI] for item in custom)):
+            raise AnswerError(f"The answers say the firm does not use AI, but also that AI is used in '{workstream_id}'. Ask ai_stage again.")
         ai_tasks = string_list(row, c.KEY_AI_TASKS, f"AI tasks in '{workstream_id}'")
         if any(task not in activities for task in ai_tasks):
             raise AnswerError(f"ai_tasks in '{workstream_id}' must come from its selected activities. Ask this question again.")
         if details["ai_here"] != AiHere.NONE.value and not ai_tasks and activities:
-            assumed.append(f"Where AI is used in {label}, so its routine tasks were treated as using AI")
+            ai_assumed_areas.append(label)
         workstreams.append(WorkstreamAnswers.from_dict(workstream_id, {**details, c.KEY_ACTIVITIES: activities, c.KEY_CUSTOM: custom, c.KEY_AI_TASKS: ai_tasks}))
 
     focus = string_list(raw, c.KEY_THESIS_FOCUS, c.KEY_THESIS_FOCUS)
@@ -152,7 +156,7 @@ def parse_answers(library: Library, raw: Any) -> Answers:
     require_type(notes_raw, dict, c.KEY_THESIS_NOTES)
     notes = {str(key): clean_text(value, c.THESIS_NOTE_MAX, "A thesis note") for key, value in notes_raw.items()}
     return Answers(
-        kpi=kpi, workstreams=workstreams, assumed=assumed, skipped=skipped, ai_tools=tools,
+        kpi=kpi, workstreams=workstreams, assumed=assumed, skipped=skipped, ai_assumed_areas=ai_assumed_areas, ai_tools=tools,
         thesis_summary=clean_text(raw.get(c.KEY_THESIS_SUMMARY), c.THESIS_SUMMARY_MAX, "thesis_summary"),
         thesis_focus=focus, thesis_notes=notes,
         firm_name=clean_text(raw.get(c.KEY_FIRM_NAME), c.FIRM_NAME_MAX, "firm_name"),

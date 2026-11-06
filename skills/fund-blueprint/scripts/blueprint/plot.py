@@ -8,7 +8,7 @@ from . import constants as c
 from . import tokens as t
 from .enums import Quadrant
 from .models import ScoredActivity
-from .scoring import impact_level
+from .scoring import effect_text, impact_level
 
 
 def band_index(weeks: float) -> int:
@@ -94,7 +94,7 @@ class Canvas:
             parts.append(self.text(self.right - (index + 0.5) * self.band_width, self.bottom + t.PLOT_BAND_LABEL_OFFSET, band, label))
         parts.append(self.text((self.left + self.right) / 2, spec["height"] - t.PLOT_AXIS_TITLE_OFFSET, "Estimated speed, faster to the right", axis, fill=t.COLOR_INK, weight=t.PLOT_LABEL_WEIGHT))
         center = (self.top + self.bottom) / 2
-        parts.append(f'<text transform="translate({t.PLOT_Y_TITLE_X} {center:.0f}) rotate(-90)" font-size="{axis}" fill="{t.COLOR_INK}" text-anchor="middle" font-weight="{t.PLOT_LABEL_WEIGHT}">Estimated impact on your KPI</text>')
+        parts.append(f'<text transform="translate({t.PLOT_Y_TITLE_X} {center:.0f}) rotate(-90)" font-size="{axis}" fill="{t.COLOR_INK}" text-anchor="middle" font-weight="{t.PLOT_LABEL_WEIGHT}">Estimated effect on your KPI</text>')
 
         spots = self.place_markers(items)
         for item in sorted(items, key=lambda row: row.number):
@@ -102,7 +102,7 @@ class Canvas:
             color = t.VERDICT_COLORS[item.verdict]
             hollow = item.verdict in t.VERDICT_HOLLOW
             fill, stroke, ink = (t.COLOR_SURFACE, color, color) if hollow else (color, t.COLOR_SURFACE, t.COLOR_SURFACE)
-            summary = f"{item.number}. {item.label}: {c.VERDICT_LABELS[item.verdict]}, {item.speed_label}, {impact_level(item.impact)} impact, estimated"
+            summary = f"{item.number}. {item.label}: {c.VERDICT_LABELS[item.verdict]}, {item.speed_label}, {effect_text(item.impact, item.effect_rated)}"
             parts.append(
                 f'<g class="mark" tabindex="0" role="img" aria-label="{html.escape(summary, quote=True)}"><title>{html.escape(summary)}</title>'
                 f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{spec["radius"]}" fill="{fill}" stroke="{stroke}" stroke-width="{t.PLOT_MARK_STROKE}"/>'

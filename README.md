@@ -28,7 +28,7 @@ flowchart LR
     H --> I[Optional drafts for<br/>your team]
 ```
 
-Most questions offer fixed choices, and anything typed is restated for you to confirm before it counts. Everything in the report is something you said, a public fact you confirmed with its source, a labelled planning estimate, or general advice from the tool's fixed text.
+Most questions offer fixed choices, and anything typed is restated for you to confirm before it counts. Everything in the report is something you said, a public fact you confirmed with its source, a labelled planning estimate, general advice from the tool's fixed text, or a short note Claude writes linking a move to the thesis you confirmed.
 
 Each activity gets one verdict: remove it, automate it, optimize it, add AI, add agentic AI with human approval, build on AI already in use, or leave it with people. Each is then placed by estimated speed against estimated impact on your chosen KPI. These come from fixed planning rules applied to your answers. They are not benchmarks or measurements.
 
@@ -45,7 +45,7 @@ flowchart LR
     U -. only if they choose to send it .-> N[NXT Partners AI]
 ```
 
-NXT Partners AI runs no server for this tool and does not receive your answers. They stay in your Claude conversation, which Claude processes under your account's terms, and in working files created there. If you choose to personalize it, your firm's name is used in a public web search. Please do not enter the names of people, companies, LPs, or deals.
+NXT Partners AI runs no server for this tool and does not receive your answers. They stay in your Claude conversation, which Claude processes under your account's terms, and in working files created there. If you choose to personalize it, your firm's name is used in a public web search. Please do not enter the names of people, portfolio companies, LPs, or deals. The only name it may ask for is your own firm's, and only if you choose to personalize.
 
 ## Technology
 
