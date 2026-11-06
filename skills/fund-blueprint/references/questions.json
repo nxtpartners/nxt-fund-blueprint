@@ -1,0 +1,945 @@
+{
+ "kpis": [
+  {
+   "id": "deals_per_pro",
+   "pressure": "deploy",
+   "label": "Deals reviewed per professional"
+  },
+  {
+   "id": "first_look_to_ic",
+   "pressure": "deploy",
+   "label": "Time from first look to IC"
+  },
+  {
+   "id": "diligence_cycle",
+   "pressure": "deploy",
+   "label": "Diligence cycle time"
+  },
+  {
+   "id": "proprietary_share",
+   "pressure": "deploy",
+   "label": "Share of proprietary deals"
+  },
+  {
+   "id": "lp_report_cycle",
+   "pressure": "raise",
+   "label": "LP reporting cycle time"
+  },
+  {
+   "id": "ddq_turnaround",
+   "pressure": "raise",
+   "label": "DDQ and LP request turnaround"
+  },
+  {
+   "id": "fundraise_conversion",
+   "pressure": "raise",
+   "label": "First meeting to commitment rate"
+  },
+  {
+   "id": "fundraise_readiness",
+   "pressure": "raise",
+   "label": "Time to refresh fundraising materials"
+  },
+  {
+   "id": "data_freshness",
+   "pressure": "value",
+   "label": "Days to portfolio data after month end"
+  },
+  {
+   "id": "underperformance_detection",
+   "pressure": "value",
+   "label": "Time to spot underperformance"
+  },
+  {
+   "id": "initiatives_on_track",
+   "pressure": "value",
+   "label": "Value creation initiatives on track"
+  },
+  {
+   "id": "exit_readiness",
+   "pressure": "value",
+   "label": "Time to exit readiness"
+  },
+  {
+   "id": "senior_hours",
+   "pressure": "lean",
+   "label": "Senior hours freed per month"
+  },
+  {
+   "id": "close_time",
+   "pressure": "lean",
+   "label": "Quarter-end close time"
+  },
+  {
+   "id": "cost_ratio",
+   "pressure": "lean",
+   "label": "Operating cost as a share of fees"
+  },
+  {
+   "id": "report_errors",
+   "pressure": "lean",
+   "label": "Errors in reports and filings"
+  }
+ ],
+ "sections": [
+  {
+   "id": "firm",
+   "title": "Your firm",
+   "questions": [
+    {
+     "id": "strategy",
+     "header": "Strategy",
+     "text": "What is the firm's main strategy?",
+     "options": [
+      {
+       "id": "buyout",
+       "label": "Buyout"
+      },
+      {
+       "id": "growth",
+       "label": "Growth or venture"
+      },
+      {
+       "id": "credit",
+       "label": "Private credit"
+      },
+      {
+       "id": "multi",
+       "label": "Multi-strategy"
+      }
+     ]
+    },
+    {
+     "id": "aum",
+     "header": "AUM",
+     "text": "What are the firm's assets under management?",
+     "options": [
+      {
+       "id": "under_500m",
+       "label": "Under $500M"
+      },
+      {
+       "id": "500m_2b",
+       "label": "$500M to $2B"
+      },
+      {
+       "id": "2b_10b",
+       "label": "$2B to $10B"
+      },
+      {
+       "id": "over_10b",
+       "label": "Over $10B"
+      }
+     ]
+    },
+    {
+     "id": "team",
+     "header": "Team size",
+     "text": "How many people work at the firm?",
+     "options": [
+      {
+       "id": "under_15",
+       "label": "Under 15"
+      },
+      {
+       "id": "15_50",
+       "label": "15 to 50"
+      },
+      {
+       "id": "50_150",
+       "label": "50 to 150"
+      },
+      {
+       "id": "over_150",
+       "label": "Over 150"
+      }
+     ]
+    },
+    {
+     "id": "fund_stage",
+     "header": "Fund stage",
+     "text": "Where is your main fund right now?",
+     "options": [
+      {
+       "id": "raising",
+       "label": "Raising"
+      },
+      {
+       "id": "deploying",
+       "label": "Deploying"
+      },
+      {
+       "id": "harvesting",
+       "label": "Harvesting"
+      },
+      {
+       "id": "several",
+       "label": "Several at once"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "goal",
+   "title": "What matters most",
+   "questions": [
+    {
+     "id": "thesis",
+     "header": "Thesis",
+     "text": "How does your thesis mainly create returns?",
+     "options_by": {
+      "key": "strategy",
+      "credit": [
+       {
+        "id": "income",
+        "label": "Steady income"
+       },
+       {
+        "id": "special_situations",
+        "label": "Special situations"
+       },
+       {
+        "id": "sector",
+        "label": "Sector specialization"
+       },
+       {
+        "id": "origination",
+        "label": "Proprietary origination"
+       }
+      ],
+      "default": [
+       {
+        "id": "buy_build",
+        "label": "Buy and build"
+       },
+       {
+        "id": "operational",
+        "label": "Operational improvement"
+       },
+       {
+        "id": "expansion",
+        "label": "Growth and expansion"
+       },
+       {
+        "id": "sector",
+        "label": "Sector specialization"
+       }
+      ]
+     }
+    },
+    {
+     "id": "thesis_detail",
+     "type": "open",
+     "header": "Your thesis",
+     "text": "In a sentence or two, what is your investment thesis? For example: sector, company size, and how you win. Please do not name companies or investors."
+    },
+    {
+     "id": "thesis_focus",
+     "type": "confirm_focus",
+     "header": "Thesis focus",
+     "text": "From what you described, these work areas seem to matter most to your thesis: {areas}. Is that right?",
+     "options": [
+      {
+       "id": "yes",
+       "label": "Yes, that is right"
+      },
+      {
+       "id": "pick",
+       "label": "Partly, let me choose"
+      },
+      {
+       "id": "none",
+       "label": "Not really"
+      }
+     ]
+    },
+    {
+     "id": "pressure",
+     "header": "Priority",
+     "text": "What is the firm's biggest priority for the next 12 months?",
+     "options": [
+      {
+       "id": "deploy",
+       "label": "Deploy capital well",
+       "description": "Better and faster deal flow"
+      },
+      {
+       "id": "raise",
+       "label": "Raise the next fund",
+       "description": "LP confidence and fundraising"
+      },
+      {
+       "id": "value",
+       "label": "Prove value creation",
+       "description": "Portfolio results and exits"
+      },
+      {
+       "id": "lean",
+       "label": "Run a leaner firm",
+       "description": "Senior time, cost, and accuracy"
+      }
+     ]
+    },
+    {
+     "id": "kpi",
+     "header": "KPI",
+     "text": "Which KPI should this plan be measured against?",
+     "options_from": "kpis_for_pressure"
+    }
+   ]
+  },
+  {
+   "id": "ai_today",
+   "title": "AI at your firm today",
+   "questions": [
+    {
+     "id": "ai_stage",
+     "header": "AI today",
+     "text": "How far along is AI at the firm overall?",
+     "options": [
+      {
+       "id": "none",
+       "label": "Not used yet"
+      },
+      {
+       "id": "individuals",
+       "label": "Individuals on their own",
+       "description": "People use it, with no firm-wide approach"
+      },
+      {
+       "id": "pilots",
+       "label": "Trials in some teams",
+       "description": "Being tested, not yet standard"
+      },
+      {
+       "id": "deployed",
+       "label": "Standard across teams",
+       "description": "Part of how the work runs"
+      }
+     ]
+    },
+    {
+     "id": "ai_tools",
+     "header": "Tools",
+     "multi": true,
+     "show_if": "ai_stage is not none",
+     "text": "What is the firm using today? Choose all that apply.",
+     "options": [
+      {
+       "id": "assistants",
+       "label": "AI chat tools",
+       "description": "Such as ChatGPT, Claude, or Copilot"
+      },
+      {
+       "id": "embedded",
+       "label": "AI in existing software",
+       "description": "Inside your CRM, data room, or portfolio tools"
+      },
+      {
+       "id": "specialist",
+       "label": "Specialist PE tools",
+       "description": "Bought for diligence, IR, or monitoring"
+      },
+      {
+       "id": "custom",
+       "label": "Custom-built AI",
+       "description": "Made specifically for your firm"
+      }
+     ]
+    },
+    {
+     "id": "ai_adoption",
+     "header": "Adoption",
+     "show_if": "ai_stage is not none",
+     "text": "What share of the team uses AI at least weekly?",
+     "options": [
+      {
+       "id": "under_10",
+       "label": "Under 10%"
+      },
+      {
+       "id": "10_30",
+       "label": "10% to 30%"
+      },
+      {
+       "id": "30_60",
+       "label": "30% to 60%"
+      },
+      {
+       "id": "over_60",
+       "label": "Over 60%"
+      }
+     ]
+    },
+    {
+     "id": "ai_results",
+     "header": "Results",
+     "show_if": "ai_stage is not none",
+     "text": "What has AI delivered so far?",
+     "options": [
+      {
+       "id": "measured",
+       "label": "Measured gains",
+       "description": "You can point to the numbers"
+      },
+      {
+       "id": "unmeasured",
+       "label": "Useful, but not measured"
+      },
+      {
+       "id": "mixed",
+       "label": "Mixed so far"
+      },
+      {
+       "id": "disappointing",
+       "label": "Disappointing"
+      }
+     ]
+    },
+    {
+     "id": "ai_obstacle",
+     "header": "Obstacle",
+     "text": "What holds AI back most at your firm, or would if you started?",
+     "options": [
+      {
+       "id": "data",
+       "label": "Data quality or access"
+      },
+      {
+       "id": "trust",
+       "label": "Trust in the output"
+      },
+      {
+       "id": "security",
+       "label": "Security or compliance"
+      },
+      {
+       "id": "owner",
+       "label": "No owner or no time"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "focus",
+   "title": "Where time goes",
+   "questions": [
+    {
+     "id": "bottleneck",
+     "type": "open",
+     "header": "One task",
+     "text": "If you could take one recurring task off your team tomorrow, what would it be? Please do not name people, companies, or investors."
+    },
+    {
+     "id": "areas",
+     "header": "Areas",
+     "multi": true,
+     "text": "Which areas of the firm lose the most time? Choose all that apply.",
+     "options_from": "areas"
+    },
+    {
+     "id": "workstreams",
+     "header": "Work",
+     "multi": true,
+     "repeat_for": "selected_areas",
+     "text": "Within {area}, where does the time go? Choose all that apply.",
+     "options_from": "workstreams_for_area"
+    }
+   ]
+  },
+  {
+   "id": "detail",
+   "title": "How the work runs",
+   "repeat_for": "selected_workstreams",
+   "max_repeats": 4,
+   "questions": [
+    {
+     "id": "activities",
+     "header": "Tasks",
+     "multi": true,
+     "text": "In {workstream}, which of these does your team do repeatedly?",
+     "options_from": "activities_for_workstream"
+    },
+    {
+     "id": "ai_here",
+     "header": "AI here",
+     "show_if": "ai_stage is not none",
+     "text": "Is AI already used in {workstream}?",
+     "options": [
+      {
+       "id": "none",
+       "label": "Not at all"
+      },
+      {
+       "id": "adhoc",
+       "label": "Some people, informally",
+       "description": "No shared approach"
+      },
+      {
+       "id": "pilot",
+       "label": "A small trial",
+       "description": "Being tested, not yet standard"
+      },
+      {
+       "id": "deployed",
+       "label": "Standard for the team",
+       "description": "Part of normal work"
+      }
+     ]
+    },
+    {
+     "id": "ai_tasks",
+     "header": "Where",
+     "multi": true,
+     "show_if": "ai_here is not none",
+     "text": "Which of these tasks already use AI?",
+     "options_from": "selected_activities"
+    },
+    {
+     "id": "hours",
+     "header": "Hours",
+     "text": "About how many hours a month does this work take in {workstream}, across everyone?",
+     "options": [
+      {
+       "id": "under_5",
+       "label": "Under 5 hours"
+      },
+      {
+       "id": "5_20",
+       "label": "5 to 20 hours"
+      },
+      {
+       "id": "20_60",
+       "label": "20 to 60 hours"
+      },
+      {
+       "id": "over_60",
+       "label": "Over 60 hours"
+      }
+     ]
+    },
+    {
+     "id": "data",
+     "header": "Data",
+     "text": "Where does the information for this work mostly live?",
+     "options": [
+      {
+       "id": "system",
+       "label": "In a proper system",
+       "description": "CRM, portfolio tool, or accounting system"
+      },
+      {
+       "id": "spreadsheets",
+       "label": "Spreadsheets and email"
+      },
+      {
+       "id": "documents",
+       "label": "PDFs and documents"
+      },
+      {
+       "id": "heads",
+       "label": "In people's heads",
+       "description": "Little is written down"
+      }
+     ]
+    },
+    {
+     "id": "owner",
+     "header": "Who",
+     "text": "Who spends the most time on it?",
+     "options": [
+      {
+       "id": "partners",
+       "label": "Partners or principals"
+      },
+      {
+       "id": "mid",
+       "label": "VPs and associates"
+      },
+      {
+       "id": "junior",
+       "label": "Analysts"
+      },
+      {
+       "id": "operations",
+       "label": "Finance, IR, or ops staff"
+      }
+     ]
+    },
+    {
+     "id": "error_cost",
+     "header": "If wrong",
+     "text": "What happens if a mistake gets through?",
+     "options": [
+      {
+       "id": "minor",
+       "label": "Quick fix",
+       "description": "Noticed and corrected internally"
+      },
+      {
+       "id": "awkward",
+       "label": "Embarrassing",
+       "description": "Visible to LPs, boards, or partners"
+      },
+      {
+       "id": "severe",
+       "label": "Serious",
+       "description": "Financial, legal, or regulatory harm"
+      },
+      {
+       "id": "unsure",
+       "label": "Not sure"
+      }
+     ]
+    },
+    {
+     "id": "usage",
+     "header": "Used?",
+     "text": "How much is the output of this work really used?",
+     "options": [
+      {
+       "id": "relied",
+       "label": "Relied on",
+       "description": "Decisions depend on it"
+      },
+      {
+       "id": "some",
+       "label": "Used by a few",
+       "description": "Useful, but not essential"
+      },
+      {
+       "id": "rarely",
+       "label": "Rarely used",
+       "description": "Few would notice if it stopped"
+      },
+      {
+       "id": "unsure",
+       "label": "Not sure"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "constraints",
+   "title": "What could slow this down",
+   "questions": [
+    {
+     "id": "systems",
+     "header": "Software",
+     "text": "Do your main software tools share data with each other?",
+     "options": [
+      {
+       "id": "integrated",
+       "label": "Mostly one platform"
+      },
+      {
+       "id": "connected",
+       "label": "Several, sharing data"
+      },
+      {
+       "id": "disconnected",
+       "label": "Several, not sharing data"
+      },
+      {
+       "id": "manual",
+       "label": "Mostly Excel and email"
+      }
+     ]
+    },
+    {
+     "id": "policy",
+     "header": "AI policy",
+     "text": "What is the firm's position on AI use today?",
+     "options": [
+      {
+       "id": "approved",
+       "label": "Approved tools and policy"
+      },
+      {
+       "id": "pilot",
+       "label": "Allowed in trials"
+      },
+      {
+       "id": "none",
+       "label": "No policy yet"
+      },
+      {
+       "id": "restricted",
+       "label": "Restricted or banned"
+      }
+     ]
+    },
+    {
+     "id": "trust",
+     "header": "Team",
+     "text": "How does the team feel about AI output?",
+     "options": [
+      {
+       "id": "daily",
+       "label": "Uses it daily"
+      },
+      {
+       "id": "experimenting",
+       "label": "Some are experimenting"
+      },
+      {
+       "id": "skeptical",
+       "label": "Mostly skeptical"
+      },
+      {
+       "id": "resistant",
+       "label": "Actively resistant"
+      }
+     ]
+    },
+    {
+     "id": "capacity",
+     "header": "Who builds",
+     "text": "Who would carry out this work?",
+     "options": [
+      {
+       "id": "in_house",
+       "label": "Our own tech team"
+      },
+      {
+       "id": "ops_lead",
+       "label": "An operations lead, part time"
+      },
+      {
+       "id": "partner",
+       "label": "An outside partner"
+      },
+      {
+       "id": "nobody",
+       "label": "Nobody yet"
+      }
+     ]
+    },
+    {
+     "id": "region",
+     "header": "Regulation",
+     "text": "Where is the firm mainly regulated?",
+     "options": [
+      {
+       "id": "us",
+       "label": "United States"
+      },
+      {
+       "id": "eu",
+       "label": "European Union"
+      },
+      {
+       "id": "uk",
+       "label": "United Kingdom"
+      },
+      {
+       "id": "other",
+       "label": "Several or elsewhere"
+      }
+     ]
+    },
+    {
+     "id": "budget",
+     "header": "Budget",
+     "text": "What could the firm invest in this over 12 months?",
+     "options": [
+      {
+       "id": "unset",
+       "label": "Not set yet"
+      },
+      {
+       "id": "under_100k",
+       "label": "Under $100K"
+      },
+      {
+       "id": "100k_500k",
+       "label": "$100K to $500K"
+      },
+      {
+       "id": "over_500k",
+       "label": "Over $500K"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "confirm",
+   "title": "Check before we build",
+   "questions": [
+    {
+     "id": "confirmed",
+     "header": "Confirm",
+     "text": "Is this summary right?",
+     "options": [
+      {
+       "id": "yes",
+       "label": "Yes, build the blueprint"
+      },
+      {
+       "id": "firm",
+       "label": "Change firm or priorities"
+      },
+      {
+       "id": "work",
+       "label": "Change a work area"
+      },
+      {
+       "id": "constraints",
+       "label": "Change constraints"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "custom_nature": {
+  "id": "nature",
+  "header": "Kind of task",
+  "text": "Which best describes that task?",
+  "options": [
+   {
+    "id": "rules",
+    "label": "Follows fixed rules"
+   },
+   {
+    "id": "drafting",
+    "label": "Reading and drafting"
+   },
+   {
+    "id": "multi_system",
+    "label": "Several steps across tools"
+   },
+   {
+    "id": "judgment",
+    "label": "Judgment or relationships"
+   }
+  ]
+ },
+ "custom_kpi_link": {
+  "id": "kpi_link",
+  "header": "KPI link",
+  "text": "How much does that task affect the KPI you chose?",
+  "options": [
+   {
+    "id": "direct",
+    "label": "Directly"
+   },
+   {
+    "id": "some",
+    "label": "Somewhat"
+   },
+   {
+    "id": "none",
+    "label": "Not really"
+   }
+  ]
+ },
+ "fixed": {
+  "consent": {
+   "id": "consent",
+   "header": "Notice",
+   "text": "Before we start, are you comfortable with this?",
+   "options": [
+    {
+     "id": "yes",
+     "label": "I understand, let's start"
+    },
+    {
+     "id": "no",
+     "label": "Not now"
+    }
+   ]
+  },
+  "personalize": {
+   "id": "personalize",
+   "header": "Personalize",
+   "text": "Would you like me to look up your firm's public information, so you answer fewer questions?",
+   "options": [
+    {
+     "id": "yes",
+     "label": "Yes, I'll give the firm's name"
+    },
+    {
+     "id": "no",
+     "label": "No, keep it anonymous"
+    }
+   ]
+  },
+  "confirm_name": {
+   "id": "confirm_name",
+   "header": "Firm name",
+   "text": "I will search for: {name}. Is that right?",
+   "options": [
+    {
+     "id": "yes",
+     "label": "Correct"
+    },
+    {
+     "id": "no",
+     "label": "Let me retype it"
+    }
+   ]
+  },
+  "confirm_facts": {
+   "id": "confirm_facts",
+   "header": "Check facts",
+   "text": "Is this your firm, and is this right?",
+   "options": [
+    {
+     "id": "yes",
+     "label": "Yes, all correct"
+    },
+    {
+     "id": "partly",
+     "label": "Partly, let me correct it"
+    },
+    {
+     "id": "no",
+     "label": "Not my firm"
+    }
+   ]
+  },
+  "custom_uses_ai": {
+   "id": "uses_ai",
+   "header": "AI on it",
+   "text": "Is AI already used on that task?",
+   "options": [
+    {
+     "id": "yes",
+     "label": "Yes"
+    },
+    {
+     "id": "no",
+     "label": "No"
+    }
+   ]
+  },
+  "next_step": {
+   "id": "next_step",
+   "header": "Next",
+   "text": "What would help most next?",
+   "options": [
+    {
+     "id": "team_note",
+     "label": "Draft a note to my team"
+    },
+    {
+     "id": "partner_brief",
+     "label": "Explain this for my partners"
+    },
+    {
+     "id": "cco_questions",
+     "label": "List questions for my CCO"
+    },
+    {
+     "id": "nxt_summary",
+     "label": "Summary to send to NXT Partners AI"
+    }
+   ]
+  }
+ }
+}

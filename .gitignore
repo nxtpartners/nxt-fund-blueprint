@@ -13,6 +13,8 @@ tasks/
 docs/
 
 # Build output and local test runs
+dev/
+evals/
 dist/
 *.zip
 output/

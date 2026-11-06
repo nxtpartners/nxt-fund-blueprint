@@ -1,0 +1,10 @@
+{
+  "name": "nxt-fund-blueprint",
+  "displayName": "NXT Fund Blueprint",
+  "version": "0.9.1",
+  "description": "A guided assessment that shows a private equity firm where to automate, simplify, or add AI in its own operations, and ends with a roadmap and priority plot tailored to its thesis.",
+  "author": {"name": "NXT Partners AI", "email": "info@nxtpartners.ai", "url": "https://nxtpartners.ai"},
+  "homepage": "https://github.com/nxtpartners/nxt-fund-blueprint",
+  "repository": "https://github.com/nxtpartners/nxt-fund-blueprint",
+  "license": "MIT"
+}
