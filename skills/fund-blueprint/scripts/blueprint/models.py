@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional
 
 from . import constants as c
-from .enums import Horizon, Nature, Quadrant, Verdict
+from .enums import Horizon, Nature, Quadrant, Rule, Verdict
 
 
 @dataclass
@@ -26,11 +26,15 @@ class Activity:
     first_step_uses_ai: bool = False
     control: bool = False
     first_step_if_no_ai: str = ""
+    needs_agreed_rules: bool = False
+    input_documents: bool = False
+    shared_data: str = ""
+    process_solution: str = ""
     kpi_link: Optional[str] = None
 
     @classmethod
     def from_dict(cls, row: Dict[str, Any]) -> "Activity":
-        return cls(row["id"], row["workstream"], row["label"], Nature(row["nature"]), dict(row["kpis"]), row["solution"], row["first_step"], row["check"], effort=row.get("effort", "medium"), required=bool(row.get("required")), no_agent=bool(row.get("no_agent")), reads_documents=bool(row.get("reads_documents")), first_step_uses_ai=bool(row.get("first_step_uses_ai")), control=bool(row.get("control")), first_step_if_no_ai=row.get("first_step_if_no_ai", ""))
+        return cls(row["id"], row["workstream"], row["label"], Nature(row["nature"]), dict(row["kpis"]), row["solution"], row["first_step"], row["check"], effort=row.get("effort", "medium"), required=bool(row.get("required")), no_agent=bool(row.get("no_agent")), reads_documents=bool(row.get("reads_documents")), first_step_uses_ai=bool(row.get("first_step_uses_ai")), control=bool(row.get("control")), first_step_if_no_ai=row.get("first_step_if_no_ai", ""), needs_agreed_rules=bool(row.get("needs_agreed_rules")), input_documents=bool(row.get("input_documents")), shared_data=row.get("shared_data", ""), process_solution=row.get("process_solution", ""))
 
     def to_dict(self) -> Dict[str, Any]:
         out = asdict(self)
@@ -44,17 +48,28 @@ class WorkstreamAnswers:
     activities: List[str]
     custom: List[Dict[str, Any]]
     hours: str
-    data: str
-    owner: str
+    sources: List[str]
+    who: List[str]
+    time_goes: List[str]
     error_cost: str
-    usage: str
+    depends: str
+    rhythm: str
+    same_way: str
     ai_here: str = "none"
+    depth: str = "deep"
     ai_tasks: List[str] = field(default_factory=list)
+    legacy_tasks: List[str] = field(default_factory=list)
+    harm_tasks: List[str] = field(default_factory=list)
+    heavy_task: str = ""
+    measures_tracked: Optional[List[str]] = None
+    measures_off: List[str] = field(default_factory=list)
+    walkthrough_steps: List[str] = field(default_factory=list)
+    slow_step: str = ""
+    unasked: List[str] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, workstream_id: str, row: Dict[str, Any]) -> "WorkstreamAnswers":
-        details = {key: row[key] for key in c.DETAIL_FIELDS}
-        return cls(id=workstream_id, activities=list(row.get(c.KEY_ACTIVITIES) or []), custom=list(row.get(c.KEY_CUSTOM) or []), ai_tasks=list(row.get(c.KEY_AI_TASKS) or []), **details)
+        return cls(id=workstream_id, **{key: value for key, value in row.items() if key in cls.__dataclass_fields__})
 
     def to_dict(self) -> Dict[str, Any]:
         out = asdict(self)
@@ -65,23 +80,24 @@ class WorkstreamAnswers:
 @dataclass
 class Answers:
     strategy: str
-    aum: str
     team: str
-    fund_stage: str
     thesis: str
     pressure: str
     ai_stage: str
     ai_adoption: str
     ai_results: str
-    ai_obstacle: str
     region: str
-    budget: str
     systems: str
     policy: str
-    trust: str
-    capacity: str
+    kpi_status: str
     kpi: str
     workstreams: List[WorkstreamAnswers]
+    aum: str = ""
+    budget: str = ""
+    named_task: str = ""
+    fund_stage: List[str] = field(default_factory=list)
+    trust: List[str] = field(default_factory=list)
+    capacity: List[str] = field(default_factory=list)
     assumed: List[str] = field(default_factory=list)
     skipped: List[str] = field(default_factory=list)
     ai_assumed_areas: List[str] = field(default_factory=list)
@@ -104,6 +120,7 @@ class ScoredActivity:
     label: str
     workstream_label: str
     verdict: Verdict
+    rule: Rule
     reason: str
     evidence: str
     relevance_note: str
@@ -126,10 +143,19 @@ class ScoredActivity:
     owner_role: str = ""
     ai_note: str = ""
     thesis_note: str = ""
+    workstream_id: str = ""
+    why_line: str = ""
+    chain_line: str = ""
+    named: bool = False
+    value: float = 0.0
+    relevance: int = 0
+    depth: str = "deep"
+    anchor: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         out = asdict(self)
         out["verdict"] = self.verdict.value
+        out["rule"] = self.rule.value
         out["horizon"] = self.horizon.value if self.horizon else None
         out["quadrant"] = self.quadrant.value if self.quadrant else None
         return out

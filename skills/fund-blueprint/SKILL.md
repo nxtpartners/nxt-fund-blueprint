@@ -1,6 +1,6 @@
 ---
 name: fund-blueprint
-description: "Runs a guided, script-based assessment of a private equity firm's own operations and produces an AI blueprint: where to automate, optimize, remove work, or add AI and agentic AI, with a roadmap and a plot of speed of execution against a KPI that fits the firm's thesis. Use this whenever someone at a PE firm, fund, or GP asks where AI could help their firm, how to reduce manual work in deal teams, IR, finance, or portfolio monitoring, or wants an AI roadmap or AI readiness assessment for their fund, even if they do not say 'blueprint'. Not for assessing portfolio companies."
+description: "Runs a guided, script-based assessment of a private equity firm's own operations and produces an AI blueprint: where to automate, optimize, remove work, or add AI, including agentic AI where the firm is ready, with a roadmap and a plot of speed of execution against a KPI that fits the firm's thesis. Use this whenever someone at a PE firm, fund, or GP asks where AI could help their firm, how to reduce manual work in deal teams, IR, finance, or portfolio monitoring, or wants an AI roadmap or AI readiness assessment for their fund, even if they do not say 'blueprint'. Not for assessing portfolio companies."
 ---
 
 # Fund Blueprint
@@ -15,7 +15,7 @@ If you cannot run shell commands in this conversation, for example in an incogni
 
 Guide a COO, partner, or similar senior person at a private equity firm through a guided assessment of how their firm runs, then give them a blueprint they can act on.
 
-The respondent is busy and senior. Earn their time: ask only what the plan uses, adapt to what they have said, and keep your own messages short. The result has to feel written for their firm, because a generic list of AI ideas is worth nothing to them.
+The respondent is busy and senior. Earn their time: ask only what the plan uses, adapt to what they have said, and keep your own messages short. Go deep on the one or two work areas that hurt most, rather than shallow on everything. The result has to feel written for their firm, because a generic list of AI ideas is worth nothing to them.
 
 Do not assume they know AI terms. Use everyday words, and if a term is needed, explain it in a few words. Write plainly. Do not use em dashes. Do not add filler such as "I'll wait for your answer", because the question already makes that clear.
 
@@ -23,7 +23,7 @@ Do not assume they know AI terms. Use everyday words, and if a term is needed, e
 
 This report goes to people who will act on it, and one invented detail would cost the whole tool its credibility. Everything you write must come from what the respondent confirmed, the flow, or the script's output. Do not add statistics, benchmarks, market claims, statements about other firms, expected savings, or vendor names. Do not state motives, plans, or facts about the firm that they did not tell you. If you do not know something, leave it out.
 
-Do not give opinions or early conclusions in the conversation, including reassurance such as "good news" or remarks on what their answers mean. The blueprint is where conclusions belong, after the facts are in.
+Do not give opinions or early conclusions in the conversation, including reassurance such as "good news" or remarks on what their answers mean. The blueprint is where conclusions belong, after the facts are in. The only thing you may say between questions is a plain restatement of what they told you, as described under "Saying it back".
 
 ## Start
 
@@ -31,11 +31,13 @@ Begin your first message, before running any command, with one neutral sentence 
 
 > **Fund Blueprint, a free tool by NXT Partners AI**
 >
-> This free tool is open to everyone. It adapts to your firm's thesis and how your team works, and ends with a roadmap and a plot of what to do first. Most of it is multiple choice.
+> This free tool is open to everyone. In about 12 minutes for one part of your firm, plus a few minutes for each part you add, you tell me how the work runs today. You get a ranked plan of what to automate, what AI could draft, what to stop, and what to leave with your people, with a first step for each. Most of it is multiple choice.
 >
 > **NXT Partners AI does not receive your answers,** and this tool sends them to no one. They stay in this Claude conversation, which Claude processes under your account's terms, and in working files created here. If you choose to personalize it, your firm's name is used in a public web search.
 >
 > **Please do not enter confidential details**, such as the names of people, portfolio companies, LPs, or deals. Ranges and general descriptions are all it needs. The only name it may ask for is your own firm's, and only if you choose to personalize.
+>
+> I keep your answers in one working file here, `answers.json`, so the plan is built from exactly what you told me. You can ask to see or delete it.
 >
 > The result is operational guidance generated with AI, using planning estimates. It is not investment, legal, tax, or compliance advice.
 
@@ -55,11 +57,13 @@ If `python3` is missing, try `python`. Do not read `references/catalog.json` dir
 
 Then ask `fixed.consent` from the flow, and wait for the answer. If they choose "Not now" or skip it, thank them and stop. If they ask a question about it, answer only from the notice and ask again. The one exception: if they have said they want no questions, continue without asking.
 
+Next, ask `pain_first` from the flow as plain text, followed by "You can skip this." It comes first because it is what they came for. Handle the answer as described under "The task they named". 
+
 ## Personalizing with public information
 
 After they agree, ask `fixed.personalize`. If they stay anonymous, skip the rest of this section, do not ask again, and leave `firm_name` empty even if they mention the name later.
 
-If yes, ask for the firm's name in plain text, and confirm it with `fixed.confirm_name`. This is the one name the tool asks for, so the rule against repeating names does not apply to it. Then search the web, using only the firm's name and public terms such as its website. Never include their answers in a search. If you have no web search here, or it finds nothing useful, say so in one line, leave `firm_name` empty, and continue with the normal questions.
+If yes, ask for the firm's name in plain text. This is the one name the tool asks for, so the rule against repeating names does not apply to it. Then search the web, using only the firm's name and public terms such as its website. Never include their answers in a search. If you have no web search here, or it finds nothing useful, say so in one line, leave `firm_name` empty, and continue with the normal questions.
 
 The rules for research exist because one wrong "fact" about their own firm would end their trust:
 
@@ -71,7 +75,7 @@ The rules for research exist because one wrong "fact" about their own firm would
 
 Show what you found as a normal message: at most six short facts, each with its source link. Note any that may be out of date. Then ask `fixed.confirm_facts`. If they correct a fact, use their version for the assessment, and leave that fact out of `public_facts`, because a source link must show what that page says. If it is not their firm, discard everything, including the name.
 
-Only confirmed facts count. They go into `public_facts`, and the name into `firm_name`. A confirmed fact may settle `strategy`, and may prepare `thesis_detail` as a restatement to confirm. Say which you filled. Ask every other question, because a page's wording rarely matches an answer exactly: a region of investment is not where a firm is regulated. Public sources say nothing about how the firm runs inside, so always ask about operations, AI use, and constraints. Do not state anything in the plan about the firm that is not confirmed.
+Only confirmed facts count. They go into `public_facts`, and the name into `firm_name`. A confirmed fact may settle `strategy` and `aum`, and may prepare `thesis_detail` as a restatement to confirm. A figure settles `aum` only if it falls clearly inside one band. Say which you filled. Ask every other question, because a page's wording rarely matches an answer exactly: a region of investment is not where a firm is regulated. Public sources say nothing about how the firm runs inside, so always ask about operations, AI use, and constraints. Do not state anything in the plan about the firm that is not confirmed.
 
 ## Asking questions
 
@@ -92,21 +96,55 @@ Do not ask what they have already told you. If their opening message clearly ans
 
 This is where the tool earns trust, so listen closely.
 
-The flow has two open questions, marked `type: open`: `thesis_detail` and `bottleneck`. Ask these as plain text in the conversation, not through the options tool, using the text in the flow followed by "You can skip this." Both are optional.
+The flow has open questions, marked `type: open`: `pain_first`, `thesis_detail`, and `walkthrough`. Ask these as plain text in the conversation, not through the options tool, using the text in the flow followed by "You can skip this." All are optional. Add nothing of your own after the question, such as what the answer will be used for. Ask the closed `thesis` question only if they skip `thesis_detail`.
 
 For `thesis_detail`:
 
 1. Restate it in one neutral sentence, then confirm with `fixed.confirm_thesis`. Use only what they said, and do not fill gaps such as a currency, a region, or a target size. Only a confirmed sentence counts, and it becomes `thesis_summary`.
-2. Choose up to three work areas from the flow that this thesis depends on most, and ask the `thesis_focus` question. If they choose "Partly", let them pick from those areas. The confirmed ids become `thesis_focus`. If they choose "Not really", leave it empty.
+2. If they did not name a task, choose up to three work areas from the flow that this thesis depends on most, and ask the `thesis_focus` question. If they choose "Partly", let them pick from those areas. The confirmed ids become `thesis_focus`. If they choose "Not really", leave it empty.
 3. When you reach the KPI question, list first the option that best fits their thesis, and add "(fits your thesis)" to its label. The other options stay available.
 4. When showing areas and work areas later, show those related to the thesis first.
 
-Use `bottleneck` to make sure their real pain is in the plan. First compare it with every task in `activities_for_workstream`:
+## The task they named
 
-- **If it matches a listed task,** confirm with `fixed.confirm_match`. If correct, include that work area and select that task for them. Do not add it again as a custom task, because the same work would then appear twice in the plan.
-- **If nothing matches,** restate and confirm it as a new task as described below, and add it to `custom` in the work area it belongs to.
+Use the answer to `pain_first` to make sure their real pain is in the plan. Compare it with every task in `activities_for_workstream`:
 
-If they choose "Closer to a listed task", show that work area's tasks and let them pick. If they choose "Leave it out", drop it and carry on. Otherwise, include that work area and do not make them select it again. Skip the area and work area questions if they have already been settled by this.
+- **If it matches a listed task,** confirm with `fixed.confirm_match`. If correct, include that work area, select that task for them, and record its id as `named_task`. Do not add it again as a custom task, because the same work would then appear twice in the plan.
+- **If nothing matches,** restate and confirm it as a new task as described below, add it to `custom` in the work area it belongs to, and record its confirmed name as `named_task`.
+- **If it is mainly a judgment or a relationship,** such as a valuation decision, say that part stays with their people, and match the routine work around it, such as assembling the valuation pack.
+
+If they choose "Closer to a listed task", show that work area's tasks and let them pick. If they choose "Leave it out", drop it and carry on. The named task's work area is the first one you go deep on. Then ask `fixed.stay_or_add` instead of `areas`: if they stay, skip `areas` and `workstreams`.
+
+For a new task, the KPI link waits until they have chosen a KPI, and the AI question waits until they have answered `ai_stage`.
+
+## Saying it back
+
+So that this feels like someone learning about their firm, restate what you have heard, using the templates in `say_back` from the flow, as a normal message: after priorities and the KPI (`after_goal`), after the AI section (`after_ai`), halfway through a deep work area (`halfway`), after each work area (`end_of_area`), and before the constraints (`before_constraints`). Fill them only with their own answers, in the words of the options, and leave out any part they skipped. Add no opinion, no comparison, and no conclusion.
+
+Before each deep work area, show how far along they are: "Work area 1 of 2: Portfolio reporting. About 13 short questions."
+
+## Keeping the answers on file
+
+Save `answers.json` with your file tool after each section, not only at the end, using the format under "Building the blueprint" for whatever you have so far. Before writing the summary, and before building, read the file back and use it, not your memory of the conversation. If they correct an answer, correct the file too. Do not run the script until the end, because a partial file is expected to fail its checks. If they ask to see the file, show it. If they ask to delete it, delete it and tell them the report can no longer be built from it.
+
+## Going deep
+
+Each detail question has a `depth` list, which says when to ask it.
+
+- **Deep (`deep`):** all questions. Use this for the work area of the task they named. If they named none, use the first of their `thesis_focus` areas they selected, or ask which of their selected work areas to go deepest on.
+- **Second (`second`):** when `fixed.continue_gate` says "Cover ... too". Seven to nine questions.
+- **Quick (`quick`):** when it says "Quick check". Only tasks, hours, and sources.
+
+After each work area, if another chosen one remains, ask `fixed.continue_gate`. If they choose "Finish up", the remaining ones count as not assessed. Record `depth` for each work area. Never ask a question whose `depth` does not include the current one, and leave unasked fields out of the JSON.
+
+For a deep work area, offer `walkthrough` after they pick tasks. It can save them clicks:
+
+1. Check it as described under validating typed text.
+2. Restate it as at most six numbered steps of at most 80 characters each, using only their words.
+3. List which closed answers their words settle, using the option labels. Only `sources`, `time_goes`, `legacy_tasks`, and `rhythm` may be settled this way. Never settle `hours`, `error_cost`, or `who` unless they said it plainly.
+4. Ask `fixed.confirm_walkthrough`. Nothing counts until they choose "Correct". If they choose "Leave it out", delete it and ask the closed questions.
+5. If there are at least two steps, ask `slow_step`, with the first four steps as options.
+6. Ask only what their words did not settle. Record `walkthrough` as `{"steps": [...], "slow_step": "..."}`.
 
 ## Validating anything they type
 
@@ -124,13 +162,13 @@ Nothing typed affects the result until it is confirmed. Never put a number in th
 Follow the sections in order.
 
 1. **Firm** and 2. **What matters most**, adapting as above.
-3. **AI at your firm today:** if the firm has already started, the plan has to build on that instead of starting over. Ask `ai_stage` first. If the answer is "Not used yet", skip `ai_tools`, `ai_adoption`, and `ai_results`, then ask `ai_obstacle`.
-4. **Where time goes:** ask `bottleneck`, then `areas`, then `workstreams` once for each selected area. A plan covers at most four work areas. If they choose more, ask them to drop some, one area at a time, so that each question fits four options. The rest are listed as not assessed.
-5. **How the work runs:** for each chosen work area, ask `activities`, then the other detail questions. Those answers apply to the whole work area. If `ai_stage` is "Not used yet", skip `ai_here` and `ai_tasks`. If `ai_here` is "Not at all", skip `ai_tasks`. For `ai_tasks`, offer only the tasks they selected for that work area.
-6. **Constraints.**
-7. **Confirmation:** write the summary as a normal message of at most six short lines, then ask `confirmed` with only its short question, because question boxes do not display lists well. If they want a change, ask only the affected questions again and return here.
+3. **AI at your firm today:** if the firm has already started, the plan has to build on that instead of starting over. Ask `ai_stage` first. If the answer is "Not used yet", skip `ai_tools`, `ai_adoption`, and `ai_results`.
+4. **Where time goes:** ask `areas`, then `workstreams` once for each selected area, unless they chose to stay with the task they named. A plan covers at most four work areas. If they choose more, ask them to drop some, one area at a time, so that each question fits four options. The rest are listed as not assessed.
+5. **How the work runs:** for each chosen work area, follow the depth rules above, using the `depth` list and `show_if` on each question. If `ai_stage` is "Not used yet", skip `ai_here` and `ai_tasks`. If `ai_here` is "Not at all", skip `ai_tasks`. `options_from` lists use only the listed tasks they selected for that work area, and leave out tasks they added themselves. `{hardest_task}` is the task they named in this work area, or their `heavy_task`, or the work area's name if neither exists. For `harm_tasks`, offer only selected tasks without `required: true`, and skip it if fewer than two remain. `measures_for_workstream` holds the measures for `measures_tracked`.
+6. **Constraints.** Follow `show_if` on `region`.
+7. **Confirmation:** write the summary as a normal message of at most six short lines, then ask `confirmed` with only its short question, because question boxes do not display lists well. If they want a change, ask only the affected questions again and return here. If they change `ai_stage` to "Not used yet", set `ai_here` to none, clear `ai_tasks`, set any `uses_ai` to false, and delete `ai_tools`, `ai_adoption`, and `ai_results`. If they change it from "Not used yet", also ask the questions that were skipped because of it.
 
-Do not explain the scoring along the way, do not give recommendations before the blueprint, and do not comment on their answers between sections.
+Do not explain the scoring along the way, and do not give recommendations before the blueprint.
 
 ## Building the blueprint
 
@@ -138,26 +176,34 @@ Write the answers as JSON using the option ids from the flow:
 
 ```json
 {
-  "strategy": "buyout", "aum": "500m_2b", "team": "15_50", "fund_stage": "deploying",
-  "thesis": "buy_build", "pressure": "value", "kpi": "data_freshness",
+  "named_task": "kpi_collection",
+  "strategy": "buyout", "team": "15_50", "fund_stage": ["deploying", "harvesting"],
+  "thesis": "buy_build", "pressure": "value", "kpi": "data_freshness", "kpi_status": "off_target",
   "thesis_summary": "Confirmed sentence, or an empty string",
   "thesis_focus": ["reporting", "value_creation"],
   "thesis_notes": {},
   "firm_name": "Only if they chose to personalize and confirmed it, otherwise an empty string",
   "public_facts": [{"fact": "A confirmed fact", "source": "https://the-page-it-came-from.example/path"}],
-  "ai_stage": "pilots", "ai_tools": ["assistants", "embedded"], "ai_adoption": "10_30", "ai_results": "mixed", "ai_obstacle": "data",
-  "region": "eu", "budget": "100k_500k",
-  "systems": "disconnected", "policy": "pilot", "trust": "experimenting", "capacity": "partner",
+  "ai_stage": "pilots", "ai_tools": ["assistants", "embedded"], "ai_adoption": "10_30", "ai_results": "mixed",
+  "region": "eu",
+  "systems": "disconnected", "policy": "pilot", "trust": ["experimenting", "skeptical"], "capacity": ["ops_lead", "partner"],
   "workstreams": {
     "reporting": {
+      "depth": "deep",
       "activities": ["kpi_collection", "kpi_normalization"],
       "custom": [{"name": "Confirmed task name", "nature": "multi_system", "kpi_link": "direct", "uses_ai": false}],
-      "hours": "60_200", "data": "spreadsheets", "owner": "mid", "error_cost": "awkward", "usage": "relied",
-      "ai_here": "pilot", "ai_tasks": ["kpi_normalization"]
+      "heavy_task": "kpi_collection",
+      "hours": "60_200", "sources": ["spreadsheets", "email"], "who": ["investment"], "error_cost": "awkward",
+      "time_goes": ["wait_outside", "fixing"], "legacy_tasks": [], "depends": "effort", "rhythm": "monthly", "same_way": "mostly",
+      "ai_here": "pilot", "ai_tasks": ["kpi_normalization"],
+      "measures_tracked": ["rp_days"], "measures_off": ["rp_days"],
+      "walkthrough": {"steps": ["Analyst emails each company", "Files arrive as Excel"], "slow_step": "Files arrive as Excel"}
     }
   }
 }
 ```
+
+If they skip a multi-select question, record `null`, except `legacy_tasks` and `measures_off`, where skipping means none. If they choose "We do not track any of these", record `measures_tracked` as `["untracked"]`. Leave `aum` and `budget` out unless they answered them.
 
 Save it as `answers.json` using your file creation tool, not a shell command, and then run this as a single simple command, with no pipes or other commands attached:
 
@@ -167,7 +213,7 @@ python3 fund-blueprint-tool/scripts/build_blueprint.py --answers answers.json --
 
 Use the folder this environment provides for files shared with the user as the output location, if there is one. If the script prints `ANSWER ERROR`, it says which question to ask again. Ask only that question and run it again.
 
-The script prints a table with each activity's id. If there is a confirmed `thesis_summary`, tailor the top of the plan to it:
+If the script prints `ANSWER ERROR` about AI use, follow what it says, because some answers may be left over from a change. The script prints a table with each activity's id. If there is a confirmed `thesis_summary`, tailor the top of the plan to it:
 
 1. For each of the first three activities in the table, write one sentence in `thesis_notes`, keyed by the activity id, linking that move to their confirmed thesis.
 2. Use only their confirmed words and the activity itself. Do not add figures, market claims, promised results, or anything about their history or motives. If their thesis makes a move less relevant, say so plainly, for example that a sourcing move matters less if they source deals directly. If the link is not clear from what they said, leave that note out. Use at most 220 characters and no links.
@@ -185,13 +231,14 @@ Then, in the same reply, write a short message before asking anything else:
 2. The largest blocker from "Clear these first" in the report, if there is one.
 3. The script's table, so the result is available even if the file cannot be displayed.
 
-After that message, ask `fixed.next_step`:
+After that message, ask `fixed.next_step` and `budget` from `after_plan` in the same call:
 
-- **Draft a note to my team:** the first move and the first steps.
-- **Explain this for my partners:** a short plain-language version of the plan.
+- **`budget`:** if they answer, add it to `answers.json`, run the same command again, and show the updated file with one line saying the tool suggestions were updated. If they skip it, leave it out.
+- **Help me do my first step now:** work on move 1's first step with them, here in the chat, using only what they have told you and what they provide. If it needs firm data, remind them to use only tools their firm allows.
+- **Draft a note to my team or partners:** the first move, the first steps, and a short plain-language version of the plan.
 - **List questions for compliance:** only questions, taken from the report's blockers and human checks. Do not draft a policy or give compliance advice.
-- **Summary to send to NXT Partners AI.**
+- **Summary to send to NXT Partners AI:** if `aum` is not known yet, ask `aum` from `after_plan`, add it to `answers.json`, and run the command again. Then show the script's email draft as it is, and tell them to review it and send it themselves. This tool never sends anything.
 
-Anything you draft must use only the report and what they confirmed. Label it as a draft for them to review. In the team note, partner explanation, and CCO questions, keep every timeline and impact marked as estimated, and include the line that this is not investment, legal, tax, or compliance advice. After a draft, ask again with the options they have not used. If one option remains or they skip, stop.
+Anything you draft must use only the report and what they confirmed. Label it as a draft for them to review. In the note and the compliance questions, keep every timeline and impact marked as estimated, and include the line that this is not investment, legal, tax, or compliance advice. After a draft, ask again with the options they have not used. If one option remains or they skip, stop.
 
-For the summary, show the script's email draft as it is, and tell them to review it and send it themselves. This tool never sends anything. Do not pitch further at any point.
+Do not pitch further at any point.

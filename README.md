@@ -16,21 +16,24 @@ The bet: a structured conversation can turn what a COO or partner already knows 
 
 ```mermaid
 flowchart LR
-    A[Read the notice<br/>and agree] --> B{Personalize with<br/>public information?}
-    B -- Yes --> C[Confirm public facts,<br/>each with its source]
-    B -- No --> D[Firm, thesis,<br/>and KPI]
-    C --> D
-    D --> E[AI already in use]
-    E --> F[How the work runs,<br/>by department]
-    F --> G{Is the summary<br/>right?}
-    G -- Correct it --> F
-    G -- Yes --> H[Report: roadmap<br/>and priority plot]
-    H --> I[Optional drafts for<br/>your team]
+    A[Read the notice<br/>and agree] --> B[Name the one task<br/>you most want gone]
+    B --> C{Personalize with<br/>public information?}
+    C -- Yes --> D[Confirm public facts,<br/>each with its source]
+    C -- No --> E[Thesis, priority,<br/>and the number to move]
+    D --> E
+    E --> F[AI already in use]
+    F --> G[Go deep on the work<br/>that hurts most]
+    G --> H{Another<br/>work area?}
+    H -- Yes --> G
+    H -- No --> I{Is the summary<br/>right?}
+    I -- Correct it --> G
+    I -- Yes --> J[Report: roadmap<br/>and priority plot]
+    J --> K[Help with your first step,<br/>or drafts for your team]
 ```
 
 Most questions offer fixed choices, and anything typed is restated for you to confirm before it counts. Everything in the report is something you said, a public fact you confirmed with its source, a labelled planning estimate, general advice from the tool's fixed text, or a short note Claude writes linking a move to the thesis you confirmed.
 
-Each activity gets one verdict: remove it, automate it, optimize it, add AI, add agentic AI with human approval, build on AI already in use, or leave it with people. Each is then placed by estimated speed against estimated impact on your chosen KPI. These come from fixed planning rules applied to your answers. They are not benchmarks or measurements.
+Each activity gets one verdict: remove it, automate it, optimize it, add AI, add agentic AI with human approval, build on AI already in use, or leave it with people. The verdict depends on how your firm runs that work: where the information lives, who does it, where the time goes, whether it is done mainly from habit, and your AI policy and tools. Each move is then placed by estimated speed against its estimated effect on the number you chose, including through each team's own measures. These come from fixed planning rules applied to your answers. They are not benchmarks or measurements.
 
 ## Architecture
 

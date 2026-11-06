@@ -23,8 +23,33 @@ class Library:
         self.workstreams = {row["id"]: row for row in self.catalog["workstreams"]}
         self.areas = {row["id"]: row for row in self.catalog["areas"]}
         self.kpis = {row["id"]: row for row in self.questions["kpis"]}
+        self.after_plan = self.questions["after_plan"]
+        self.check_tables()
+
+    def check_tables(self) -> None:
+        """Every closed option must have its entry in each table keyed by that field, or scoring would fail later."""
+        tables = {
+            "depends": (c.DEPENDS_PHRASES,), "rhythm": (c.RHYTHM_PHRASES,), "same_way": (c.SAME_WAY_PHRASES,), "budget": (dict(c.BUDGET_TIER, unset="low"),),
+            "hours": (c.HOURS_MIDPOINT, c.HOURS_RANGE, c.HOURS_PHRASES), "sources": (c.WEEKS_SOURCE, c.SOURCE_PHRASES), "who": (c.WHO_RATE, c.WHO_PHRASES, c.SENIOR_LINK_CAP),
+            "time_goes": (c.TIME_PHRASES,), "error_cost": (c.WEEKS_ERROR, c.ERROR_PHRASES), "ai_adoption": (c.WEEKS_ADOPTION, c.ADOPTION_PHRASES), "systems": (c.WEEKS_SYSTEMS,), "policy": (c.WEEKS_POLICY,),
+            "trust": (c.WEEKS_TRUST,), "capacity": (c.WEEKS_CAPACITY,), "ai_results": (c.WEEKS_RESULTS, c.RESULTS_PHRASES), "ai_stage": (c.WEEKS_EXPERIENCE, c.STAGE_PHRASES), "region": (c.REGION_NOTES,), "team": (c.TEAM_ROUTE_TIER,), "fund_stage": (c.STAGE_AREAS,),
+        }
+        for field, group in tables.items():
+            for table in group:
+                missing = set(self.option_ids(field)) - set(table)
+                if missing:
+                    raise ValueError(f"Table for '{field}' is missing {sorted(missing)}")
+
+    def measures_for(self, workstream_id: str) -> List[Dict[str, Any]]:
+        return self.workstreams[workstream_id].get("measures", [])
+
+    def human_activities(self, workstream_id: str) -> List[Activity]:
+        """Judgment and relationship work stays with people, so it is not offered as a choice."""
+        return [row for row in self.activities.values() if row.workstream == workstream_id and row.nature.value in c.HUMAN_NATURE_VALUES]
 
     def question(self, question_id: str) -> Dict[str, Any]:
+        if question_id in self.after_plan:
+            return self.after_plan[question_id]
         for section in self.questions["sections"]:
             for question in section["questions"]:
                 if question["id"] == question_id:
@@ -66,9 +91,15 @@ class Library:
             by_area.setdefault(row["area"], []).append(strip(row))
         by_workstream: Dict[str, List[Dict[str, str]]] = {}
         for row in self.catalog["activities"]:
-            by_workstream.setdefault(row["workstream"], []).append(strip(row))
+            if row["nature"] not in c.HUMAN_NATURE_VALUES:
+                by_workstream.setdefault(row["workstream"], []).append({**strip(row), **({"required": True} if row.get("required") else {})})
+        untracked = {"id": c.KEY_UNTRACKED, "label": "We do not track any of these"}
+        measures = {row["id"]: [strip(measure) for measure in row["measures"]] + [untracked] for row in self.catalog["workstreams"]}
         return {
+            "pain_first": self.questions["pain_first"],
+            "say_back": self.questions["say_back"],
             "sections": self.questions["sections"],
+            "after_plan": self.after_plan,
             "custom_nature": self.questions["custom_nature"],
             "custom_kpi_link": self.questions["custom_kpi_link"],
             "fixed": self.questions["fixed"],
@@ -76,4 +107,5 @@ class Library:
             "areas": [strip(row) for row in self.catalog["areas"]],
             "workstreams_for_area": by_area,
             "activities_for_workstream": by_workstream,
+            "measures_for_workstream": measures,
         }

@@ -27,112 +27,673 @@
    "area": "investing",
    "label": "Sourcing",
    "description": "Finding and screening opportunities",
-   "owner": "Head of origination or a deal partner"
+   "owner": "Head of origination or a deal partner",
+   "measures": [
+    {
+     "id": "src_reviewed",
+     "label": "Opportunities reviewed per month",
+     "links": {
+      "deals_per_pro": 3,
+      "senior_hours": 1
+     },
+     "tasks": [
+      "screen_inbound",
+      "market_mapping"
+     ]
+    },
+    {
+     "id": "src_response",
+     "label": "Days from teaser to pass or proceed",
+     "links": {
+      "first_look_to_ic": 2,
+      "deals_per_pro": 2
+     },
+     "tasks": [
+      "screen_inbound"
+     ]
+    },
+    {
+     "id": "src_own_share",
+     "label": "Share of deals we found ourselves",
+     "links": {
+      "proprietary_share": 3
+     },
+     "tasks": [
+      "market_mapping",
+      "crm_capture",
+      "coverage_followups"
+     ]
+    }
+   ]
   },
   {
    "id": "diligence",
    "area": "investing",
    "label": "Diligence",
    "description": "Data rooms, requests, expert input",
-   "owner": "Deal team lead"
+   "owner": "Deal team lead",
+   "measures": [
+    {
+     "id": "dd_days",
+     "label": "Days from data room access to diligence complete",
+     "links": {
+      "diligence_cycle": 3,
+      "first_look_to_ic": 2
+     },
+     "tasks": [
+      "data_room_review",
+      "financial_spreading"
+     ]
+    },
+    {
+     "id": "dd_open_items",
+     "label": "Days request items stay open",
+     "links": {
+      "diligence_cycle": 2
+     },
+     "tasks": [
+      "request_tracking"
+     ]
+    },
+    {
+     "id": "dd_hours",
+     "label": "Team hours per deal in diligence",
+     "links": {
+      "senior_hours": 2,
+      "deals_per_pro": 1
+     },
+     "tasks": [
+      "data_room_review",
+      "call_synthesis"
+     ]
+    }
+   ]
   },
   {
    "id": "ic",
    "area": "investing",
    "label": "Investment committee",
    "description": "Memos, precedents, decisions",
-   "owner": "Investment committee chair or whoever runs the IC process"
+   "owner": "Investment committee chair or whoever runs the IC process",
+   "measures": [
+    {
+     "id": "ic_memo_days",
+     "label": "Days to produce an IC memo",
+     "links": {
+      "first_look_to_ic": 3,
+      "senior_hours": 1
+     },
+     "tasks": [
+      "memo_drafting",
+      "precedent_search"
+     ]
+    },
+    {
+     "id": "ic_partner_hours",
+     "label": "Partner hours per IC memo",
+     "links": {
+      "senior_hours": 3,
+      "first_look_to_ic": 1
+     },
+     "tasks": [
+      "memo_drafting"
+     ]
+    },
+    {
+     "id": "ic_actions",
+     "label": "Days to close IC follow-up actions",
+     "links": {
+      "first_look_to_ic": 1
+     },
+     "tasks": [
+      "ic_logistics"
+     ]
+    }
+   ]
   },
   {
    "id": "execution",
    "area": "investing",
    "label": "Deal execution",
    "description": "Documents, closing, handover",
-   "owner": "General counsel or deal lead"
+   "owner": "General counsel or deal lead",
+   "measures": [
+    {
+     "id": "ex_items_due",
+     "label": "Closing items past due",
+     "links": {
+      "senior_hours": 1
+     },
+     "tasks": [
+      "closing_checklist"
+     ]
+    },
+    {
+     "id": "ex_doc_turn",
+     "label": "Days to turn a deal document draft",
+     "links": {
+      "senior_hours": 1,
+      "diligence_cycle": 1
+     },
+     "tasks": [
+      "document_comparison"
+     ]
+    },
+    {
+     "id": "ex_handover",
+     "label": "Days from close to a complete handover",
+     "links": {
+      "initiatives_on_track": 2,
+      "data_freshness": 2
+     },
+     "tasks": [
+      "deal_handover"
+     ]
+    }
+   ]
   },
   {
    "id": "reporting",
    "area": "portfolio",
    "label": "Portfolio reporting",
    "description": "Collecting and explaining KPIs",
-   "owner": "Head of portfolio monitoring or whoever collects portfolio data"
+   "owner": "Head of portfolio monitoring or whoever collects portfolio data",
+   "measures": [
+    {
+     "id": "rp_days",
+     "label": "Days to have all company data after period end",
+     "links": {
+      "data_freshness": 3,
+      "underperformance_detection": 2,
+      "initiatives_on_track": 1
+     },
+     "tasks": [
+      "kpi_collection"
+     ]
+    },
+    {
+     "id": "rp_late",
+     "label": "Share of companies reporting late",
+     "links": {
+      "data_freshness": 3
+     },
+     "tasks": [
+      "kpi_collection"
+     ]
+    },
+    {
+     "id": "rp_corrected",
+     "label": "Figures corrected after first reporting",
+     "links": {
+      "report_errors": 3,
+      "underperformance_detection": 1
+     },
+     "tasks": [
+      "kpi_normalization"
+     ]
+    }
+   ]
   },
   {
    "id": "board",
    "area": "portfolio",
    "label": "Board preparation",
-   "description": "Packs, questions, actions",
-   "owner": "Partner responsible for the company"
+   "description": "Packs, questions, actions, covenants",
+   "owner": "Partner responsible for the company",
+   "measures": [
+    {
+     "id": "bd_prep",
+     "label": "Partner hours to prepare per meeting",
+     "links": {
+      "senior_hours": 3
+     },
+     "tasks": [
+      "board_summary",
+      "board_questions"
+     ]
+    },
+    {
+     "id": "bd_actions",
+     "label": "Share of board actions closed on time",
+     "links": {
+      "initiatives_on_track": 3
+     },
+     "tasks": [
+      "board_actions"
+     ]
+    },
+    {
+     "id": "bd_covenants",
+     "label": "Covenant tests or dates missed",
+     "links": {
+      "underperformance_detection": 2,
+      "report_errors": 1
+     },
+     "tasks": [
+      "covenant_tracking"
+     ]
+    }
+   ]
   },
   {
    "id": "value_creation",
    "area": "portfolio",
    "label": "Value creation",
-   "description": "Plans, playbooks, benchmarks",
-   "owner": "Head of value creation, an operating partner, or the partner responsible for the company"
+   "description": "Plans, playbooks, benchmarks, add-ons",
+   "owner": "Head of value creation, an operating partner, or the partner responsible for the company",
+   "measures": [
+    {
+     "id": "vc_measured",
+     "label": "Share of initiatives with a KPI and an owner",
+     "links": {
+      "initiatives_on_track": 3,
+      "underperformance_detection": 1
+     },
+     "tasks": [
+      "initiative_tracking"
+     ]
+    },
+    {
+     "id": "vc_plan_days",
+     "label": "Days from closing to an agreed 100-day plan",
+     "links": {
+      "initiatives_on_track": 1
+     },
+     "tasks": [
+      "playbook_reuse"
+     ]
+    },
+    {
+     "id": "vc_status_age",
+     "label": "Days since status was last updated",
+     "links": {
+      "initiatives_on_track": 3
+     },
+     "tasks": [
+      "initiative_tracking"
+     ]
+    }
+   ]
   },
   {
    "id": "exit",
    "area": "portfolio",
    "label": "Exit preparation",
    "description": "Data, materials, buyers",
-   "owner": "Deal partner"
+   "owner": "Deal partner",
+   "measures": [
+    {
+     "id": "xt_data_days",
+     "label": "Days to produce a full exit data set",
+     "links": {
+      "exit_readiness": 3
+     },
+     "tasks": [
+      "exit_data"
+     ]
+    },
+    {
+     "id": "xt_gaps",
+     "label": "Open data gaps per planned exit",
+     "links": {
+      "exit_readiness": 2,
+      "data_freshness": 1
+     },
+     "tasks": [
+      "exit_data"
+     ]
+    },
+    {
+     "id": "xt_materials",
+     "label": "Days to a first draft of sale materials",
+     "links": {
+      "exit_readiness": 2,
+      "senior_hours": 1
+     },
+     "tasks": [
+      "exit_materials",
+      "buyer_lists"
+     ]
+    }
+   ]
   },
   {
    "id": "lp_reporting",
    "area": "investors",
    "label": "LP reporting",
    "description": "Letters, templates, portals",
-   "owner": "Head of IR or whoever handles investors"
+   "owner": "Head of IR or whoever handles investors",
+   "measures": [
+    {
+     "id": "lr_days",
+     "label": "Days from quarter end to the LP report",
+     "links": {
+      "lp_report_cycle": 3,
+      "close_time": 1
+     },
+     "tasks": [
+      "report_consolidation",
+      "quarterly_letter"
+     ]
+    },
+    {
+     "id": "lr_corrections",
+     "label": "Reports corrected after release",
+     "links": {
+      "report_errors": 3,
+      "lp_report_cycle": 1
+     },
+     "tasks": [
+      "lp_templates",
+      "report_consolidation"
+     ]
+    },
+    {
+     "id": "lr_formats",
+     "label": "Number of LP-specific report formats",
+     "links": {
+      "lp_report_cycle": 2,
+      "cost_ratio": 1
+     },
+     "tasks": [
+      "lp_templates",
+      "portal_distribution"
+     ]
+    }
+   ]
   },
   {
    "id": "lp_requests",
    "area": "investors",
    "label": "LP requests",
    "description": "DDQs, ad hoc questions, surveys",
-   "owner": "Head of IR or whoever handles investors"
+   "owner": "Head of IR or whoever handles investors",
+   "measures": [
+    {
+     "id": "rq_ddq",
+     "label": "Days to return a DDQ",
+     "links": {
+      "ddq_turnaround": 3,
+      "fundraise_readiness": 1
+     },
+     "tasks": [
+      "ddq_responses"
+     ]
+    },
+    {
+     "id": "rq_adhoc",
+     "label": "Days to answer an ad hoc LP question",
+     "links": {
+      "ddq_turnaround": 3
+     },
+     "tasks": [
+      "adhoc_requests"
+     ]
+    },
+    {
+     "id": "rq_reuse",
+     "label": "Share of answers reused from past ones",
+     "links": {
+      "ddq_turnaround": 2,
+      "senior_hours": 1
+     },
+     "tasks": [
+      "ddq_responses",
+      "esg_surveys"
+     ]
+    }
+   ]
   },
   {
    "id": "fundraising",
    "area": "investors",
    "label": "Fundraising",
    "description": "Materials, track record, investor paperwork",
-   "owner": "Head of IR, a fundraising lead, or whoever handles investors"
+   "owner": "Head of IR, a fundraising lead, or whoever handles investors",
+   "measures": [
+    {
+     "id": "fr_refresh",
+     "label": "Days to refresh deck and track record",
+     "links": {
+      "fundraise_readiness": 3
+     },
+     "tasks": [
+      "pitch_materials",
+      "track_record"
+     ]
+    },
+    {
+     "id": "fr_next",
+     "label": "First meetings that reach a next step",
+     "links": {
+      "fundraise_conversion": 3
+     },
+     "tasks": [
+      "lp_targeting"
+     ]
+    },
+    {
+     "id": "fr_subs",
+     "label": "Days to process a subscription",
+     "links": {
+      "report_errors": 1,
+      "ddq_turnaround": 1
+     },
+     "tasks": [
+      "investor_onboarding"
+     ]
+    }
+   ]
   },
   {
    "id": "relations",
    "area": "investors",
    "label": "LP relations",
    "description": "CRM, notes, follow-ups, LPAC",
-   "owner": "Head of IR or whoever handles investors"
+   "owner": "Head of IR or whoever handles investors",
+   "measures": [
+    {
+     "id": "rl_followups",
+     "label": "Promised follow-ups closed on time",
+     "links": {
+      "fundraise_conversion": 3,
+      "ddq_turnaround": 1
+     },
+     "tasks": [
+      "followups"
+     ]
+    },
+    {
+     "id": "rl_notes",
+     "label": "Days to file a meeting note",
+     "links": {
+      "fundraise_conversion": 1,
+      "senior_hours": 1
+     },
+     "tasks": [
+      "meeting_notes"
+     ]
+    },
+    {
+     "id": "rl_records",
+     "label": "Share of LP records checked this year",
+     "links": {
+      "fundraise_conversion": 2
+     },
+     "tasks": [
+      "lp_crm"
+     ]
+    }
+   ]
   },
   {
    "id": "accounting",
    "area": "firm",
    "label": "Fund accounting",
-   "description": "Calls, fees, administrator review",
-   "owner": "CFO or whoever leads finance"
+   "description": "Calls, fees, valuation packs, administrator review",
+   "owner": "CFO or whoever leads finance",
+   "measures": [
+    {
+     "id": "ac_close",
+     "label": "Days to close the quarter",
+     "links": {
+      "close_time": 3,
+      "lp_report_cycle": 2
+     },
+     "tasks": [
+      "admin_review",
+      "valuation_pack"
+     ]
+    },
+    {
+     "id": "ac_breaks",
+     "label": "Reconciliation breaks per quarter",
+     "links": {
+      "report_errors": 2,
+      "close_time": 2
+     },
+     "tasks": [
+      "capital_calls",
+      "admin_review"
+     ]
+    },
+    {
+     "id": "ac_adjust",
+     "label": "Audit adjustments per year",
+     "links": {
+      "report_errors": 3
+     },
+     "tasks": [
+      "admin_review",
+      "fee_calculations"
+     ],
+     "action": "Count the adjustments in your last audit."
+    }
+   ]
   },
   {
    "id": "compliance",
    "area": "firm",
    "label": "Compliance",
    "description": "Obligations, filings, attestations",
-   "owner": "CCO or whoever leads compliance"
+   "owner": "CCO or whoever leads compliance",
+   "measures": [
+    {
+     "id": "cp_filings",
+     "label": "Filings on time at first attempt",
+     "links": {
+      "report_errors": 3
+     },
+     "tasks": [
+      "regulatory_filings"
+     ]
+    },
+    {
+     "id": "cp_attest",
+     "label": "Days to finish annual attestations",
+     "links": {
+      "senior_hours": 1,
+      "cost_ratio": 1
+     },
+     "tasks": [
+      "attestations"
+     ]
+    },
+    {
+     "id": "cp_findings",
+     "label": "Open audit or exam findings",
+     "links": {
+      "report_errors": 2
+     },
+     "tasks": [
+      "side_letters",
+      "attestations",
+      "exam_requests"
+     ]
+    }
+   ]
   },
   {
    "id": "knowledge",
    "area": "firm",
    "label": "Firm knowledge",
    "description": "Past work, search, onboarding",
-   "owner": "COO or whoever runs operations"
+   "owner": "COO or whoever runs operations",
+   "measures": [
+    {
+     "id": "kn_find",
+     "label": "Time to find a past document",
+     "links": {
+      "senior_hours": 2,
+      "first_look_to_ic": 1
+     },
+     "tasks": [
+      "firm_search"
+     ]
+    },
+    {
+     "id": "kn_ramp",
+     "label": "Weeks until a new joiner works alone",
+     "links": {
+      "senior_hours": 2,
+      "cost_ratio": 1
+     },
+     "tasks": [
+      "onboarding"
+     ]
+    },
+    {
+     "id": "kn_repeat",
+     "label": "Questions seniors answer more than once",
+     "links": {
+      "senior_hours": 3
+     },
+     "tasks": [
+      "expertise_capture"
+     ]
+    }
+   ]
   },
   {
    "id": "internal",
    "area": "firm",
    "label": "Internal operations",
    "description": "Vendors, expenses, IT, meetings",
-   "owner": "COO or whoever runs operations"
+   "owner": "COO or whoever runs operations",
+   "measures": [
+    {
+     "id": "in_invoice",
+     "label": "Days to code and approve an invoice",
+     "links": {
+      "close_time": 1,
+      "report_errors": 1,
+      "cost_ratio": 1
+     },
+     "tasks": [
+      "expenses"
+     ]
+    },
+    {
+     "id": "in_software",
+     "label": "Software cost per person",
+     "links": {
+      "cost_ratio": 2
+     },
+     "tasks": [
+      "vendor_review"
+     ]
+    },
+    {
+     "id": "in_access",
+     "label": "Days to give a new joiner full access",
+     "links": {
+      "cost_ratio": 1
+     },
+     "tasks": [
+      "it_requests"
+     ]
+    }
+   ]
   }
  ],
  "activities": [
@@ -162,9 +723,10 @@
    },
    "solution": "Build and refresh target lists from licensed databases and public filings, with each company tagged by sub-sector, size indicators, and ownership.",
    "first_step": "Choose one sector and compare a generated list with the best list your team has built by hand.",
-   "check": "An investor confirms each shortlisted name before anyone acts on it. Check that your data licenses allow this use before loading licensed data into any AI tool.",
+   "check": "A deal professional confirms each shortlisted name before anyone acts on it. Check that your data licenses allow this use before loading licensed data into any AI tool.",
    "effort": "low",
-   "first_step_uses_ai": true
+   "first_step_uses_ai": true,
+   "first_step_if_no_ai": "Choose one sector, and write down how your best target list was built."
   },
   {
    "id": "crm_capture",
@@ -178,7 +740,7 @@
    },
    "solution": "Draft CRM entries for deals, intermediaries, and meetings from the deal inbox and calendar, and flag duplicates. A person confirms each entry before it goes in.",
    "first_step": "Choose one shared deal inbox as a test, and list what is entered by hand today.",
-   "check": "Sample entries weekly at first, and keep private meetings out of this by rule.",
+   "check": "Keep private meetings out of this by rule.",
    "effort": "medium"
   },
   {
@@ -210,7 +772,10 @@
    "check": "Check the NDA and data room rules before loading anything into a tool, and keep clean team and privileged material out. Every extracted fact links to its page, and the deal team opens the page for anything that reaches a memo.",
    "effort": "high",
    "required": true,
-   "first_step_uses_ai": true
+   "first_step_uses_ai": true,
+   "input_documents": true,
+   "first_step_if_no_ai": "Choose one closed deal, and write down what the team actually found in the data room.",
+   "process_solution": "Agree a standard checklist for data room review, and record what each review found."
   },
   {
    "id": "request_tracking",
@@ -240,7 +805,8 @@
    "first_step": "Agree a standard note format, then, in a tool whoever leads compliance has approved, process the calls from one closed deal.",
    "check": "Confirm recording consent and expert network rules first. If a call may contain confidential or material non-public information, stop and send it to compliance before it is summarized or shared. Verify quotes before reuse.",
    "effort": "low",
-   "first_step_uses_ai": true
+   "first_step_uses_ai": true,
+   "first_step_if_no_ai": "Agree a standard note format, and use it for the calls on your next deal."
   },
   {
    "id": "financial_spreading",
@@ -253,9 +819,10 @@
    },
    "solution": "Pull figures from management accounts and CIMs into your model template, mapped to your line items, with each number traceable to its source.",
    "first_step": "Fix one template and mapping, then spread three past sets of accounts with different formats by hand and note where the mapping breaks.",
-   "check": "Load CIMs and management accounts only into tools your NDAs and whoever leads compliance allow. An associate ties totals back to source. The model structure and assumptions stay with the team.",
+   "check": "Load CIMs and management accounts only into tools your NDAs and whoever leads compliance allow. A person on the deal team ties totals back to source. The model structure and assumptions stay with the team.",
    "effort": "high",
-   "required": false
+   "required": false,
+   "input_documents": true
   },
   {
    "id": "memo_drafting",
@@ -271,7 +838,8 @@
    "first_step": "Collect five memos you consider excellent and turn their shared structure into the template.",
    "check": "The deal team owns the argument and the recommendation, and ties every figure to its source before the memo circulates.",
    "effort": "medium",
-   "required": true
+   "required": true,
+   "process_solution": "Agree one memo template and one review path, so that drafts stop being rebuilt from scratch."
   },
   {
    "id": "precedent_search",
@@ -286,7 +854,8 @@
    "first_step": "Gather the memos from your last fund, with permissions matching who can see them today.",
    "check": "Access rights must carry over, including any information barriers.",
    "effort": "medium",
-   "first_step_uses_ai": true
+   "first_step_uses_ai": true,
+   "first_step_if_no_ai": "List where memos from your last fund are kept, and who can see them today."
   },
   {
    "id": "ic_logistics",
@@ -317,6 +886,21 @@
    "effort": "medium",
    "required": true,
    "no_agent": true
+  },
+  {
+   "id": "pipeline_review_pack",
+   "workstream": "ic",
+   "label": "Preparing the pipeline review",
+   "nature": "drafting",
+   "kpis": {
+    "first_look_to_ic": 1,
+    "senior_hours": 2,
+    "deals_per_pro": 1
+   },
+   "solution": "Assemble the pipeline review from the deal tracker and recent notes, and draft a short status for each active deal.",
+   "first_step": "Agree the five fields every active deal must show in the review.",
+   "check": "Deal leads confirm each status before the meeting. Keep the draft within tools approved for deal information.",
+   "effort": "low"
   },
   {
    "id": "document_comparison",
@@ -351,7 +935,7 @@
   {
    "id": "deal_handover",
    "workstream": "execution",
-   "label": "Handing deals over to the portfolio team",
+   "label": "Handing deals over after close",
    "nature": "multi_system",
    "kpis": {
     "initiatives_on_track": 2,
@@ -359,8 +943,8 @@
     "underperformance_detection": 1
    },
    "solution": "Build the post-close record from the memo, model, and final documents: key terms, covenants, reporting duties, and the 100-day plan's owners and dates.",
-   "first_step": "Define what the portfolio team needs on day one, then build it by hand once from a recent deal.",
-   "check": "The deal lead and portfolio lead both confirm covenant dates and reporting duties.",
+   "first_step": "Define what whoever runs the investment after close needs on day one, then build it by hand once from a recent deal.",
+   "check": "The deal lead and whoever takes over the investment both confirm covenant dates and reporting duties.",
    "effort": "high",
    "required": true,
    "no_agent": true
@@ -381,21 +965,41 @@
    "no_agent": true
   },
   {
+   "id": "adviser_costs",
+   "workstream": "execution",
+   "label": "Tracking adviser engagements and deal costs",
+   "nature": "rules",
+   "kpis": {
+    "cost_ratio": 2,
+    "close_time": 1
+   },
+   "solution": "Log every adviser engagement, budget, and invoice in one place, and flag spend against budget and broken-deal costs.",
+   "first_step": "List the adviser engagements on your last two deals, with budget and final cost.",
+   "check": "Whoever leads finance approves how costs are allocated between the firm, its funds, and any co-investors, under your LPA.",
+   "effort": "low",
+   "required": true,
+   "no_agent": true
+  },
+  {
    "id": "kpi_collection",
    "workstream": "reporting",
-   "label": "Chasing portcos for monthly KPI files",
+   "label": "Chasing portcos for KPI files",
    "nature": "rules",
    "kpis": {
     "data_freshness": 3,
     "underperformance_detection": 2,
-    "senior_hours": 1
+    "senior_hours": 1,
+    "initiatives_on_track": 1
    },
    "solution": "Request files on schedule, chase late ones, check they arrived complete, and load them into your portfolio model, with exceptions sent to one owner.",
    "first_step": "Agree one KPI template and due date with two portfolio companies.",
    "check": "A person approves the reminder wording in advance, and handles exceptions and any other message to company management.",
    "effort": "high",
    "required": true,
-   "reads_documents": true
+   "reads_documents": true,
+   "needs_agreed_rules": true,
+   "shared_data": "portfolio",
+   "process_solution": "Agree one KPI template and one due date with a few companies first. Automate reminders and completeness checks once that holds."
   },
   {
    "id": "kpi_normalization",
@@ -405,13 +1009,17 @@
    "kpis": {
     "data_freshness": 3,
     "underperformance_detection": 2,
-    "report_errors": 2
+    "report_errors": 2,
+    "initiatives_on_track": 1
    },
    "solution": "Map each company's accounts to your standard definitions with reusable rules, and flag values that break the pattern instead of passing them on.",
    "first_step": "Write down definitions for your ten most-used KPIs, and check whether each company uses them the same way.",
    "check": "Anyone changing a mapping leaves a record, and reported figures reconcile to company accounts.",
    "effort": "high",
-   "reads_documents": true
+   "reads_documents": true,
+   "needs_agreed_rules": true,
+   "shared_data": "portfolio",
+   "process_solution": "Write one set of KPI definitions, map each company's accounts to them, and flag values that break the pattern."
   },
   {
    "id": "variance_commentary",
@@ -425,9 +1033,10 @@
    },
    "solution": "Draft explanations of movement against budget and prior year from the numbers and management commentary, marking anything unexplained as a question.",
    "first_step": "Choose one company as a test, and keep its latest commentary to compare against.",
-   "check": "The portfolio lead edits and signs off, and causes the data does not support must be marked as unexplained.",
+   "check": "The person who leads the investment edits and signs off, and causes the data does not support must be marked as unexplained.",
    "effort": "medium",
-   "first_step_uses_ai": true
+   "first_step_uses_ai": true,
+   "first_step_if_no_ai": "Choose one company, and write down which variances your readers actually use."
   },
   {
    "id": "early_warnings",
@@ -457,7 +1066,8 @@
    "first_step": "Using only a tool approved for firm data, try it on your last two packs from one company and ask the director what was missed.",
    "check": "Directors read the full pack. The summary only points to what changed. Board materials stay within approved tools, and packs from listed companies go to compliance first.",
    "effort": "low",
-   "first_step_uses_ai": true
+   "first_step_uses_ai": true,
+   "first_step_if_no_ai": "Ask a director which parts of the last pack they actually read, and which they skipped."
   },
   {
    "id": "board_questions",
@@ -472,7 +1082,8 @@
    "first_step": "In a tool approved for firm data, prepare questions from the last pack for one company and ask the director which ones they would have kept.",
    "check": "The director chooses what to raise and how, because these are relationship decisions. Board materials stay within approved tools, and packs from listed companies go to compliance first.",
    "effort": "low",
-   "first_step_uses_ai": true
+   "first_step_uses_ai": true,
+   "first_step_if_no_ai": "Ask a director which questions from the last meeting mattered most, and why."
   },
   {
    "id": "board_actions",
@@ -504,6 +1115,23 @@
    "no_agent": true
   },
   {
+   "id": "covenant_tracking",
+   "workstream": "board",
+   "label": "Tracking covenants and reporting duties",
+   "nature": "rules",
+   "kpis": {
+    "underperformance_detection": 2,
+    "report_errors": 1,
+    "initiatives_on_track": 1
+   },
+   "solution": "Keep every covenant test and reporting duty in one calendar, calculate the routine tests from reported figures as an early check, not as the company's certificate, and alert the responsible person before a date is missed.",
+   "first_step": "List the covenant tests and reporting dates for one investment in a single table.",
+   "check": "The person responsible for the investment confirms each test result, and counsel reviews any possible breach.",
+   "effort": "medium",
+   "required": true,
+   "no_agent": true
+  },
+  {
    "id": "initiative_tracking",
    "workstream": "value_creation",
    "label": "Tracking value creation plans",
@@ -516,7 +1144,9 @@
    "solution": "Keep 100-day and value creation plans current from company updates, link each initiative to its KPI, and draft status reports for owners to confirm.",
    "first_step": "Put one company's plan in a shared format, with a measurable KPI on every initiative.",
    "check": "Initiative owners confirm status. Status must not be inferred from silence.",
-   "effort": "high"
+   "effort": "high",
+   "no_agent": true,
+   "process_solution": "Put every plan in one shared tracker, with an owner, a date, and a measurable KPI for each initiative, before adding any AI."
   },
   {
    "id": "playbook_reuse",
@@ -524,7 +1154,7 @@
    "label": "Reusing what worked across portcos",
    "nature": "drafting",
    "kpis": {
-    "initiatives_on_track": 2,
+    "initiatives_on_track": 1,
     "senior_hours": 2,
     "exit_readiness": 1
    },
@@ -562,6 +1192,21 @@
    "no_agent": true
   },
   {
+   "id": "addon_pipeline",
+   "workstream": "value_creation",
+   "label": "Tracking add-on targets for portfolio companies",
+   "nature": "multi_system",
+   "kpis": {
+    "initiatives_on_track": 2,
+    "proprietary_share": 2
+   },
+   "solution": "Keep one list of add-on targets per platform company, with the last contact and next step for each, and flag stalled conversations.",
+   "first_step": "Put the current add-on targets for one platform company in one list, with an owner and a next step.",
+   "check": "The deal lead decides whom to approach. Keep it out of shared tools if your NDAs or data licenses do not allow it.",
+   "effort": "medium",
+   "no_agent": true
+  },
+  {
    "id": "exit_data",
    "workstream": "exit",
    "label": "Preparing exit data and history",
@@ -574,7 +1219,9 @@
    "first_step": "Choose one company and list what an exit readiness check should cover.",
    "check": "Finance and advisers verify anything that may enter sale documents.",
    "effort": "high",
-   "no_agent": true
+   "no_agent": true,
+   "shared_data": "portfolio",
+   "process_solution": "Keep one exit data file for each investment, tied to the accounts, and record the gaps as you find them."
   },
   {
    "id": "exit_materials",
@@ -589,7 +1236,8 @@
    "first_step": "In a tool approved for firm data, draft one section from a past exit and compare it with the final document.",
    "check": "Advisers and counsel review all statements before use.",
    "effort": "medium",
-   "first_step_uses_ai": true
+   "first_step_uses_ai": true,
+   "first_step_if_no_ai": "Take a past exit, and list which sections of the sale materials were rebuilt from scratch."
   },
   {
    "id": "buyer_lists",
@@ -601,9 +1249,10 @@
    },
    "solution": "Build strategic and financial buyer lists with the rationale for each, using recent deals and stated strategies.",
    "first_step": "Compare a generated list with the buyer list from a recent process.",
-   "check": "The deal team and adviser decide who is approached, and handle confidentiality.",
+   "check": "The deal team and adviser decide who is approached, and handle confidentiality. Check that your data licenses allow this use.",
    "effort": "low",
-   "first_step_uses_ai": true
+   "first_step_uses_ai": true,
+   "first_step_if_no_ai": "Take a recent process, and write down how its buyer list was built."
   },
   {
    "id": "exit_timing",
@@ -616,6 +1265,22 @@
    "solution": "Keep the decision with partners. AI can keep market comparables and readiness data ready for that discussion.",
    "first_step": "Define what an exit review for each company should contain.",
    "check": "Partners own the decision. Conflicts, such as a sale to another fund or a continuation vehicle, go to compliance, counsel, and the LPAC as the LPA requires.",
+   "effort": "medium",
+   "required": true,
+   "no_agent": true
+  },
+  {
+   "id": "continuation_prep",
+   "workstream": "exit",
+   "label": "Preparing partial exits and continuation options",
+   "nature": "drafting",
+   "kpis": {
+    "exit_readiness": 2,
+    "senior_hours": 1
+   },
+   "solution": "Assemble the performance history and terms that each exit route needs, and draft a neutral comparison for the partners to review.",
+   "first_step": "List what you would need to show for one investment closest to exit, under each route you might consider.",
+   "check": "Partners and counsel decide the route, and any conflict of interest goes to compliance, counsel, and the LPAC as the LPA requires.",
    "effort": "medium",
    "required": true,
    "no_agent": true
@@ -636,7 +1301,9 @@
    "effort": "low",
    "required": true,
    "no_agent": true,
-   "first_step_uses_ai": true
+   "first_step_uses_ai": true,
+   "process_solution": "Separate what your LPA and investors require from what is optional, reuse standard wording only where nothing has changed, and have a partner decide what optional content to drop.",
+   "first_step_if_no_ai": "Mark up last quarter's letter, separating what repeats from what needs a partner's view."
   },
   {
    "id": "lp_templates",
@@ -654,7 +1321,9 @@
    "check": "Finance signs off the source dataset, and exceptions are reviewed by a person.",
    "effort": "medium",
    "required": true,
-   "no_agent": true
+   "no_agent": true,
+   "shared_data": "portfolio",
+   "process_solution": "List which templates an LPA, side letter, or investor request requires, and have whoever owns LP reporting approve retiring any other."
   },
   {
    "id": "report_consolidation",
@@ -671,7 +1340,9 @@
    "check": "Reconciliation breaks need a person to resolve them, with a record of why.",
    "effort": "high",
    "required": true,
-   "no_agent": true
+   "no_agent": true,
+   "shared_data": "portfolio",
+   "process_solution": "Agree one data cut-off and one source for each line of the report, and remove manual merging where you can."
   },
   {
    "id": "portal_distribution",
@@ -705,7 +1376,8 @@
    "check": "IR and compliance approve answers, because these are representations to investors.",
    "effort": "medium",
    "required": true,
-   "no_agent": true
+   "no_agent": true,
+   "process_solution": "Keep one approved library of past answers, with an owner and a review date for each, and reuse it."
   },
   {
    "id": "adhoc_requests",
@@ -738,7 +1410,8 @@
    "check": "The owner checks the evidence and signs off all figures, and compliance reviews anything stated to investors.",
    "effort": "low",
    "required": true,
-   "no_agent": true
+   "no_agent": true,
+   "shared_data": "portfolio"
   },
   {
    "id": "lp_conversations",
@@ -754,6 +1427,24 @@
    "effort": "medium",
    "required": true,
    "no_agent": true
+  },
+  {
+   "id": "esg_reporting",
+   "workstream": "lp_requests",
+   "label": "Collecting ESG data for reports",
+   "nature": "rules",
+   "kpis": {
+    "ddq_turnaround": 2,
+    "report_errors": 2
+   },
+   "solution": "Send one standard ESG data request to each company, check answers against last year's, and flag gaps.",
+   "first_step": "List the ESG fields you report, note which an LP, side letter, or regulation requires, and mark the rest for review.",
+   "check": "Whoever signs off ESG reporting reviews any figure that changed sharply, and any public claim or statement to investors goes through compliance.",
+   "effort": "medium",
+   "reads_documents": true,
+   "required": true,
+   "no_agent": true,
+   "shared_data": "portfolio"
   },
   {
    "id": "pitch_materials",
@@ -780,10 +1471,11 @@
     "report_errors": 3
    },
    "solution": "Generate track record and attribution tables from one reconciled dataset tied to audited fund financials, with checks that every version ties out.",
-   "first_step": "Rebuild one fund's track record from source and record each difference.",
-   "check": "Finance and compliance verify the method and every published figure.",
+   "first_step": "Rebuild the track record for three deals in one fund from source and record each difference.",
+   "check": "Finance and compliance verify the method and every published figure, including how gross and net returns are shown under the rules that apply to you.",
    "effort": "high",
-   "no_agent": true
+   "no_agent": true,
+   "process_solution": "Keep one source file for the track record, tied to fund records, and archive other copies rather than delete them."
   },
   {
    "id": "investor_onboarding",
@@ -811,11 +1503,12 @@
     "fundraise_conversion": 3,
     "senior_hours": 1
    },
-   "solution": "Rank prospective LPs on mandate fit, past commitments, and relationships, using licensed data and your CRM, with the reasoning shown.",
+   "solution": "Rank prospective LPs on mandate fit, past commitments, and relationships, using licensed data and the CRM, with the reasoning shown.",
    "first_step": "In a tool approved for firm data, test the ranking against the investors who committed to your last fund.",
    "check": "IR decides who is approached and follows the marketing rules for each jurisdiction. Check that your data licenses allow this use.",
    "effort": "medium",
-   "first_step_uses_ai": true
+   "first_step_uses_ai": true,
+   "first_step_if_no_ai": "Take the investors who committed to your last fund, and write down what they had in common."
   },
   {
    "id": "lp_crm",
@@ -883,7 +1576,7 @@
    "label": "Preparing and reconciling capital calls and distributions",
    "nature": "rules",
    "kpis": {
-    "close_time": 3,
+    "close_time": 2,
     "report_errors": 3,
     "senior_hours": 1
    },
@@ -893,7 +1586,8 @@
    "effort": "high",
    "required": true,
    "no_agent": true,
-   "reads_documents": true
+   "reads_documents": true,
+   "process_solution": "Standardize the notice and the reconciliation, and remove retyping, before spending anything on them. Keep two-person payment approval."
   },
   {
    "id": "fee_calculations",
@@ -911,7 +1605,8 @@
    "effort": "high",
    "required": true,
    "no_agent": true,
-   "reads_documents": true
+   "reads_documents": true,
+   "process_solution": "Write down one fund's fee and carry terms, keep one calculation file per fund, compare it with the figures your administrator or finance team produced, and archive other internal copies rather than delete them."
   },
   {
    "id": "admin_review",
@@ -925,10 +1620,11 @@
    },
    "solution": "Check administrator packs against your own records, list breaks and unusual movements for review, and keep the auditor's request list current with each item's owner and status.",
    "first_step": "List the checks your team runs each close, and the items the auditor requested last year.",
-   "check": "The finance lead signs off, the review leaves an audit trail, and a person in finance sends everything that goes to the auditor.",
+   "check": "Whoever leads finance signs off, the review leaves an audit trail, and a person in finance sends everything that goes to the auditor.",
    "effort": "high",
    "required": true,
-   "no_agent": true
+   "no_agent": true,
+   "process_solution": "List what is re-checked each quarter and which breaks recur, fix the cause of those breaks with your administrator, and have whoever leads finance approve any change to the checks."
   },
   {
    "id": "valuations",
@@ -940,11 +1636,29 @@
     "close_time": 1
    },
    "solution": "Keep the judgment with the people who set your marks. AI can compile comparables, prior marks, and policy references.",
-   "first_step": "List what went into last quarter's valuation pack for one investment, and agree a one-page standard format.",
+   "first_step": "Write down who sets each mark, who challenges it, and where the reason is recorded.",
    "check": "Whoever sets each mark records why under any valuation policy, and the deal team does not set its own mark alone.",
    "effort": "medium",
    "required": true,
    "no_agent": true
+  },
+  {
+   "id": "valuation_pack",
+   "workstream": "accounting",
+   "label": "Assembling the quarterly valuation pack",
+   "nature": "multi_system",
+   "kpis": {
+    "close_time": 2,
+    "report_errors": 2,
+    "senior_hours": 1
+   },
+   "solution": "Pull last quarter's marks, KPIs, and comparable data into one standard pack for each investment, and flag what changed. People still decide every mark.",
+   "first_step": "List what went into last quarter's valuation pack for one investment, and agree a one-page standard format.",
+   "check": "The people who set your marks decide every mark, and the pack does not propose a value. Check that your data licenses allow this use.",
+   "effort": "medium",
+   "required": true,
+   "no_agent": true,
+   "process_solution": "List what each valuation pack contains, remove only what neither the people who set marks nor the auditor uses, and agree one format."
   },
   {
    "id": "side_letters",
@@ -961,7 +1675,8 @@
    "check": "Counsel validates interpretations. The register points to clauses and does not replace them. Load side letters only into tools approved for them, and limit who can see each investor's terms.",
    "effort": "medium",
    "required": true,
-   "no_agent": true
+   "no_agent": true,
+   "process_solution": "Put every side letter and LPA obligation in one register, with an owner and a date for each, before adding any AI."
   },
   {
    "id": "regulatory_filings",
@@ -978,7 +1693,8 @@
    "check": "Compliance and whoever signs for the firm review and submit every filing.",
    "effort": "high",
    "required": true,
-   "no_agent": true
+   "no_agent": true,
+   "process_solution": "Map each field to its source, remove manual re-keying, and add a second check before filing."
   },
   {
    "id": "attestations",
@@ -1009,6 +1725,22 @@
    "solution": "Keep decisions with whoever leads compliance and counsel. AI can surface the relevant policy and past decisions.",
    "first_step": "Create a searchable log of past compliance decisions.",
    "check": "They stay responsible for the decision, and counsel decides whether privileged advice goes in the log.",
+   "effort": "medium",
+   "required": true,
+   "no_agent": true
+  },
+  {
+   "id": "exam_requests",
+   "workstream": "compliance",
+   "label": "Responding to regulator and exam requests",
+   "nature": "drafting",
+   "kpis": {
+    "report_errors": 2,
+    "senior_hours": 2
+   },
+   "solution": "Find the records a request asks for, draft an index, and track what has been provided and when.",
+   "first_step": "List the records your last regulatory request asked for, or if you have had none, the records you must keep, and where each one sits.",
+   "check": "Whoever leads compliance and counsel approve everything before it is sent, and counsel reviews for privileged material. Keep this work within approved tools.",
    "effort": "medium",
    "required": true,
    "no_agent": true
@@ -1070,7 +1802,8 @@
    "first_step": "Replace one recurring sector update and ask its readers if it holds up.",
    "check": "Show sources to readers, and follow your data licensing terms.",
    "effort": "low",
-   "first_step_uses_ai": true
+   "first_step_uses_ai": true,
+   "first_step_if_no_ai": "Ask readers of one recurring sector update which parts they actually use."
   },
   {
    "id": "expenses",
@@ -1089,7 +1822,8 @@
    "effort": "medium",
    "required": true,
    "no_agent": true,
-   "control": true
+   "control": true,
+   "process_solution": "Agree one coding guide and one approval path for expenses and invoices, and remove duplicate entry."
   },
   {
    "id": "vendor_review",
@@ -1097,7 +1831,7 @@
    "label": "Reviewing software and AI vendors",
    "nature": "drafting",
    "kpis": {
-    "cost_ratio": 1,
+    "cost_ratio": 2,
     "senior_hours": 1
    },
    "solution": "Keep one register of software and AI vendors, draft each review from the contract and security answers, and flag changes to data use, retention, and who can see your data.",
@@ -1121,7 +1855,7 @@
    "solution": "Prepare meeting briefs from CRM, email, and files, handle routine scheduling including interviews, and draft follow-up lists for approval.",
    "first_step": "Agree with one partner what a useful daily brief would contain.",
    "check": "Assistants or owners approve anything that goes out, and calendar access is controlled.",
-   "effort": "low"
+   "effort": "medium"
   },
   {
    "id": "it_requests",
@@ -1129,7 +1863,7 @@
    "label": "Handling IT and access requests",
    "nature": "rules",
    "kpis": {
-    "cost_ratio": 2,
+    "cost_ratio": 1,
     "senior_hours": 1
    },
    "solution": "Handle routine requests and joiner and leaver steps through one request form, with approvals recorded.",

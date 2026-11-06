@@ -3,82 +3,114 @@
   {
    "id": "deals_per_pro",
    "pressure": "deploy",
-   "label": "Deals reviewed per professional"
+   "label": "Deals reviewed per professional",
+   "effect_phrase": "raise deals reviewed per professional",
+   "baseline": "Count the deals reviewed last month, and divide by the people who reviewed them."
   },
   {
    "id": "first_look_to_ic",
    "pressure": "deploy",
-   "label": "Time from first look to IC"
+   "label": "Time from first look to IC",
+   "effect_phrase": "shorten the time from first look to IC",
+   "baseline": "Take your last five IC papers, and record the days from first look to circulation."
   },
   {
    "id": "diligence_cycle",
    "pressure": "deploy",
-   "label": "Diligence cycle time"
+   "label": "Diligence cycle time",
+   "effect_phrase": "shorten diligence cycle time",
+   "baseline": "Take your last three deals, and record the days from data room access to diligence complete."
   },
   {
    "id": "proprietary_share",
    "pressure": "deploy",
-   "label": "Share of proprietary deals"
+   "label": "Share of proprietary deals",
+   "effect_phrase": "raise the share of proprietary deals",
+   "baseline": "Count the deals reviewed in the last year, and mark those you found yourselves."
   },
   {
    "id": "lp_report_cycle",
    "pressure": "raise",
-   "label": "LP reporting cycle time"
+   "label": "LP reporting cycle time",
+   "effect_phrase": "shorten the LP reporting cycle",
+   "baseline": "Record the days from the last quarter end to the final LP report going out."
   },
   {
    "id": "ddq_turnaround",
    "pressure": "raise",
-   "label": "DDQ and LP request turnaround"
+   "label": "DDQ and LP request turnaround",
+   "effect_phrase": "speed up DDQ and LP request turnaround",
+   "baseline": "Take the last ten LP requests, and record the days from receipt to reply."
   },
   {
    "id": "fundraise_conversion",
    "pressure": "raise",
-   "label": "LP meetings that move to the next stage"
+   "label": "LP meetings that move to the next stage",
+   "effect_phrase": "move LP meetings to the next stage",
+   "baseline": "Take your last twenty first meetings, and count those with an agreed next step."
   },
   {
    "id": "fundraise_readiness",
    "pressure": "raise",
-   "label": "Time to refresh fundraising materials"
+   "label": "Time to refresh fundraising materials",
+   "effect_phrase": "shorten the time to refresh fundraising materials",
+   "baseline": "Record the days your last refresh of the deck and track record took."
   },
   {
    "id": "data_freshness",
    "pressure": "value",
-   "label": "Days to portfolio data after month end"
+   "label": "Days to portfolio data after month end",
+   "effect_phrase": "cut days to portfolio data after month end",
+   "baseline": "Record the day each company's data arrived after the last period end."
   },
   {
    "id": "underperformance_detection",
    "pressure": "value",
-   "label": "Time to spot underperformance"
+   "label": "Time to spot underperformance",
+   "effect_phrase": "shorten the time to spot underperformance",
+   "baseline": "Take the last three problems you found, and record how long after the period end you saw each."
   },
   {
    "id": "initiatives_on_track",
    "pressure": "value",
-   "label": "Value creation initiatives on track"
+   "label": "Value creation initiatives on track",
+   "effect_phrase": "keep value creation initiatives on track",
+   "baseline": "Count initiatives with a named owner, a date, and a measurable KPI, and the share on plan today."
   },
   {
    "id": "exit_readiness",
    "pressure": "value",
-   "label": "Time to exit readiness"
+   "label": "Time to exit readiness",
+   "effect_phrase": "shorten the time to exit readiness",
+   "baseline": "For your next planned exit, list the data still missing and how long you expect it to take."
   },
   {
    "id": "senior_hours",
    "pressure": "lean",
-   "label": "Senior hours freed per month"
+   "label": "Senior hours freed per month",
+   "effect_phrase": "free senior hours",
+   "baseline": "Ask each partner for a rough count of hours last month on the assessed work."
   },
   {
    "id": "close_time",
    "pressure": "lean",
-   "label": "Quarter-end close time"
+   "label": "Quarter-end close time",
+   "effect_phrase": "shorten the quarter-end close",
+   "baseline": "Record the working days your last quarter-end close took."
   },
   {
    "id": "cost_ratio",
    "pressure": "lean",
-   "label": "Operating cost as a share of fees"
+   "label": "Operating cost as a share of fees",
+   "effect_phrase": "lower operating cost as a share of fees",
+   "baseline": "Take the management company's operating cost last year, and divide it by management fees."
   },
   {
    "id": "report_errors",
    "pressure": "lean",
-   "label": "Errors in reports and filings"
+   "label": "Errors in reports and filings",
+   "effect_phrase": "reduce errors in reports and filings",
+   "baseline": "Count corrections after issue, across reports and filings, in the last four quarters."
   }
  ],
  "sections": [
@@ -111,29 +143,6 @@
      ]
     },
     {
-     "id": "aum",
-     "header": "AUM",
-     "text": "What are the firm's assets under management?",
-     "options": [
-      {
-       "id": "under_500m",
-       "label": "Under $500M"
-      },
-      {
-       "id": "500m_2b",
-       "label": "$500M to $2B"
-      },
-      {
-       "id": "2b_10b",
-       "label": "$2B to $10B"
-      },
-      {
-       "id": "over_10b",
-       "label": "Over $10B"
-      }
-     ]
-    },
-    {
      "id": "team",
      "header": "Team size",
      "text": "How many people work at the firm?",
@@ -159,7 +168,7 @@
     {
      "id": "fund_stage",
      "header": "Fund stage",
-     "text": "Where is your main fund right now?",
+     "text": "Where are your funds right now? Choose all that apply.",
      "options": [
       {
        "id": "raising",
@@ -172,12 +181,9 @@
       {
        "id": "harvesting",
        "label": "Harvesting"
-      },
-      {
-       "id": "several",
-       "label": "Several at once"
       }
-     ]
+     ],
+     "multi": true
     }
    ]
   },
@@ -185,6 +191,12 @@
    "id": "goal",
    "title": "What matters most",
    "questions": [
+    {
+     "id": "thesis_detail",
+     "type": "open",
+     "header": "Your thesis",
+     "text": "In a sentence or two, what is your investment thesis? For example: sector, company size, and how you win. Please do not name portfolio companies or investors."
+    },
     {
      "id": "thesis",
      "header": "Thesis",
@@ -227,13 +239,8 @@
         "label": "Sector specialization"
        }
       ]
-     }
-    },
-    {
-     "id": "thesis_detail",
-     "type": "open",
-     "header": "Your thesis",
-     "text": "In a sentence or two, what is your investment thesis? For example: sector, company size, and how you win. Please do not name portfolio companies or investors."
+     },
+     "show_if": "thesis_detail was skipped"
     },
     {
      "id": "thesis_focus",
@@ -253,7 +260,8 @@
        "id": "none",
        "label": "Not really"
       }
-     ]
+     ],
+     "show_if": "no task was named, and a thesis was confirmed"
     },
     {
      "id": "pressure",
@@ -285,8 +293,31 @@
     {
      "id": "kpi",
      "header": "KPI",
-     "text": "Which KPI should this plan be measured against?",
+     "text": "Which one number should this plan try to move? You do not need to track it today.",
      "options_from": "kpis_for_pressure"
+    },
+    {
+     "id": "kpi_status",
+     "header": "KPI today",
+     "text": "Where does {kpi} stand today?",
+     "options": [
+      {
+       "id": "on_target",
+       "label": "On target"
+      },
+      {
+       "id": "off_target",
+       "label": "Off target"
+      },
+      {
+       "id": "no_target",
+       "label": "Tracked, no target set"
+      },
+      {
+       "id": "untracked",
+       "label": "We do not track this"
+      }
+     ]
     }
    ]
   },
@@ -353,23 +384,27 @@
      "id": "ai_adoption",
      "header": "Adoption",
      "show_if": "ai_stage is not none",
-     "text": "What share of the team uses AI at least weekly?",
+     "text": "Roughly how much of the team uses AI at least weekly? A rough guess is fine.",
      "options": [
       {
        "id": "under_10",
-       "label": "Under 10%"
+       "label": "A few people",
+       "description": "Under 10%"
       },
       {
        "id": "10_30",
-       "label": "10% to 30%"
+       "label": "Some people",
+       "description": "10% to 30%"
       },
       {
        "id": "30_60",
-       "label": "30% to 60%"
+       "label": "Many people",
+       "description": "30% to 60%"
       },
       {
        "id": "over_60",
-       "label": "Over 60%"
+       "label": "Most people",
+       "description": "Over 60%"
       }
      ]
     },
@@ -390,34 +425,11 @@
       },
       {
        "id": "mixed",
-       "label": "Mixed so far"
+       "label": "Mixed, or too early to say"
       },
       {
        "id": "disappointing",
        "label": "Disappointing"
-      }
-     ]
-    },
-    {
-     "id": "ai_obstacle",
-     "header": "Obstacle",
-     "text": "What holds AI back most at your firm, or would if you started?",
-     "options": [
-      {
-       "id": "data",
-       "label": "Data quality or access"
-      },
-      {
-       "id": "trust",
-       "label": "Trust in the output"
-      },
-      {
-       "id": "security",
-       "label": "Security or compliance"
-      },
-      {
-       "id": "owner",
-       "label": "No owner or no time"
       }
      ]
     }
@@ -427,12 +439,6 @@
    "id": "focus",
    "title": "Where time goes",
    "questions": [
-    {
-     "id": "bottleneck",
-     "type": "open",
-     "header": "One task",
-     "text": "If you could take one recurring task off your team tomorrow, what would it be? Please do not name people, portfolio companies, or investors."
-    },
     {
      "id": "areas",
      "header": "Areas",
@@ -460,8 +466,24 @@
      "id": "activities",
      "header": "Tasks",
      "multi": true,
-     "text": "In {workstream}, which of these does your team do repeatedly?",
-     "options_from": "activities_for_workstream"
+     "text": "In {workstream}, which of these take real time, whether regular or occasional?",
+     "options_from": "activities_for_workstream",
+     "depth": [
+      "deep",
+      "second",
+      "quick"
+     ]
+    },
+    {
+     "id": "heavy_task",
+     "header": "Hardest",
+     "depth": [
+      "deep",
+      "second"
+     ],
+     "show_if": "more than one task selected and no named task in this work area",
+     "text": "In {workstream}, which of these costs the most time or causes the most trouble?",
+     "options_from": "selected_activities"
     },
     {
      "id": "ai_here",
@@ -488,6 +510,10 @@
        "label": "Standard for the team",
        "description": "Part of normal work"
       }
+     ],
+     "depth": [
+      "deep",
+      "second"
      ]
     },
     {
@@ -496,12 +522,16 @@
      "multi": true,
      "show_if": "ai_here is not none",
      "text": "Which of these tasks already use AI?",
-     "options_from": "selected_activities"
+     "options_from": "selected_activities",
+     "depth": [
+      "deep",
+      "second"
+     ]
     },
     {
      "id": "hours",
      "header": "Hours",
-     "text": "About how many hours does this work take in {workstream} in a typical month, across everyone?",
+     "text": "Roughly how many hours a month does {workstream} take, across everyone, averaged over a year? A rough guess is fine.",
      "options": [
       {
        "id": "under_20",
@@ -519,75 +549,204 @@
        "id": "over_200",
        "label": "Over 200 hours"
       }
+     ],
+     "depth": [
+      "deep",
+      "second",
+      "quick"
      ]
     },
     {
-     "id": "data",
-     "header": "Data",
-     "text": "Where does the information for this work mostly live?",
+     "id": "sources",
+     "header": "Information",
+     "multi": true,
+     "text": "Where does the information for {workstream} live? Choose all that apply.",
      "options": [
       {
        "id": "system",
-       "label": "In a proper system",
+       "label": "A proper system",
        "description": "CRM, portfolio tool, or accounting system"
       },
       {
        "id": "spreadsheets",
-       "label": "Spreadsheets and email"
+       "label": "Spreadsheets"
+      },
+      {
+       "id": "email",
+       "label": "Email"
       },
       {
        "id": "documents",
        "label": "PDFs and documents"
-      },
-      {
-       "id": "heads",
-       "label": "In people's heads",
-       "description": "Little is written down"
       }
+     ],
+     "depth": [
+      "deep",
+      "second",
+      "quick"
      ]
     },
     {
-     "id": "owner",
+     "id": "who",
      "header": "Who",
-     "text": "Who spends the most time on it?",
+     "multi": true,
+     "depth": [
+      "deep"
+     ],
+     "text": "Who works on {workstream}? Choose all that apply.",
      "options": [
       {
        "id": "partners",
        "label": "Partners or principals"
       },
       {
-       "id": "mid",
-       "label": "VPs and associates"
-      },
-      {
-       "id": "junior",
-       "label": "Analysts"
+       "id": "investment",
+       "label": "VPs, associates, or analysts"
       },
       {
        "id": "operations",
-       "label": "Finance, IR, or ops staff"
+       "label": "Finance, IR, compliance, or ops staff"
+      },
+      {
+       "id": "outside",
+       "label": "An outside provider",
+       "description": "Such as your administrator or a consultant"
+      }
+     ]
+    },
+    {
+     "id": "time_goes",
+     "header": "Time goes",
+     "multi": true,
+     "depth": [
+      "deep",
+      "second"
+     ],
+     "text": "Beyond the work itself, where does the time on {hardest_task} go? Choose all that apply. Skip if it is mostly the work itself, such as reading and drafting.",
+     "options": [
+      {
+       "id": "wait_outside",
+       "label": "Waiting on outside parties",
+       "description": "Portfolio companies, the administrator, advisers, or LPs"
+      },
+      {
+       "id": "wait_signoff",
+       "label": "Waiting on internal sign-off"
+      },
+      {
+       "id": "rekey",
+       "label": "Retyping or rebuilding",
+       "description": "Entering again what already exists somewhere"
+      },
+      {
+       "id": "fixing",
+       "label": "Fixing errors and mismatches",
+       "description": "Numbers that do not agree"
+      }
+     ]
+    },
+    {
+     "id": "legacy_tasks",
+     "header": "Habit",
+     "multi": true,
+     "depth": [
+      "deep",
+      "second"
+     ],
+     "text": "Which of these are done mainly out of habit, so few would notice if they stopped? Skip if none.",
+     "options_from": "selected_activities"
+    },
+    {
+     "id": "depends",
+     "header": "Know-how",
+     "depth": [
+      "deep"
+     ],
+     "text": "If the main person on {hardest_task} left, could someone else run it next month?",
+     "options": [
+      {
+       "id": "yes",
+       "label": "Yes, it is written down"
+      },
+      {
+       "id": "effort",
+       "label": "Yes, with some effort"
+      },
+      {
+       "id": "no",
+       "label": "No, it depends on one or two people"
+      }
+     ]
+    },
+    {
+     "id": "rhythm",
+     "header": "How often",
+     "depth": [
+      "deep"
+     ],
+     "text": "How often does {hardest_task} run?",
+     "options": [
+      {
+       "id": "steady",
+       "label": "Daily or weekly"
+      },
+      {
+       "id": "monthly",
+       "label": "Every month"
+      },
+      {
+       "id": "periodic",
+       "label": "Quarterly or yearly"
+      },
+      {
+       "id": "bursts",
+       "label": "In bursts",
+       "description": "Tied to deals, requests, or a fundraise"
+      }
+     ]
+    },
+    {
+     "id": "same_way",
+     "header": "Same way",
+     "depth": [
+      "deep"
+     ],
+     "show_if": "team is 50 or more, or strategy is multi-strategy",
+     "text": "Do different teams or strategies run {hardest_task} the same way?",
+     "options": [
+      {
+       "id": "same",
+       "label": "Yes, one way"
+      },
+      {
+       "id": "mostly",
+       "label": "Mostly, with local differences"
+      },
+      {
+       "id": "different",
+       "label": "No, each has its own way"
       }
      ]
     },
     {
      "id": "error_cost",
      "header": "If wrong",
-     "text": "What happens if a mistake gets through?",
+     "depth": [
+      "deep"
+     ],
+     "text": "What is the worst realistic result if a mistake gets through in {workstream}?",
      "options": [
       {
        "id": "minor",
-       "label": "Quick fix",
-       "description": "Noticed and corrected internally"
+       "label": "Noticed and fixed internally"
       },
       {
        "id": "awkward",
-       "label": "Embarrassing",
-       "description": "Visible to LPs, boards, or partners"
+       "label": "Visible to LPs or boards"
       },
       {
        "id": "severe",
-       "label": "Serious",
-       "description": "Financial, legal, or regulatory harm"
+       "label": "Financial, legal, or regulatory harm"
       },
       {
        "id": "unsure",
@@ -596,30 +755,56 @@
      ]
     },
     {
-     "id": "usage",
-     "header": "Used?",
-     "text": "How much is the output of this work really used?",
-     "options": [
-      {
-       "id": "relied",
-       "label": "Relied on",
-       "description": "Decisions depend on it"
-      },
-      {
-       "id": "some",
-       "label": "Used by a few",
-       "description": "Useful, but not essential"
-      },
-      {
-       "id": "rarely",
-       "label": "Rarely used",
-       "description": "Few would notice if it stopped"
-      },
-      {
-       "id": "unsure",
-       "label": "Not sure"
-      }
-     ]
+     "id": "harm_tasks",
+     "header": "Which ones",
+     "multi": true,
+     "depth": [
+      "deep"
+     ],
+     "show_if": "error_cost is severe, and more than one selected task is not marked required. Offer only tasks not marked required.",
+     "text": "Which of these tasks could cause that harm?",
+     "options_from": "selected_activities"
+    },
+    {
+     "id": "measures_tracked",
+     "header": "Measures",
+     "multi": true,
+     "depth": [
+      "deep",
+      "second"
+     ],
+     "text": "Which of these does the team track for {workstream} today? Choose all that apply.",
+     "options_from": "measures_for_workstream"
+    },
+    {
+     "id": "measures_off",
+     "header": "Off target",
+     "multi": true,
+     "depth": [
+      "deep"
+     ],
+     "show_if": "a measure is tracked",
+     "text": "Which of those are off target today? Skip if none, or if you are not sure.",
+     "options_from": "selected_measures"
+    },
+    {
+     "id": "walkthrough",
+     "type": "open",
+     "header": "How it runs",
+     "depth": [
+      "deep"
+     ],
+     "text": "Optional: walk me through how {hardest_task} runs today, from where it starts to who receives it. Roles and tools only, please. Please do not name people, portfolio companies, or investors. Your answer can replace up to four of the questions that follow."
+    },
+    {
+     "id": "slow_step",
+     "header": "Slowest step",
+     "depth": [
+      "deep"
+     ],
+     "show_if": "a walkthrough was confirmed",
+     "text": "Which of these steps takes longest?",
+     "options_from": "walkthrough_steps"
     }
    ]
   },
@@ -676,30 +861,31 @@
     {
      "id": "trust",
      "header": "Team",
-     "text": "How does the team feel about AI output?",
+     "text": "How do people at the firm feel about relying on AI's work? Choose all that apply.",
      "options": [
       {
        "id": "daily",
-       "label": "Uses it daily"
+       "label": "Some use it daily"
       },
       {
        "id": "experimenting",
-       "label": "Some are experimenting"
+       "label": "Some are trying it"
       },
       {
        "id": "skeptical",
-       "label": "Mostly skeptical"
+       "label": "Some are skeptical"
       },
       {
        "id": "resistant",
-       "label": "Actively resistant"
+       "label": "Some are against it"
       }
-     ]
+     ],
+     "multi": true
     },
     {
      "id": "capacity",
-     "header": "Who builds",
-     "text": "Who would carry out this work?",
+     "header": "Who sets up",
+     "text": "Who would set these changes up? Choose all that apply.",
      "options": [
       {
        "id": "in_house",
@@ -707,7 +893,7 @@
       },
       {
        "id": "ops_lead",
-       "label": "An operations lead, part time"
+       "label": "Someone alongside their job"
       },
       {
        "id": "partner",
@@ -717,7 +903,8 @@
        "id": "nobody",
        "label": "Nobody yet"
       }
-     ]
+     ],
+     "multi": true
     },
     {
      "id": "region",
@@ -740,30 +927,8 @@
        "id": "other",
        "label": "Several or elsewhere"
       }
-     ]
-    },
-    {
-     "id": "budget",
-     "header": "Budget",
-     "text": "What could the firm invest in this over 12 months? This shapes which kind of tool we suggest.",
-     "options": [
-      {
-       "id": "unset",
-       "label": "Not set yet"
-      },
-      {
-       "id": "under_100k",
-       "label": "Under $100K"
-      },
-      {
-       "id": "100k_500k",
-       "label": "$100K to $500K"
-      },
-      {
-       "id": "over_500k",
-       "label": "Over $500K"
-      }
-     ]
+     ],
+     "show_if": "compliance, fundraising, or LP reporting is assessed, or AI is already in use"
     }
    ]
   },
@@ -870,21 +1035,6 @@
     }
    ]
   },
-  "confirm_name": {
-   "id": "confirm_name",
-   "header": "Firm name",
-   "text": "I will search for: {name}. Is that right?",
-   "options": [
-    {
-     "id": "yes",
-     "label": "Correct"
-    },
-    {
-     "id": "no",
-     "label": "Let me retype it"
-    }
-   ]
-  },
   "confirm_facts": {
    "id": "confirm_facts",
    "header": "Check facts",
@@ -925,12 +1075,12 @@
    "text": "What would help most next?",
    "options": [
     {
-     "id": "team_note",
-     "label": "Draft a note to my team"
+     "id": "first_step",
+     "label": "Help me do my first step now"
     },
     {
-     "id": "partner_brief",
-     "label": "Explain this for my partners"
+     "id": "note",
+     "label": "Draft a note to my team or partners"
     },
     {
      "id": "cco_questions",
@@ -1013,6 +1163,123 @@
      "label": "Let me choose"
     }
    ]
+  },
+  "confirm_walkthrough": {
+   "id": "confirm_walkthrough",
+   "header": "Check",
+   "text": "I read that as: {steps}. From this I noted: {mapped_answers}. Is that right?",
+   "options": [
+    {
+     "id": "yes",
+     "label": "Correct"
+    },
+    {
+     "id": "refine",
+     "label": "Close, let me correct it"
+    },
+    {
+     "id": "drop",
+     "label": "Leave it out"
+    }
+   ]
+  },
+  "continue_gate": {
+   "id": "continue_gate",
+   "header": "Continue",
+   "text": "That covers {workstream}. What next?",
+   "options": [
+    {
+     "id": "quick",
+     "label": "Quick check of {next}",
+     "description": "3 questions, less detail in the plan"
+    },
+    {
+     "id": "second",
+     "label": "Cover {next} too",
+     "description": "7 to 9 more questions"
+    },
+    {
+     "id": "build",
+     "label": "Finish up",
+     "description": "A few last questions and a check, then your plan"
+    }
+   ]
+  },
+  "stay_or_add": {
+   "id": "stay_or_add",
+   "header": "Scope",
+   "text": "You named {task}, in {work_area}. Stay with that, or add another part of the firm?",
+   "options": [
+    {
+     "id": "stay",
+     "label": "Stay with that"
+    },
+    {
+     "id": "add",
+     "label": "Add another part"
+    }
+   ]
   }
+ },
+ "after_plan": {
+  "budget": {
+   "id": "budget",
+   "header": "Budget",
+   "text": "Is money set aside for this in the next 12 months? Your answer can change the tool suggestions in your report. It stays in this chat.",
+   "options": [
+    {
+     "id": "unset",
+     "label": "Not set yet"
+    },
+    {
+     "id": "under_100k",
+     "label": "Under $100K"
+    },
+    {
+     "id": "100k_500k",
+     "label": "$100K to $500K"
+    },
+    {
+     "id": "over_500k",
+     "label": "Over $500K"
+    }
+   ]
+  },
+  "aum": {
+   "id": "aum",
+   "header": "AUM",
+   "text": "What are the firm's assets under management?",
+   "options": [
+    {
+     "id": "under_500m",
+     "label": "Under $500M"
+    },
+    {
+     "id": "500m_2b",
+     "label": "$500M to $2B"
+    },
+    {
+     "id": "2b_10b",
+     "label": "$2B to $10B"
+    },
+    {
+     "id": "over_10b",
+     "label": "Over $10B"
+    }
+   ]
+  }
+ },
+ "pain_first": {
+  "id": "bottleneck",
+  "type": "open",
+  "header": "One task",
+  "text": "Before anything else: if you could take one recurring task off your team tomorrow, what would it be? Please do not name people, portfolio companies, or investors."
+ },
+ "say_back": {
+  "after_goal": "So far: {strategy}, {team} people. The priority for the next 12 months is {priority}, and you want this plan judged on {kpi}.",
+  "after_ai": "On AI: {stage}. You described results so far as: {results}.",
+  "halfway": "So far on {work_area}: {hours} a month, in {sources}, and the time goes on {time_goes}. About {remaining} more.",
+  "end_of_area": "{work_area}, as you describe it: {hours} a month, with {who} on it, in {sources}. The time goes on {time_goes}. If the main person left: {depends}. Done mainly out of habit: {legacy}. That is {n} of {total} done.",
+  "before_constraints": "That is the work: {areas}. Last part: a few short questions on what could slow this down, then your plan."
  }
 }

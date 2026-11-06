@@ -38,7 +38,18 @@ a:focus-visible,summary:focus-visible,.mark:focus-visible{{outline:2px solid {t.
 .opening{{padding-block:{t.SPACE_SECTION} {t.SPACE_BLOCK}}}
 h1{{font-family:{t.FONT_DISPLAY};font-size:{t.TEXT_HEADLINE};line-height:1.12;letter-spacing:-.018em;max-width:26ch}}
 .standfirst{{margin-top:1rem;max-width:58ch;font-size:{t.TEXT_ITEM};line-height:1.45}}
-.ledger>div{{display:grid;grid-template-columns:minmax(6.5rem,9rem) 1fr;gap:.25rem 1rem;padding-block:.5rem;border-top:{t.RULE_LIGHT}}}
+.reading{{max-width:66ch;margin-top:.4rem}}
+.reading li{{border-top:{t.RULE_LIGHT};padding-block:.5rem}}
+.reading li:last-child{{border-bottom:{t.RULE_LIGHT}}}
+.reading-title{{font-weight:600;margin-top:{t.SPACE_BLOCK}}}
+.start{{margin-top:1rem;font-size:{t.TEXT_ITEM};font-weight:600;max-width:58ch}}
+.link-table{{width:100%;border-collapse:collapse;font-size:{t.TEXT_SMALL}}}
+.link-table th{{text-align:start;font-weight:400;color:{t.COLOR_INK_SOFT};padding-block:.3rem;border-bottom:1px solid {t.COLOR_INK}}}
+.link-table td{{padding:.45rem .75rem .45rem 0;border-bottom:{t.RULE_LIGHT};vertical-align:top}}
+.link-table th[scope=row]{{font-weight:600;color:{t.COLOR_INK};border-bottom:{t.RULE_LIGHT};padding:.45rem .75rem .45rem 0}}
+.plot-y{{font-weight:600;line-height:1.3;margin:0 0 .6rem;max-width:44ch}}
+@container (min-width:{t.RAIL_BREAKPOINT}){{.opening~.ledger>div{{grid-template-columns:{t.SECTION_RAIL} 1fr!important;column-gap:{t.SPACE_GAP}!important}}}}
+.ledger>div{{display:grid;grid-template-columns:minmax(5.5rem,24%) 1fr;gap:.25rem 1rem;padding-block:.5rem;border-top:{t.RULE_LIGHT}}}
 .ledger>div:last-child{{border-bottom:{t.RULE_LIGHT}}}
 .ledger dt{{color:{t.COLOR_INK_SOFT};font-size:{t.TEXT_SMALL};padding-top:.12em}}
 .sec{{border-top:{t.RULE_HEAVY};padding-block:{t.SPACE_BLOCK} {t.SPACE_SECTION}}}
@@ -47,12 +58,14 @@ h1{{font-family:{t.FONT_DISPLAY};font-size:{t.TEXT_HEADLINE};line-height:1.12;le
 h2{{font-family:{t.FONT_DISPLAY};font-size:{t.TEXT_SECTION};line-height:1.2;letter-spacing:-.005em}}
 .sec-lede{{max-width:62ch;margin-bottom:{t.SPACE_BLOCK}}}
 @container (min-width:{t.RAIL_BREAKPOINT}){{.sec{{display:grid;grid-template-columns:{t.SECTION_RAIL} minmax(0,1fr);column-gap:{t.SPACE_GAP}}}.sec-head{{margin-bottom:0;padding-inline-end:1rem}}}}
-.moves{{display:grid;grid-template-columns:repeat(auto-fit,minmax({t.COLUMN_MIN},1fr));gap:{t.SPACE_BLOCK} {t.SPACE_GAP}}}
-.moves li{{border-top:1px solid {t.COLOR_INK};padding-top:.6rem;display:flex;flex-direction:column;gap:.55rem}}
+.moves{{display:grid;gap:{t.SPACE_BLOCK}}}
+.moves li{{border-top:1px solid {t.COLOR_INK};padding-top:.6rem;display:grid;gap:.5rem}}
+.moves .body{{display:grid;gap:.5rem;max-width:62ch}}
+@container (min-width:{t.RAIL_BREAKPOINT}){{.moves li{{grid-template-columns:minmax(0,1fr) 13rem;column-gap:{t.SPACE_GAP}}}.moves .head{{grid-column:1 / -1}}.moves .meta{{border-top:0;padding-top:0}}}}
 .moves .no{{font-family:{t.FONT_MONO};font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT}}}
 h3{{font-family:{t.FONT_BODY};font-weight:600;font-size:{t.TEXT_ITEM};line-height:1.3}}
 .lead{{font-weight:600}}
-.moves .meta{{margin-top:auto;padding-top:.5rem;border-top:{t.RULE_LIGHT};font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT};display:grid;gap:.1rem}}
+.moves .meta{{padding-top:.5rem;border-top:{t.RULE_LIGHT};align-content:start;font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT};display:grid;gap:.1rem}}
 .list>li{{padding-block:.7rem;border-top:{t.RULE_LIGHT}}}
 .list>li:last-child{{border-bottom:{t.RULE_LIGHT}}}
 .subhead{{font-family:{t.FONT_BODY};font-weight:600;font-size:{t.TEXT_BODY};margin-block:{t.SPACE_BLOCK} .5rem}}
@@ -60,11 +73,13 @@ h3{{font-family:{t.FONT_BODY};font-weight:600;font-size:{t.TEXT_ITEM};line-heigh
 .plot{{width:100%;height:auto;display:block;font-family:{t.FONT_BODY};max-width:50rem}}
 .mark{{outline:none;cursor:default}}
 .mark:hover circle,.mark:focus-visible circle{{stroke-width:3}}
-.plot-narrow{{display:none}}
+.plot-narrow{{display:none;max-width:{t.PLOT_NARROW_MAX}}}
 @container (max-width:{t.PLOT_NARROW_BREAKPOINT}){{.plot-wide{{display:none}}.plot-narrow{{display:block}}}}
 .spacer{{height:{t.SPACE_SECTION}}}
 .flush{{margin:0}}
 .gap-top{{margin-top:.7rem}}
+.legend li{{display:grid;grid-template-columns:1.2em 1fr}}
+.legend .key-mark{{margin-top:.38em}}
 .legend{{display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;margin-top:.9rem;font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT}}}
 .legend b{{color:{t.COLOR_INK};font-weight:600}}
 .plot-key{{columns:2 16rem;column-gap:{t.SPACE_GAP};margin-top:{t.SPACE_BLOCK};font-size:{t.TEXT_SMALL}}}
@@ -75,9 +90,9 @@ h3{{font-family:{t.FONT_BODY};font-weight:600;font-size:{t.TEXT_ITEM};line-heigh
 .stages small{{display:block;font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT}}}
 .stages ul{{margin-top:.7rem;display:grid;gap:.55rem}}
 .stages li{{display:grid;grid-template-columns:2em 1fr;line-height:1.35}}
-.table-head,summary{{display:grid;grid-template-columns:2em minmax(11rem,1fr) 10.5rem 7.5rem 7rem 1.2rem;gap:.15rem .75rem;align-items:baseline}}
+.table-head,summary{{display:grid;grid-template-columns:2rem minmax(11rem,1fr) 10.5rem 7.5rem 7rem 1.2rem;gap:.15rem .75rem;align-items:baseline}}
 .table-head{{font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT};padding-bottom:.4rem;border-bottom:1px solid {t.COLOR_INK}}}
-@container (max-width:{t.RAIL_BREAKPOINT}){{.table-head{{display:none}}summary{{grid-template-columns:2em 1fr 1.2rem}}summary .col{{grid-column:2;font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT}}}summary .toggle{{grid-column:3;grid-row:1}}}}
+@container (max-width:{t.RAIL_BREAKPOINT}){{.table-head{{display:none}}summary{{grid-template-columns:2rem 1fr 1.2rem}}summary .col{{grid-column:2;font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT}}}summary .toggle{{grid-column:3;grid-row:1}}}}
 .group{{margin-top:{t.SPACE_BLOCK}}}
 .group h3{{font-size:{t.TEXT_BODY}}}
 .group>p{{font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT};margin-bottom:.4rem}}
@@ -113,20 +128,20 @@ details[open] .toggle::before{{content:'\\2212'}}
 .tl-row{{padding-block:.32rem}}
 .tl-label{{display:grid;grid-template-columns:2em minmax(0,1fr);line-height:1.3}}
 .tl-track{{position:relative;height:1.1rem;background-image:linear-gradient(to right,{t.COLOR_LINE} 1px,transparent 1px);background-size:25% 100%;border-right:1px solid {t.COLOR_LINE}}}
-.tl-bar{{position:absolute;left:0;top:50%;height:2px;transform:translateY(-50%);opacity:.45}}
+.tl-bar{{position:absolute;left:0;top:50%;height:2px;transform:translateY(-50%)}}
 .tl-dot{{position:absolute;top:50%;width:.8rem;height:.8rem;border-radius:50%;border:2px solid;transform:translate(-50%,-50%)}}
 .terms>div{{display:grid;grid-template-columns:minmax(0,1fr);gap:.1rem;padding-block:.6rem;border-top:{t.RULE_LIGHT}}}
 .terms>div:last-child{{border-bottom:{t.RULE_LIGHT}}}
 .terms dt{{font-weight:600}}
 @container (min-width:{t.LAYOUT_BREAKPOINT}){{.terms>div{{grid-template-columns:11rem minmax(0,1fr);column-gap:1rem}}}}
 .close{{border-top:{t.RULE_HEAVY};padding-block:{t.SPACE_SECTION};display:grid;gap:1rem;justify-items:start}}
-.close h2{{font-size:{t.TEXT_HEADLINE};line-height:1.12;letter-spacing:-.018em;max-width:20ch;margin-top:.5rem}}
+.close h2{{font-size:{t.TEXT_SECTION};line-height:1.2;margin-top:.5rem}}
 .close p{{max-width:54ch}}
 .actions{{display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;align-items:center;margin-top:.4rem}}
 .button{{display:inline-flex;align-items:center;min-height:{t.MIN_TARGET};padding:.55rem 1.15rem;background:{t.COLOR_ACCENT};color:{t.COLOR_SURFACE};border-radius:{t.RADIUS_BUTTON};font-weight:600;text-decoration:none}}
 .button:hover{{background:{t.COLOR_ACCENT_HOVER}}}
 footer{{border-top:{t.RULE_LIGHT};padding-block:1rem 2rem;font-family:{t.FONT_MONO};font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT}}}
-@media print{{.toggle{{display:none}}.button{{background:none;color:{t.COLOR_ACCENT};padding:0;min-height:0}}.sec{{break-inside:auto}}.moves li,.stages>div,details{{break-inside:avoid}}}}
+@media print{{.toggle{{display:none}}.button{{background:none;color:{t.COLOR_ACCENT};padding:0;min-height:0}}.sec{{display:block;break-inside:auto}}.stages>div,figure{{break-inside:avoid}}.key-mark,.tl-bar,.tl-dot,.tl-track{{print-color-adjust:exact;-webkit-print-color-adjust:exact}}.sec-head,.group h3,.group>p,.tl-group h3,.subhead,.sec-lede{{break-after:avoid}}.row-body,.row-body dl{{display:block}}.row-body dl>div{{break-inside:avoid;margin-bottom:.55rem}}.plot-wide{{display:block!important}}.plot-narrow{{display:none!important}}.moves li{{break-inside:auto}}}}
 """
 
 
