@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from . import constants as c
 from .enums import Horizon, Nature, Quadrant, Rule, Verdict, Spend
@@ -32,10 +32,27 @@ class Activity:
     process_solution: str = ""
     check_ai: str = ""
     kpi_link: Optional[str] = None
+    owner: str = ""
 
     @classmethod
     def from_dict(cls, row: Dict[str, Any]) -> "Activity":
-        return cls(row["id"], row["workstream"], row["label"], Nature(row["nature"]), dict(row["kpis"]), row["solution"], row["first_step"], row["check"], effort=row.get("effort", "medium"), required=bool(row.get("required")), no_agent=bool(row.get("no_agent")), reads_documents=bool(row.get("reads_documents")), first_step_uses_ai=bool(row.get("first_step_uses_ai")), control=bool(row.get("control")), first_step_if_no_ai=row.get("first_step_if_no_ai", ""), needs_agreed_rules=bool(row.get("needs_agreed_rules")), input_documents=bool(row.get("input_documents")), shared_data=row.get("shared_data", ""), process_solution=row.get("process_solution", ""), check_ai=row.get("check_ai", ""))
+        return cls(
+            row["id"], row["workstream"], row["label"], Nature(row["nature"]), dict(row["kpis"]),
+            row["solution"], row["first_step"], row["check"],
+            owner=row.get("owner", ""),
+            effort=row.get("effort", "medium"),
+            required=bool(row.get("required")),
+            no_agent=bool(row.get("no_agent")),
+            reads_documents=bool(row.get("reads_documents")),
+            first_step_uses_ai=bool(row.get("first_step_uses_ai")),
+            control=bool(row.get("control")),
+            first_step_if_no_ai=row.get("first_step_if_no_ai", ""),
+            needs_agreed_rules=bool(row.get("needs_agreed_rules")),
+            input_documents=bool(row.get("input_documents")),
+            shared_data=row.get("shared_data", ""),
+            process_solution=row.get("process_solution", ""),
+            check_ai=row.get("check_ai", ""),
+        )
 
     def to_dict(self) -> Dict[str, Any]:
         out = asdict(self)
@@ -169,3 +186,36 @@ class ScoredActivity:
         out["horizon"] = self.horizon.value if self.horizon else None
         out["quadrant"] = self.quadrant.value if self.quadrant else None
         return out
+
+
+@dataclass
+class Plan:
+    items: List[ScoredActivity]
+    foundations: List[Tuple[str, str, str]]
+    hours_low: int
+    hours_high: Optional[int]
+    hours_known: bool
+    not_assessed: List[str]
+    reading: List[str] = field(default_factory=list)
+    start_line: str = ""
+    start_moves: List[int] = field(default_factory=list)
+    changes: List[str] = field(default_factory=list)
+    measure_rows: List[Tuple[str, str, int, str, str]] = field(default_factory=list)
+    measure_actions: List[Tuple[str, str]] = field(default_factory=list)
+    focus_missing: List[str] = field(default_factory=list)
+    walkthroughs: Dict[str, List[str]] = field(default_factory=dict)
+    budget: str = ""
+    stuck: List[Tuple[str, List[str]]] = field(default_factory=list)
+    people_elsewhere: List[str] = field(default_factory=list)
+
+    @property
+    def plotted(self) -> List[ScoredActivity]:
+        return [item for item in self.items if item.verdict != Verdict.LEAVE]
+
+    @property
+    def people(self) -> List[ScoredActivity]:
+        return [item for item in self.items if item.verdict == Verdict.LEAVE]
+
+    @property
+    def top(self) -> List[ScoredActivity]:
+        return self.plotted[:3]

@@ -138,7 +138,7 @@ flowchart LR
 skills/fund-blueprint/
   SKILL.md                     The conversation: flow and rules
   references/                  Question set and activity catalog
-  scripts/                     Validation, scoring, and report
+  scripts/blueprint/           Validation, planning rules, and report sections
   assets/                      NXT logo and fonts
 examples/                      Sample report for a fictional firm, and its images
 LICENSE                        MIT

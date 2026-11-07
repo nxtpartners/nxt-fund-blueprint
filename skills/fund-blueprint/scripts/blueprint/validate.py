@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, Iterable, List, Set, Tuple
 
 from . import constants as c
 from .data import Library
@@ -23,6 +23,12 @@ def require_type(value: Any, expected: type, label: str) -> None:
         raise AnswerError(f"{label} has the wrong format. Rebuild answers.json as shown in the skill's example.")
 
 
+def invalid_answer(value: Any, field: str, where: str, options: Iterable[str]) -> AnswerError:
+    return AnswerError(
+        f"Invalid answer '{value}' for '{field}'{where}. Allowed: {', '.join(options)}. Ask this question again."
+    )
+
+
 def clean_text(value: Any, limit: int, label: str) -> str:
     """Confirmed free text: plain, short, and safe to place in the report."""
     if value is None:
@@ -30,7 +36,10 @@ def clean_text(value: Any, limit: int, label: str) -> str:
     require_type(value, str, label)
     text = " ".join(value.split()).replace("—", ",").replace("–", "-")
     if len(text) > limit or UNSAFE_TEXT.search(text):
-        raise AnswerError(f"{label} must be plain text of at most {limit} characters, without links or markup. Rewrite it and confirm it again.")
+        raise AnswerError(
+            f"{label} must be plain text of at most {limit} characters, without links or markup. "
+            "Rewrite it and confirm it again."
+        )
     return text
 
 
@@ -45,7 +54,9 @@ def clean_public_facts(raw: Dict[str, Any]) -> List[Dict[str, str]]:
         require_type(item, dict, c.KEY_PUBLIC_FACTS)
         source = str(item.get(c.KEY_SOURCE) or "").strip()
         if not SAFE_URL.fullmatch(source) or len(source) > c.SOURCE_URL_MAX:
-            raise AnswerError("Each public fact needs the https address of the page it came from. Remove any fact without one.")
+            raise AnswerError(
+                "Each public fact needs the https address of the page it came from. Remove any fact without one."
+            )
         fact = clean_text(item.get(c.KEY_FACT), c.PUBLIC_FACT_MAX, "A public fact")
         if not fact:
             raise AnswerError("A public fact is empty. Remove it.")
@@ -70,7 +81,18 @@ def clean_custom(item: Any, workstream: str) -> Dict[str, Any]:
     return {c.KEY_NAME: name, c.KEY_NATURE: nature, c.KEY_USES_AI: uses_ai, c.KEY_KPI_LINK: link}
 
 
-def closed_answer(library: Library, raw: Dict[str, Any], field: str, assumed: List[str], skipped: List[str], where: str = "", key: str = "", expected: bool = True, noted: bool = True, allowed: Any = None) -> str:
+def closed_answer(
+    library: Library,
+    raw: Dict[str, Any],
+    field: str,
+    assumed: List[str],
+    skipped: List[str],
+    where: str = "",
+    key: str = "",
+    expected: bool = True,
+    noted: bool = True,
+    allowed: Any = None,
+) -> str:
     value = raw.get(field)
     if value is None:
         if expected:
@@ -82,11 +104,20 @@ def closed_answer(library: Library, raw: Dict[str, Any], field: str, assumed: Li
         return c.NEUTRAL_ANSWERS[field]
     options = allowed if allowed is not None else library.option_ids(field)
     if not isinstance(value, str) or value not in options:
-        raise AnswerError(f"Invalid answer '{value}' for '{field}'{where}. Allowed: {', '.join(options)}. Ask this question again.")
+        raise invalid_answer(value, field, where, options)
     return value
 
 
-def closed_list(library: Library, raw: Dict[str, Any], field: str, assumed: List[str], skipped: List[str], where: str = "", key: str = "", expected: bool = True) -> List[str]:
+def closed_list(
+    library: Library,
+    raw: Dict[str, Any],
+    field: str,
+    assumed: List[str],
+    skipped: List[str],
+    where: str = "",
+    key: str = "",
+    expected: bool = True,
+) -> List[str]:
     value = raw.get(field)
     if value is None or value == []:
         if expected:
@@ -97,7 +128,7 @@ def closed_list(library: Library, raw: Dict[str, Any], field: str, assumed: List
     options = library.option_ids(field)
     for item in value:
         if not isinstance(item, str) or item not in options:
-            raise AnswerError(f"Invalid answer '{item}' for '{field}'{where}. Allowed: {', '.join(options)}. Ask this question again.")
+            raise invalid_answer(item, field, where, options)
     return list(dict.fromkeys(value))
 
 
@@ -112,7 +143,9 @@ def string_list(raw: Dict[str, Any], key: str, label: str) -> List[str]:
 def from_selected(row: Dict[str, Any], key: str, activities: List[str], workstream_id: str) -> List[str]:
     items = string_list(row, key, f"{key} in '{workstream_id}'")
     if any(task not in activities for task in items):
-        raise AnswerError(f"{key} in '{workstream_id}' must come from its selected activities. Ask this question again.")
+        raise AnswerError(
+            f"{key} in '{workstream_id}' must come from its selected activities. Ask this question again."
+        )
     return items
 
 
@@ -124,11 +157,16 @@ def clean_measures(library: Library, row: Dict[str, Any], workstream_id: str) ->
         if any(item not in known and item != c.KEY_UNTRACKED for item in items):
             raise AnswerError(f"Unknown measure in '{workstream_id}'. Ask the measures question again.")
         if c.KEY_UNTRACKED in items and len(items) > 1:
-            raise AnswerError(f"Measures in '{workstream_id}' say both tracked and not tracked. Ask the measures question again.")
+            raise AnswerError(
+                f"Measures in '{workstream_id}' say both tracked and not tracked. Ask the measures question again."
+            )
         tracked = [item for item in items if item != c.KEY_UNTRACKED]
     off = string_list(row, c.KEY_MEASURES_OFF, f"{c.KEY_MEASURES_OFF} in '{workstream_id}'")
     if any(item not in (tracked or []) for item in off):
-        raise AnswerError(f"{c.KEY_MEASURES_OFF} in '{workstream_id}' must come from the measures they track. Ask this question again.")
+        raise AnswerError(
+            f"{c.KEY_MEASURES_OFF} in '{workstream_id}' must come from the measures they track. "
+            "Ask this question again."
+        )
     return {c.KEY_MEASURES_TRACKED: tracked, c.KEY_MEASURES_OFF: off}
 
 
@@ -140,90 +178,176 @@ def clean_walkthrough(row: Dict[str, Any], workstream_id: str) -> Dict[str, Any]
     steps = raw.get(c.KEY_STEPS) or []
     require_type(steps, list, f"The walkthrough steps in '{workstream_id}'")
     if len(steps) > c.WALKTHROUGH_STEPS_MAX:
-        raise AnswerError(f"The walkthrough in '{workstream_id}' takes at most {c.WALKTHROUGH_STEPS_MAX} steps. Restate it and confirm it again.")
+        raise AnswerError(
+            f"The walkthrough in '{workstream_id}' takes at most {c.WALKTHROUGH_STEPS_MAX} steps. "
+            "Restate it and confirm it again."
+        )
     cleaned = [clean_text(step, c.WALKTHROUGH_STEP_MAX, "A walkthrough step") for step in steps]
     slow = clean_text(raw.get(c.KEY_SLOW_STEP), c.WALKTHROUGH_STEP_MAX, "The slowest step")
     if slow and slow not in cleaned:
-        raise AnswerError(f"The slowest step in '{workstream_id}' must be one of the confirmed steps. Ask that question again.")
+        raise AnswerError(
+            f"The slowest step in '{workstream_id}' must be one of the confirmed steps. Ask that question again."
+        )
     return {"walkthrough_steps": cleaned, c.KEY_SLOW_STEP: slow}
 
 
-def parse_workstream(library: Library, workstream_id: str, row: Dict[str, Any], assumed: List[str], skipped: List[str], firm_has_no_ai: bool, ai_assumed_areas: List[str]) -> WorkstreamAnswers:
-    label = library.workstreams[workstream_id]["label"]
-    where = f" in {label}"
+def workstream_depth(row: Dict[str, Any], workstream_id: str) -> str:
     depth = row.get(c.KEY_DEPTH)
     depth = Depth.DEEP.value if depth is None else depth
     if not isinstance(depth, str) or depth not in c.ASKED_AT_DEPTH:
         raise AnswerError(f"Invalid depth '{depth}' for '{workstream_id}'. Allowed: {', '.join(c.ASKED_AT_DEPTH)}.")
+    return depth
+
+
+def asked_only(row: Dict[str, Any], depth: str) -> Dict[str, Any]:
+    """A copy without anything this depth does not ask, so a stray answer never counts."""
     row = dict(row)
     for field in c.DETAIL_FIELDS:
         if field not in c.ASKED_AT_DEPTH[depth]:
             row[field] = None
     lists = c.ASKED_LISTS_AT_DEPTH[depth]
-    for key, group in ((c.KEY_LEGACY_TASKS, "legacy_tasks"), (c.KEY_HARM_TASKS, "harm_tasks"), (c.KEY_HEAVY_TASK, "heavy_task"), (c.KEY_MEASURES_TRACKED, "measures"), (c.KEY_MEASURES_OFF, "measures"), (c.KEY_WALKTHROUGH, "walkthrough")):
+    groups = (
+        (c.KEY_LEGACY_TASKS, "legacy_tasks"),
+        (c.KEY_HARM_TASKS, "harm_tasks"),
+        (c.KEY_HEAVY_TASK, "heavy_task"),
+        (c.KEY_MEASURES_TRACKED, "measures"),
+        (c.KEY_MEASURES_OFF, "measures"),
+        (c.KEY_WALKTHROUGH, "walkthrough"),
+    )
+    for key, group in groups:
         if group not in lists:
             row.pop(key, None)
+    return row
+
+
+def parse_details(
+    library: Library,
+    workstream_id: str,
+    row: Dict[str, Any],
+    depth: str,
+    assumed: List[str],
+    skipped: List[str],
+    firm_has_no_ai: bool,
+) -> Tuple[Dict[str, Any], List[str]]:
+    """The detail answers, and which questions were never asked."""
+    where = f" in {library.workstreams[workstream_id]['label']}"
     asked = c.ASKED_AT_DEPTH[depth]
     unasked = [field for field in c.DETAIL_FIELDS if field not in asked or (field == "ai_here" and firm_has_no_ai)]
     details: Dict[str, Any] = {}
     for field in c.DETAIL_SINGLE:
-        details[field] = closed_answer(library, row, field, assumed, skipped, where, key=f"{workstream_id}.{field}", expected=(field not in unasked), noted=(field not in c.NOT_NOTED_DETAIL))
+        details[field] = closed_answer(
+            library, row, field, assumed, skipped, where, key=f"{workstream_id}.{field}",
+            expected=(field not in unasked), noted=(field not in c.NOT_NOTED_DETAIL),
+        )
     for field in c.DETAIL_LISTS:
-        details[field] = closed_list(library, row, field, assumed, skipped, where, key=f"{workstream_id}.{field}", expected=(field not in unasked))
+        details[field] = closed_list(
+            library, row, field, assumed, skipped, where, key=f"{workstream_id}.{field}",
+            expected=(field not in unasked),
+        )
     unasked += [field for field in c.NOT_NOTED_DETAIL if row.get(field) is None]
+    return details, unasked
+
+
+def parse_tasks(
+    library: Library, workstream_id: str, row: Dict[str, Any]
+) -> Tuple[List[str], List[Dict[str, Any]]]:
     activities = string_list(row, c.KEY_ACTIVITIES, f"Tasks in '{workstream_id}'")
     for activity_id in activities:
         activity = library.activities.get(activity_id)
         if activity is None or activity.workstream != workstream_id:
-            raise AnswerError(f"Activity '{activity_id}' does not belong to '{workstream_id}'. Ask the tasks question again.")
+            raise AnswerError(
+                f"Activity '{activity_id}' does not belong to '{workstream_id}'. Ask the tasks question again."
+            )
     custom_rows = row.get(c.KEY_CUSTOM) or []
     require_type(custom_rows, list, f"Custom tasks in '{workstream_id}'")
     custom = [clean_custom(item, workstream_id) for item in custom_rows]
     if not activities and not custom:
         raise AnswerError(f"Work area '{workstream_id}' needs at least one task. Ask the tasks question again.")
-    if firm_has_no_ai and (details["ai_here"] != AiHere.NONE.value or any(item[c.KEY_USES_AI] for item in custom)):
-        raise AnswerError(f"The answers say the firm does not use AI, but ai_here or uses_ai in '{workstream_id}' say it does. These may be left over from an earlier answer. Ask the person which is right. If the firm does not use AI, set ai_here to none, clear ai_tasks, and set uses_ai to false. Otherwise, correct ai_stage.")
+    return activities, custom
+
+
+def check_no_ai_consistent(details: Dict[str, Any], custom: List[Dict[str, Any]], workstream_id: str) -> None:
+    if details["ai_here"] != AiHere.NONE.value or any(item[c.KEY_USES_AI] for item in custom):
+        raise AnswerError(
+            f"The answers say the firm does not use AI, but ai_here or uses_ai in '{workstream_id}' say it does. "
+            "These may be left over from an earlier answer. Ask the person which is right. "
+            "If the firm does not use AI, set ai_here to none, clear ai_tasks, and set uses_ai to false. "
+            "Otherwise, correct ai_stage."
+        )
+
+
+def parse_workstream(
+    library: Library,
+    workstream_id: str,
+    row: Dict[str, Any],
+    assumed: List[str],
+    skipped: List[str],
+    firm_has_no_ai: bool,
+    ai_assumed_areas: List[str],
+) -> WorkstreamAnswers:
+    depth = workstream_depth(row, workstream_id)
+    row = asked_only(row, depth)
+    details, unasked = parse_details(library, workstream_id, row, depth, assumed, skipped, firm_has_no_ai)
+    activities, custom = parse_tasks(library, workstream_id, row)
+    if firm_has_no_ai:
+        check_no_ai_consistent(details, custom, workstream_id)
     ai_tasks = from_selected(row, c.KEY_AI_TASKS, activities, workstream_id)
     legacy = from_selected(row, c.KEY_LEGACY_TASKS, activities, workstream_id)
     harm = from_selected(row, c.KEY_HARM_TASKS, activities, workstream_id)
     heavy = row.get(c.KEY_HEAVY_TASK)
     if heavy is not None and (not isinstance(heavy, str) or heavy not in activities):
-        raise AnswerError(f"heavy_task in '{workstream_id}' must be one of its selected activities. Ask this question again.")
+        raise AnswerError(
+            f"heavy_task in '{workstream_id}' must be one of its selected activities. Ask this question again."
+        )
     if details["ai_here"] != AiHere.NONE.value and not ai_tasks and activities:
-        ai_assumed_areas.append(label)
+        ai_assumed_areas.append(library.workstreams[workstream_id]["label"])
     return WorkstreamAnswers.from_dict(workstream_id, {
-        **details, c.KEY_DEPTH: depth, c.KEY_ACTIVITIES: activities, c.KEY_CUSTOM: custom, c.KEY_AI_TASKS: ai_tasks,
-        c.KEY_LEGACY_TASKS: legacy, c.KEY_HARM_TASKS: harm, c.KEY_HEAVY_TASK: heavy or "", "unasked": unasked,
-        **clean_measures(library, row, workstream_id), **clean_walkthrough(row, workstream_id),
+        **details,
+        c.KEY_DEPTH: depth,
+        c.KEY_ACTIVITIES: activities,
+        c.KEY_CUSTOM: custom,
+        c.KEY_AI_TASKS: ai_tasks,
+        c.KEY_LEGACY_TASKS: legacy,
+        c.KEY_HARM_TASKS: harm,
+        c.KEY_HEAVY_TASK: heavy or "",
+        "unasked": unasked,
+        **clean_measures(library, row, workstream_id),
+        **clean_walkthrough(row, workstream_id),
     })
 
 
-def parse_answers(library: Library, raw: Any) -> Answers:
-    require_type(raw, dict, "The answers file")
-    assumed: List[str] = []
-    skipped: List[str] = []
-    ai_assumed_areas: List[str] = []
-    firm_has_no_ai = raw.get("ai_stage") == AiStage.NONE.value
+def parse_firm_fields(
+    library: Library, raw: Dict[str, Any], assumed: List[str], skipped: List[str]
+) -> Dict[str, Any]:
     has_thesis = bool(raw.get(c.KEY_THESIS_SUMMARY) or raw.get(c.KEY_THESIS_FOCUS))
     stage_asked_used = raw.get("ai_stage") not in (None, AiStage.NONE.value)
     firm: Dict[str, Any] = {}
     for field in c.FIRM_FIELDS:
         allowed = library.thesis_options(raw.get("strategy")) if field == "thesis" else None
         expected = (stage_asked_used or field not in c.AI_FOLLOW_UPS) and not (field == "thesis" and has_thesis)
-        firm[field] = closed_answer(library, raw, field, assumed, skipped, expected=expected, noted=(field not in c.NOT_NOTED_WHEN_SKIPPED), allowed=allowed)
+        firm[field] = closed_answer(
+            library, raw, field, assumed, skipped,
+            expected=expected, noted=(field not in c.NOT_NOTED_WHEN_SKIPPED), allowed=allowed,
+        )
     for field in c.FIRM_LISTS:
         firm[field] = closed_list(library, raw, field, assumed, skipped)
     for field in c.OPTIONAL_FIRM_FIELDS:
         value = raw.get(field)
         if value is not None and (not isinstance(value, str) or value not in library.option_ids(field)):
-            raise AnswerError(f"Invalid answer '{value}' for '{field}'. Allowed: {', '.join(library.option_ids(field))}. Ask this question again.")
+            raise invalid_answer(value, field, "", library.option_ids(field))
         firm[field] = value or ""
+    return firm
 
+
+def parse_ai_tools(library: Library, raw: Dict[str, Any]) -> List[str]:
     tools = string_list(raw, c.KEY_AI_TOOLS, c.KEY_AI_TOOLS)
     allowed_tools = library.option_ids(c.KEY_AI_TOOLS)
     if any(tool not in allowed_tools for tool in tools):
         raise AnswerError(f"Invalid ai_tools. Allowed: {', '.join(allowed_tools)}. Ask this question again.")
+    return tools
 
+
+def parse_kpi(library: Library, raw: Dict[str, Any]) -> Tuple[str, str, Dict[str, str]]:
     kpi = raw.get(c.KEY_KPI)
     kpi_name = clean_text(raw.get(c.KEY_KPI_NAME), c.KPI_NAME_MAX, c.KEY_KPI_NAME)
     kpi_links = raw.get(c.KEY_KPI_LINKS) or {}
@@ -231,52 +355,113 @@ def parse_answers(library: Library, raw: Any) -> Answers:
     if any(not isinstance(link, str) or link not in c.KPI_LINK_RELEVANCE for link in kpi_links.values()):
         raise AnswerError(f"{c.KEY_KPI_LINKS} values must be: {', '.join(c.KPI_LINK_RELEVANCE)}.")
     if any(len(word) > c.KPI_NAME_WORD_MAX for word in kpi_name.split()):
-        raise AnswerError(f"{c.KEY_KPI_NAME} has a word over {c.KPI_NAME_WORD_MAX} characters. Rewrite it and confirm it again.")
+        raise AnswerError(
+            f"{c.KEY_KPI_NAME} has a word over {c.KPI_NAME_WORD_MAX} characters. Rewrite it and confirm it again."
+        )
     if kpi == c.CUSTOM_KPI and not kpi_name:
         raise AnswerError(f"A typed KPI needs its confirmed name in {c.KEY_KPI_NAME}. Ask the KPI question again.")
     if not isinstance(kpi, str) or (kpi not in library.kpis and kpi != c.CUSTOM_KPI):
-        raise AnswerError(f"A KPI is required. Allowed: {', '.join(library.kpis)}, or {c.CUSTOM_KPI} with {c.KEY_KPI_NAME}. Ask the KPI question again.")
+        raise AnswerError(
+            f"A KPI is required. Allowed: {', '.join(library.kpis)}, or {c.CUSTOM_KPI} with {c.KEY_KPI_NAME}. "
+            "Ask the KPI question again."
+        )
     if not kpi_name and raw.get("pressure") is not None and library.kpis[kpi]["pressure"] != raw.get("pressure"):
-        raise AnswerError(f"KPI '{kpi}' does not belong to priority '{raw.get('pressure')}'. Ask the KPI question again.")
+        raise AnswerError(
+            f"KPI '{kpi}' does not belong to priority '{raw.get('pressure')}'. Ask the KPI question again."
+        )
+    return kpi, kpi_name, kpi_links
 
+
+def parse_workstreams(
+    library: Library, raw: Dict[str, Any], assumed: List[str], skipped: List[str], ai_assumed_areas: List[str]
+) -> List[WorkstreamAnswers]:
+    firm_has_no_ai = raw.get("ai_stage") == AiStage.NONE.value
     selected = raw.get(c.KEY_WORKSTREAMS) or {}
     require_type(selected, dict, c.KEY_WORKSTREAMS)
     if not selected:
         raise AnswerError("At least one work area is required. Ask the work area questions.")
     if len(selected) > c.MAX_WORKSTREAMS:
         raise AnswerError(f"At most {c.MAX_WORKSTREAMS} work areas can be assessed. Ask which to keep.")
-
     workstreams: List[WorkstreamAnswers] = []
     for workstream_id, row in selected.items():
         if workstream_id not in library.workstreams:
             raise AnswerError(f"Unknown work area '{workstream_id}'.")
         require_type(row, dict, f"Work area '{workstream_id}'")
-        workstreams.append(parse_workstream(library, workstream_id, row, assumed, skipped, firm_has_no_ai, ai_assumed_areas))
+        workstreams.append(
+            parse_workstream(library, workstream_id, row, assumed, skipped, firm_has_no_ai, ai_assumed_areas)
+        )
+    return workstreams
 
+
+def selected_task_names(workstreams: List[WorkstreamAnswers]) -> Set[str]:
+    names = {task for work in workstreams for task in work.activities}
+    return names | {item[c.KEY_NAME] for work in workstreams for item in work.custom}
+
+
+def parse_named_task(raw: Dict[str, Any], workstreams: List[WorkstreamAnswers]) -> str:
     named = raw.get(c.KEY_NAMED_TASK)
     if named is not None:
         require_type(named, str, c.KEY_NAMED_TASK)
-        names = {task for work in workstreams for task in work.activities} | {item[c.KEY_NAME] for work in workstreams for item in work.custom}
-        if named and named not in names:
-            raise AnswerError("named_task must be a selected activity id or a confirmed custom task name. Check the named task, and add it to its work area.")
+        if named and named not in selected_task_names(workstreams):
+            raise AnswerError(
+                "named_task must be a selected activity id or a confirmed custom task name. "
+                "Check the named task, and add it to its work area."
+            )
+    return named or ""
 
+
+def parse_thesis_focus(library: Library, raw: Dict[str, Any]) -> List[str]:
     focus = string_list(raw, c.KEY_THESIS_FOCUS, c.KEY_THESIS_FOCUS)
     if len(focus) > c.THESIS_FOCUS_MAX or any(item not in library.workstreams for item in focus):
-        raise AnswerError(f"thesis_focus takes at most {c.THESIS_FOCUS_MAX} work area ids. Ask the thesis focus question again.")
+        raise AnswerError(
+            f"thesis_focus takes at most {c.THESIS_FOCUS_MAX} work area ids. Ask the thesis focus question again."
+        )
+    return focus
+
+
+def parse_thesis_notes(raw: Dict[str, Any]) -> Dict[str, str]:
     notes_raw = raw.get(c.KEY_THESIS_NOTES) or {}
     require_type(notes_raw, dict, c.KEY_THESIS_NOTES)
-    notes = {str(key): clean_text(value, c.THESIS_NOTE_MAX, "A thesis note") for key, value in notes_raw.items()}
-    known = {task for row in workstreams for task in row.activities} | {item[c.KEY_NAME] for row in workstreams for item in row.custom}
+    return {str(key): clean_text(value, c.THESIS_NOTE_MAX, "A thesis note") for key, value in notes_raw.items()}
+
+
+def check_kpi_links(kpi_links: Dict[str, str], workstreams: List[WorkstreamAnswers]) -> None:
+    known = selected_task_names(workstreams)
     unknown = [task for task in kpi_links if task not in known]
     if unknown:
-        raise AnswerError(f"{c.KEY_KPI_LINKS} names tasks not in the plan: {', '.join(unknown)}. Use the selected tasks.")
+        raise AnswerError(
+            f"{c.KEY_KPI_LINKS} names tasks not in the plan: {', '.join(unknown)}. Use the selected tasks."
+        )
+
+
+def parse_answers(library: Library, raw: Any) -> Answers:
+    require_type(raw, dict, "The answers file")
+    assumed: List[str] = []
+    skipped: List[str] = []
+    ai_assumed_areas: List[str] = []
+    firm = parse_firm_fields(library, raw, assumed, skipped)
+    tools = parse_ai_tools(library, raw)
+    kpi, kpi_name, kpi_links = parse_kpi(library, raw)
+    workstreams = parse_workstreams(library, raw, assumed, skipped, ai_assumed_areas)
+    named_task = parse_named_task(raw, workstreams)
+    focus = parse_thesis_focus(library, raw)
+    notes = parse_thesis_notes(raw)
+    check_kpi_links(kpi_links, workstreams)
     return Answers(
-        kpi=kpi, workstreams=workstreams, assumed=assumed, skipped=skipped, ai_assumed_areas=ai_assumed_areas, ai_tools=tools,
+        kpi=kpi,
+        workstreams=workstreams,
+        assumed=assumed,
+        skipped=skipped,
+        ai_assumed_areas=ai_assumed_areas,
+        ai_tools=tools,
         kpi_name=kpi_name,
         kpi_value=clean_text(raw.get(c.KEY_KPI_VALUE), c.KPI_VALUE_MAX, c.KEY_KPI_VALUE),
         kpi_links=kpi_links,
         thesis_summary=clean_text(raw.get(c.KEY_THESIS_SUMMARY), c.THESIS_SUMMARY_MAX, "thesis_summary"),
-        thesis_focus=focus, thesis_notes=notes, named_task=named or "",
+        thesis_focus=focus,
+        thesis_notes=notes,
+        named_task=named_task,
         firm_name=clean_text(raw.get(c.KEY_FIRM_NAME), c.FIRM_NAME_MAX, "firm_name"),
-        public_facts=clean_public_facts(raw), **firm,
+        public_facts=clean_public_facts(raw),
+        **firm,
     )

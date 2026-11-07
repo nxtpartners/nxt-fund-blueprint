@@ -1274,7 +1274,7 @@
   },
   "kpi_value": {
    "id": "kpi_value",
-   "text": "Roughly where is {kpi} today, and what is the target? You can skip this."
+   "text": "What are the figures behind {kpi}? For example, where it is today and the target. You can skip this."
   }
  },
  "after_plan": {

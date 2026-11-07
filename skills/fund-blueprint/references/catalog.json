@@ -477,8 +477,7 @@
      "id": "fr_subs",
      "label": "Days to process a subscription",
      "links": {
-      "report_errors": 1,
-      "ddq_turnaround": 1
+      "report_errors": 1
      },
      "tasks": [
       "investor_onboarding"
@@ -739,7 +738,8 @@
    "solution": "Draft CRM entries for deals, intermediaries, and meetings from the deal inbox and calendar, and flag duplicates. A person confirms each entry before it goes in.",
    "first_step": "Choose one shared deal inbox as a test, and list what is entered by hand today.",
    "check": "Keep private meetings out of this by rule.",
-   "effort": "medium"
+   "effort": "medium",
+   "process_solution": "Keep one shared record of deals and contacts, with an owner and a date for each item, before adding any AI."
   },
   {
    "id": "coverage_followups",
@@ -1491,7 +1491,8 @@
    "check": "Compliance, with the administrator or counsel, clears every investor. No tool accepts an investor or clears a sanctions or KYC match. Keep identity documents and personal data only in tools approved for that data.",
    "effort": "medium",
    "required": true,
-   "no_agent": true
+   "no_agent": true,
+   "owner": "Whoever leads compliance"
   },
   {
    "id": "lp_targeting",
@@ -1647,7 +1648,7 @@
     "senior_hours": 1
    },
    "solution": "Pull last quarter's marks, KPIs, and comparable data into one standard pack for each investment, and flag what changed. People still decide every mark.",
-   "first_step": "List what went into last quarter's valuation pack for one investment, and agree a one-page standard format.",
+   "first_step": "List what went into last quarter's valuation pack for one investment, and agree a shorter standard format, once you know what the auditor and the people who set marks use.",
    "check": "The people who set your marks decide every mark, and the pack does not propose a value. Check that your data licenses allow this use.",
    "effort": "medium",
    "required": true,
@@ -1872,7 +1873,7 @@
    "label": "Covenant waivers and workouts",
    "nature": "judgment",
    "kpis": {},
-   "solution": "Keep the decision with the partners and credit leads who own it. AI can compile the covenant terms, history, and correspondence.",
+   "solution": "Keep the decision with the partners who own it. AI can compile the covenant terms, history, and correspondence.",
    "first_step": "Write down who decides a waiver or workout, and where the reason is recorded.",
    "check": "The deal lead and whoever leads compliance record each decision and why.",
    "effort": "medium",

@@ -3,13 +3,14 @@ from __future__ import annotations
 
 import html
 import textwrap
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from . import constants as c
 from . import tokens as t
 from .enums import Quadrant
 from .models import ScoredActivity
-from .scoring import effect_text, impact_level, lower_first
+from .planning.levels import effect_text, impact_level
+from .text import lower_first
 
 
 def band_index(weeks: float) -> int:
@@ -33,7 +34,8 @@ def mark_shape(x: float, y: float, size: float, fits: bool, attributes: str) -> 
     if fits:
         return f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{size}" {attributes}/>'
     reach = size * t.PLOT_DIAMOND_FACTOR
-    return f'<polygon points="{x:.1f},{y - reach:.1f} {x + reach:.1f},{y:.1f} {x:.1f},{y + reach:.1f} {x - reach:.1f},{y:.1f}" {attributes}/>'
+    points = f"{x:.1f},{y - reach:.1f} {x + reach:.1f},{y:.1f} {x:.1f},{y + reach:.1f} {x - reach:.1f},{y:.1f}"
+    return f'<polygon points="{points}" {attributes}/>'
 
 
 def level_index(impact: float) -> int:
@@ -48,8 +50,20 @@ class Canvas:
         self.band_width = (self.right - self.left) / len(c.SPEED_BANDS)
         self.level_height = (self.bottom - self.top) / len(c.LEVEL_NAMES)
 
-    def text(self, x: float, y: float, content: str, size: int, fill: str = t.COLOR_INK_SOFT, anchor: str = "middle", weight: int = 400) -> str:
-        return f'<text x="{x:.0f}" y="{y:.0f}" font-size="{size}" fill="{fill}" text-anchor="{anchor}" font-weight="{weight}">{html.escape(content)}</text>'
+    def text(
+        self,
+        x: float,
+        y: float,
+        content: str,
+        size: int,
+        fill: str = t.COLOR_INK_SOFT,
+        anchor: str = "middle",
+        weight: int = 400,
+    ) -> str:
+        return (
+            f'<text x="{x:.0f}" y="{y:.0f}" font-size="{size}" fill="{fill}" text-anchor="{anchor}" '
+            f'font-weight="{weight}">{html.escape(content)}</text>'
+        )
 
     def y_title(self, kpi_text: str) -> str:
         """The firm's own number names the axis. A long name takes two lines, so it never runs off the plot."""
@@ -58,7 +72,11 @@ class Canvas:
         parts = []
         for index, line in enumerate(lines):
             x = t.PLOT_Y_TITLE_X + index * t.PLOT_Y_TITLE_LINE
-            parts.append(f'<text x="{x}" y="{middle:.0f}" transform="rotate(-90 {x} {middle:.0f})" font-size="{self.spec["axis"]}" fill="{t.COLOR_INK}" text-anchor="middle" font-weight="{t.PLOT_LABEL_WEIGHT}">{html.escape(line)}</text>')
+            parts.append(
+                f'<text x="{x}" y="{middle:.0f}" transform="rotate(-90 {x} {middle:.0f})" '
+                f'font-size="{self.spec["axis"]}" fill="{t.COLOR_INK}" text-anchor="middle" '
+                f'font-weight="{t.PLOT_LABEL_WEIGHT}">{html.escape(line)}</text>'
+            )
         return "".join(parts)
 
     def cells(self, items: List[ScoredActivity]) -> Dict[Tuple[int, int], List[int]]:
@@ -102,57 +120,98 @@ class Canvas:
                     spots[number] = (left + column * step, top + row_index * step)
         return spots
 
+    def line(self, x1: Any, x2: Any, y1: Any, y2: Any, stroke: str, extra: str = "") -> str:
+        """Coordinates arrive as the caller wants them printed, so the numbers on the plot stay as they were."""
+        return f'<line x1="{x1}" x2="{x2}" y1="{y1}" y2="{y2}" stroke="{stroke}"{extra}/>'
+
+    def grid(self) -> List[str]:
+        """Level labels and rules, band ticks, the two axes, and the dashed lines that split the quadrants."""
+        label, parts = self.spec["label"], []
+        for index, name in enumerate(c.LEVEL_NAMES):
+            y = self.bottom - (index + 0.5) * self.level_height + t.PLOT_TEXT_NUDGE
+            parts.append(self.text(self.left - t.PLOT_TICK_GAP, y, name, label, anchor="end"))
+            if index:
+                y = f"{self.bottom - index * self.level_height:.0f}"
+                parts.append(self.line(self.left, self.right, y, y, t.COLOR_LINE))
+        for index in range(1, len(c.SPEED_BANDS)):
+            x = f"{self.left + index * self.band_width:.0f}"
+            parts.append(self.line(x, x, self.bottom, self.bottom + t.PLOT_TICK, t.COLOR_INK))
+        axis = f' stroke-width="{t.PLOT_AXIS_STROKE}"'
+        dash = f' stroke-dasharray="{t.PLOT_DASH}"'
+        mid_x = f"{self.left + c.SLOW_BAND_COUNT * self.band_width:.0f}"
+        mid_y = f"{self.bottom - self.level_height:.0f}"
+        parts.append(self.line(self.left, self.right, self.bottom, self.bottom, t.COLOR_INK, axis))
+        parts.append(self.line(self.left, self.left, self.top, self.bottom, t.COLOR_INK, axis))
+        parts.append(self.line(mid_x, mid_x, self.top, self.bottom, t.COLOR_LINE_STRONG, dash))
+        parts.append(self.line(self.left, self.right, mid_y, mid_y, t.COLOR_LINE_STRONG, dash))
+        return parts
+
+    def corner_labels(self) -> List[str]:
+        right = self.right - t.PLOT_CORNER_INSET_RIGHT
+        left = self.left + t.PLOT_CORNER_INSET_X
+        top = self.top + t.PLOT_CORNER_INSET_TOP
+        bottom = self.bottom - t.PLOT_CORNER_INSET_BOTTOM
+        corners = (
+            (right, top, "end", Quadrant.QUICK_WINS, t.COLOR_INK),
+            (left, top, "start", Quadrant.STRATEGIC_BETS, t.COLOR_INK_SOFT),
+            (right, bottom, "end", Quadrant.FILL_INS, t.COLOR_INK_SOFT),
+            (left, bottom, "start", Quadrant.DEPRIORITIZE, t.COLOR_INK_SOFT),
+        )
+        names = c.QUADRANT_LABELS_SHORT if self.kind == "narrow" else c.QUADRANT_LABELS
+        return [
+            self.text(x, y, names[quadrant], self.spec["label"], fill=fill, anchor=anchor, weight=t.PLOT_LABEL_WEIGHT)
+            for x, y, anchor, quadrant, fill in corners
+        ]
+
+    def axis_labels(self, kpi_text: str) -> List[str]:
+        label, axis = self.spec["label"], self.spec["axis"]
+        y = self.bottom + t.PLOT_BAND_LABEL_OFFSET
+        parts = [
+            self.text(self.right - (index + 0.5) * self.band_width, y, band, label)
+            for index, band in enumerate(self.band_labels)
+        ]
+        parts.append(self.text(
+            (self.left + self.right) / 2, self.spec["height"] - t.PLOT_AXIS_TITLE_OFFSET,
+            "Estimated speed, faster to the right", axis, fill=t.COLOR_INK, weight=t.PLOT_LABEL_WEIGHT,
+        ))
+        parts.append(self.y_title(kpi_text))
+        return parts
+
+    def marker(self, item: ScoredActivity, x: float, y: float, kpi_text: str, ringed: bool) -> str:
+        radius, label = self.spec["radius"], self.spec["label"]
+        color = t.VERDICT_COLORS[item.verdict]
+        hollow = item.verdict in t.VERDICT_HOLLOW
+        fill, stroke, ink = (t.COLOR_SURFACE, color, color) if hollow else (color, t.COLOR_SURFACE, t.COLOR_SURFACE)
+        summary = (
+            f"{item.number}. {item.label}: {c.VERDICT_LABELS[item.verdict]}, {item.speed_label}, "
+            f"{effect_text(item.impact, kpi_text)}, {item.money_line}"
+        )
+        ring_style = f'fill="none" stroke="{t.COLOR_INK}" stroke-width="{t.PLOT_RING_STROKE}"'
+        ring = mark_shape(x, y, radius + t.PLOT_RING_GAP, item.fits, ring_style) if ringed else ""
+        mark_style = f'fill="{fill}" stroke="{stroke}" stroke-width="{t.PLOT_MARK_STROKE}"'
+        return (
+            f'<g class="mark" tabindex="0" role="img" aria-label="{html.escape(summary, quote=True)}">'
+            f"<title>{html.escape(summary)}</title>{ring}"
+            + mark_shape(x, y, radius, item.fits, mark_style)
+            + f'<text x="{x:.0f}" y="{y + t.PLOT_TEXT_NUDGE:.0f}" font-size="{label}" fill="{ink}" '
+            f'text-anchor="middle" font-weight="{t.PLOT_LABEL_WEIGHT}" aria-hidden="true">{item.number}</text></g>'
+        )
+
     def render(self, items: List[ScoredActivity], kpi_label: str, recommended: Tuple[int, ...]) -> str:
         self.fit_height(items)
         spec = self.spec
-        label, axis = spec["label"], spec["axis"]
         kpi_text = lower_first(kpi_label)
-        mid_x = self.left + c.SLOW_BAND_COUNT * self.band_width
-        mid_y = self.bottom - self.level_height
         parts = [
-            f'<svg viewBox="0 0 {spec["width"]} {spec["height"]}" role="group" aria-label="Each numbered activity by speed of execution and estimated impact on {html.escape(kpi_label, quote=True)}. The table below holds the same data." class="plot plot-{self.kind}">'
+            f'<svg viewBox="0 0 {spec["width"]} {spec["height"]}" role="group" '
+            "aria-label=\"Each numbered activity by speed of execution and estimated impact on "
+            f'{html.escape(kpi_label, quote=True)}. The table below holds the same data." '
+            f'class="plot plot-{self.kind}">'
         ]
-        for index, name in enumerate(c.LEVEL_NAMES):
-            parts.append(self.text(self.left - t.PLOT_TICK_GAP, self.bottom - (index + 0.5) * self.level_height + t.PLOT_TEXT_NUDGE, name, label, anchor="end"))
-            if index:
-                y = self.bottom - index * self.level_height
-                parts.append(f'<line x1="{self.left}" x2="{self.right}" y1="{y:.0f}" y2="{y:.0f}" stroke="{t.COLOR_LINE}"/>')
-        for index in range(1, len(c.SPEED_BANDS)):
-            x = self.left + index * self.band_width
-            parts.append(f'<line x1="{x:.0f}" x2="{x:.0f}" y1="{self.bottom}" y2="{self.bottom + t.PLOT_TICK}" stroke="{t.COLOR_INK}"/>')
-        parts.append(f'<line x1="{self.left}" x2="{self.right}" y1="{self.bottom}" y2="{self.bottom}" stroke="{t.COLOR_INK}" stroke-width="{t.PLOT_AXIS_STROKE}"/>')
-        parts.append(f'<line x1="{self.left}" x2="{self.left}" y1="{self.top}" y2="{self.bottom}" stroke="{t.COLOR_INK}" stroke-width="{t.PLOT_AXIS_STROKE}"/>')
-        parts.append(f'<line x1="{mid_x:.0f}" x2="{mid_x:.0f}" y1="{self.top}" y2="{self.bottom}" stroke="{t.COLOR_LINE_STRONG}" stroke-dasharray="{t.PLOT_DASH}"/>')
-        parts.append(f'<line x1="{self.left}" x2="{self.right}" y1="{mid_y:.0f}" y2="{mid_y:.0f}" stroke="{t.COLOR_LINE_STRONG}" stroke-dasharray="{t.PLOT_DASH}"/>')
-
-        corners = (
-            (self.right - t.PLOT_CORNER_INSET_RIGHT, self.top + t.PLOT_CORNER_INSET_TOP, "end", Quadrant.QUICK_WINS, t.COLOR_INK),
-            (self.left + t.PLOT_CORNER_INSET_X, self.top + t.PLOT_CORNER_INSET_TOP, "start", Quadrant.STRATEGIC_BETS, t.COLOR_INK_SOFT),
-            (self.right - t.PLOT_CORNER_INSET_RIGHT, self.bottom - t.PLOT_CORNER_INSET_BOTTOM, "end", Quadrant.FILL_INS, t.COLOR_INK_SOFT),
-            (self.left + t.PLOT_CORNER_INSET_X, self.bottom - t.PLOT_CORNER_INSET_BOTTOM, "start", Quadrant.DEPRIORITIZE, t.COLOR_INK_SOFT),
-        )
-        for x, y, anchor, quadrant, fill in corners:
-            names = c.QUADRANT_LABELS_SHORT if self.kind == "narrow" else c.QUADRANT_LABELS
-            parts.append(self.text(x, y, names[quadrant], label, fill=fill, anchor=anchor, weight=t.PLOT_LABEL_WEIGHT))
-        for index, band in enumerate(self.band_labels):
-            parts.append(self.text(self.right - (index + 0.5) * self.band_width, self.bottom + t.PLOT_BAND_LABEL_OFFSET, band, label))
-        parts.append(self.text((self.left + self.right) / 2, spec["height"] - t.PLOT_AXIS_TITLE_OFFSET, "Estimated speed, faster to the right", axis, fill=t.COLOR_INK, weight=t.PLOT_LABEL_WEIGHT))
-
-        parts.append(self.y_title(kpi_text))
-
+        parts += self.grid() + self.corner_labels() + self.axis_labels(kpi_text)
         spots = self.place_markers(items)
         for item in sorted(items, key=lambda row: row.number):
             x, y = spots[item.number]
-            color = t.VERDICT_COLORS[item.verdict]
-            hollow = item.verdict in t.VERDICT_HOLLOW
-            fill, stroke, ink = (t.COLOR_SURFACE, color, color) if hollow else (color, t.COLOR_SURFACE, t.COLOR_SURFACE)
-            summary = f"{item.number}. {item.label}: {c.VERDICT_LABELS[item.verdict]}, {item.speed_label}, {effect_text(item.impact, kpi_text)}, {item.money_line}"
-            ring = mark_shape(x, y, spec["radius"] + t.PLOT_RING_GAP, item.fits, f'fill="none" stroke="{t.COLOR_INK}" stroke-width="{t.PLOT_RING_STROKE}"') if item.number in recommended else ""
-            parts.append(
-                f'<g class="mark" tabindex="0" role="img" aria-label="{html.escape(summary, quote=True)}"><title>{html.escape(summary)}</title>{ring}'
-                + mark_shape(x, y, spec["radius"], item.fits, f'fill="{fill}" stroke="{stroke}" stroke-width="{t.PLOT_MARK_STROKE}"')
-                + f'<text x="{x:.0f}" y="{y + t.PLOT_TEXT_NUDGE:.0f}" font-size="{label}" fill="{ink}" text-anchor="middle" font-weight="{t.PLOT_LABEL_WEIGHT}" aria-hidden="true">{item.number}</text></g>'
-            )
+            parts.append(self.marker(item, x, y, kpi_text, item.number in recommended))
         parts.append("</svg>")
         return "".join(parts)
 

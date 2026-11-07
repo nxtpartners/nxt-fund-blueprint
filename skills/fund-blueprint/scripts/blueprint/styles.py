@@ -14,7 +14,10 @@ def data_uri(path, mime: str) -> str:
 def font_faces() -> str:
     faces = []
     for family, weight, path in c.FONT_FILES:
-        faces.append(f"@font-face{{font-family:'{family}';font-weight:{weight};font-style:normal;font-display:swap;src:url({data_uri(path, 'font/woff2')}) format('woff2');}}")
+        faces.append(
+            f"@font-face{{font-family:'{family}';font-weight:{weight};font-style:normal;font-display:swap;"
+            f"src:url({data_uri(path, 'font/woff2')}) format('woff2');}}"
+        )
     return "".join(faces)
 
 

@@ -29,10 +29,25 @@ class Library:
     def check_tables(self) -> None:
         """Every closed option must have its entry in each table keyed by that field, or scoring would fail later."""
         tables = {
-            "depends": (c.DEPENDS_PHRASES,), "rhythm": (c.RHYTHM_PHRASES,), "same_way": (c.SAME_WAY_PHRASES,), "budget": (dict(c.BUDGET_TIER, unset="low"),),
-            "hours": (c.HOURS_MIDPOINT, c.HOURS_RANGE, c.HOURS_PHRASES), "sources": (c.WEEKS_SOURCE, c.SOURCE_PHRASES), "who": (c.WHO_RATE, c.WHO_PHRASES, c.SENIOR_LINK_CAP),
-            "time_goes": (c.TIME_PHRASES,), "error_cost": (c.WEEKS_ERROR, c.ERROR_PHRASES), "ai_adoption": (c.WEEKS_ADOPTION, c.ADOPTION_PHRASES), "systems": (c.WEEKS_SYSTEMS,), "policy": (c.WEEKS_POLICY,),
-            "trust": (c.WEEKS_TRUST,), "capacity": (c.WEEKS_CAPACITY,), "ai_results": (c.WEEKS_RESULTS, c.RESULTS_PHRASES), "ai_stage": (c.WEEKS_EXPERIENCE, c.STAGE_PHRASES), "region": (c.REGION_NOTES,), "team": (c.TEAM_ROUTE_TIER,), "fund_stage": (c.STAGE_AREAS,),
+            "depends": (c.DEPENDS_PHRASES,),
+            "rhythm": (c.RHYTHM_PHRASES,),
+            "same_way": (c.SAME_WAY_PHRASES,),
+            "budget": (dict(c.BUDGET_TIER, unset="low"),),
+            "hours": (c.HOURS_MIDPOINT, c.HOURS_RANGE, c.HOURS_PHRASES),
+            "sources": (c.WEEKS_SOURCE, c.SOURCE_PHRASES),
+            "who": (c.WHO_RATE, c.WHO_PHRASES, c.SENIOR_LINK_CAP),
+            "time_goes": (c.TIME_PHRASES,),
+            "error_cost": (c.WEEKS_ERROR, c.ERROR_PHRASES),
+            "ai_adoption": (c.WEEKS_ADOPTION, c.ADOPTION_PHRASES),
+            "systems": (c.WEEKS_SYSTEMS,),
+            "policy": (c.WEEKS_POLICY,),
+            "trust": (c.WEEKS_TRUST,),
+            "capacity": (c.WEEKS_CAPACITY,),
+            "ai_results": (c.WEEKS_RESULTS, c.RESULTS_PHRASES),
+            "ai_stage": (c.WEEKS_EXPERIENCE, c.STAGE_PHRASES),
+            "region": (c.REGION_NOTES,),
+            "team": (c.TEAM_ROUTE_TIER,),
+            "fund_stage": (c.STAGE_AREAS,),
         }
         for field, group in tables.items():
             for table in group:
@@ -45,7 +60,10 @@ class Library:
 
     def human_activities(self, workstream_id: str) -> List[Activity]:
         """Judgment and relationship work stays with people, so it is not offered as a choice."""
-        return [row for row in self.activities.values() if row.workstream == workstream_id and row.nature.value in c.HUMAN_NATURE_VALUES]
+        return [
+            row for row in self.activities.values()
+            if row.workstream == workstream_id and row.nature.value in c.HUMAN_NATURE_VALUES
+        ]
 
     def question(self, question_id: str) -> Dict[str, Any]:
         if question_id in self.after_plan:
@@ -69,11 +87,16 @@ class Library:
         """Thesis options depend on the strategy, and the two sets must not mix."""
         options = self.question("thesis")["options_by"]
         chosen = options.get(strategy) if isinstance(strategy, str) else None
-        return [option["id"] for option in (chosen or options["default"])] if strategy is not None else self.option_ids("thesis")
+        if strategy is None:
+            return self.option_ids("thesis")
+        return [option["id"] for option in (chosen or options["default"])]
 
     def option_label(self, question_id: str, option_id: str) -> str:
         question = self.question(question_id)
-        groups = [question["options"]] if "options" in question else [v for k, v in question["options_by"].items() if k != "key"]
+        if "options" in question:
+            groups = [question["options"]]
+        else:
+            groups = [value for key, value in question["options_by"].items() if key != "key"]
         for options in groups:
             for option in options:
                 if option["id"] == option_id:
@@ -81,14 +104,24 @@ class Library:
         raise KeyError(option_id)
 
     def kpi_view(self, kpi_id: str, typed_name: str = "") -> Dict[str, str]:
-        """The number as this firm named it. A typed name keeps a listed number's rules if they chose that, and has no rules otherwise."""
+        """The number as this firm named it. A typed name keeps a listed number's rules if they chose that.
+
+        It has no rules otherwise.
+        """
         listed = self.kpis.get(kpi_id)
         if not typed_name:
             return listed
         words = typed_name[0].lower() + typed_name[1:] if typed_name[1:2].islower() else typed_name
         return {
-            "id": kpi_id, "label": typed_name, "effect_phrase": c.KPI_TYPED_EFFECT.format(kpi=words), "baseline": c.KPI_TYPED_BASELINE.format(kpi=words),
-            "feeds": "", "feeds_link": "", "matched": listed["label"] if listed else "", "heading": c.KPI_TYPED_HEADING.format(kpi=words), "words": words,
+            "id": kpi_id,
+            "label": typed_name,
+            "effect_phrase": c.KPI_TYPED_EFFECT.format(kpi=words),
+            "baseline": c.KPI_TYPED_BASELINE.format(kpi=words),
+            "feeds": "",
+            "feeds_link": "",
+            "matched": listed["label"] if listed else "",
+            "heading": c.KPI_TYPED_HEADING.format(kpi=words),
+            "words": words,
         }
 
     def flow(self) -> Dict[str, Any]:
@@ -103,9 +136,13 @@ class Library:
         by_workstream: Dict[str, List[Dict[str, str]]] = {}
         for row in self.catalog["activities"]:
             if row["nature"] not in c.HUMAN_NATURE_VALUES:
-                by_workstream.setdefault(row["workstream"], []).append({**strip(row), **({"required": True} if row.get("required") else {})})
+                required = {"required": True} if row.get("required") else {}
+                by_workstream.setdefault(row["workstream"], []).append({**strip(row), **required})
         untracked = {"id": c.KEY_UNTRACKED, "label": "We do not track any of these"}
-        measures = {row["id"]: [strip(measure) for measure in row["measures"]] + [untracked] for row in self.catalog["workstreams"]}
+        measures = {
+            row["id"]: [strip(measure) for measure in row["measures"]] + [untracked]
+            for row in self.catalog["workstreams"]
+        }
         return {
             "pain_first": self.questions["pain_first"],
             "say_back": self.questions["say_back"],
