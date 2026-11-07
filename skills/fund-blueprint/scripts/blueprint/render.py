@@ -86,7 +86,7 @@ def render_blueprint(answers: Answers, plan: Plan, library: Library, today: dt.d
     return (
         '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
-        f'<title>{esc(page_title)}</title><meta name="generator" content="Fund Blueprint {c.VERSION}">'
+        f'<title>{esc(page_title)}</title><meta name="generator" content="AI Strategy and Blueprint {c.VERSION}">'
         f'<style>{stylesheet()}</style></head><body><div class="page">'
         f'<header class="letterhead"><img class="logo" src="{logo}" alt="{c.SITE_NAME}">'
         f'<p>{esc(c.REPORT_NAME)}<br>{today.day} {today.strftime("%B %Y")}</p></header><main>{body}</main>'

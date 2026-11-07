@@ -6,7 +6,7 @@ from urllib.parse import quote
 from .enums import KpiClaim, Horizon, Nature, Quadrant, Rule, Spend, Verdict
 
 CONTACT_EMAIL = "info@nxtpartners.ai"
-CONTACT_SUBJECT_TEXT = "NXT Fund Blueprint: next steps"
+CONTACT_SUBJECT_TEXT = "NXT AI Strategy and Blueprint: next steps"
 CONTACT_SUBJECT = quote(CONTACT_SUBJECT_TEXT)
 DEMO_LABEL = "pe.nxtpartners.ai"
 DEMO_URL = f"https://{DEMO_LABEL}"
@@ -404,7 +404,7 @@ ROADMAP_WAVE_ONE = "Move {first}"
 COVERAGE_LINE = "Your number depends most on {areas}, which you did not assess. Add it for a fuller plan."
 PEOPLE_ELSEWHERE = "Across the firm, these also stay with your people: {items}."
 STRATEGY_LINE = "This is your AI strategy and blueprint, built from one person's answers. It sets which activities to take forward, and in what order."
-REPORT_NAME = "AI Strategy and Blueprint"
+REPORT_NAME = "AI Strategy and Blueprint for PE Funds"
 KPI_STATUS_ROW = {
     "on_target": "On target, you said",
     "off_target": "Off target, you said",

@@ -39,7 +39,7 @@ def render_email(answers: Answers, plan: Plan, library: Library) -> str:
         "",
         f"Hello {c.SITE_NAME},",
         "",
-        "We completed the Fund Blueprint and would like to talk about implementation.",
+        "We completed the AI Strategy and Blueprint and would like to talk about implementation.",
         "",
         *([f"Firm: {answers.firm_name}"] if answers.firm_name else []),
         *([f"Strategy: {library.option_label('strategy', answers.strategy)}"] if told(answers, "strategy") else []),

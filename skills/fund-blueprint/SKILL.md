@@ -3,7 +3,7 @@ name: fund-blueprint
 description: "Runs a guided, script-based assessment of a private equity firm's own operations and produces an AI blueprint: where to automate, optimize, remove work, or add AI, including agentic AI where the firm is ready, with a roadmap and a plot of speed of execution against a KPI that fits the firm's thesis. Use this whenever someone at a PE firm, fund, or GP asks where AI could help their firm, how to reduce manual work in deal teams, IR, finance, or portfolio monitoring, or wants an AI roadmap or AI readiness assessment for their fund, even if they do not say 'blueprint'. Not for assessing portfolio companies."
 ---
 
-# Fund Blueprint
+# AI Strategy and Blueprint for PE Funds
 
 ## First, check that you can run this
 
@@ -11,7 +11,7 @@ description: "Runs a guided, script-based assessment of a private equity firm's 
 
 If you cannot run shell commands in this conversation, for example in an incognito chat or where code execution is turned off, do not ask any assessment questions, do not write your own version, and do not offer a shorter alternative, even if the person asks. Reply only with this, then stop:
 
-> Fund Blueprint needs to run a small script, and that is not available in this chat. To use it, open a regular Claude chat with code execution turned on in your settings. This tool is free, and it does not send your answers to NXT Partners AI.
+> AI Strategy and Blueprint for PE Funds needs to run a small script, and that is not available in this chat. To use it, open a regular Claude chat with code execution turned on in your settings. This tool is free, and it does not send your answers to NXT Partners AI.
 
 Guide a COO, partner, or similar senior person at a private equity firm through a guided assessment of how their firm runs, then give them a blueprint they can act on.
 
@@ -29,7 +29,7 @@ Do not give opinions or early conclusions in the conversation, including reassur
 
 Begin your first message, before running any command, with one neutral sentence saying you will run a guided assessment, then show this notice word for word, every line, as a normal message. The respondent cannot see this file: the notice reaches them only if you write out all of it in your message. Never shorten, summarize, describe, or reword it, on any surface, including a terminal, and never refer to it as "the intro". It must appear first in every conversation, however much they have already told you:
 
-> **Fund Blueprint, a free tool by NXT Partners AI**
+> **AI Strategy and Blueprint for PE Funds, a free tool by NXT Partners AI**
 >
 > This free tool is open to everyone. In about 35 short questions for one part of your firm, plus 3 to 9 for each part you add, you tell me how the work runs today. You get a ranked plan of what to automate, what AI could draft, what to stop, and what to leave with your people, with a first step for each. Most of it is multiple choice.
 >
