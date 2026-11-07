@@ -8,10 +8,10 @@ from typing import Dict, List
 from . import constants as c
 from . import tokens as t
 from .data import Library
-from .enums import AiStage, Capacity, Horizon, Policy, Quadrant, Verdict
+from .enums import AiStage, Capacity, Depth, Horizon, Policy, Quadrant, Verdict
 from .models import Answers, ScoredActivity
 from .plot import render_plot, timeline_share
-from .scoring import Plan, effect_text, impact_level, join_words, lower_first
+from .scoring import Plan, effect_text, impact_level, join_words, lower_first, unlimited_view
 from .styles import data_uri, stylesheet
 
 esc = html.escape
@@ -23,8 +23,8 @@ def key_mark(verdict: Verdict) -> str:
     return f'<i class="key-mark" style="color:{color};background:{fill}" aria-hidden="true"></i>'
 
 
-def section(number: int, title: str, body: str) -> str:
-    slug = f"sec-{number}"
+def section(number: int, title: str, body: str, prefix: str = "") -> str:
+    slug = f"{prefix}sec-{number}"
     return f'<section class="sec" aria-labelledby="{slug}"><div class="sec-head"><span class="sec-no">{number:02d}</span><h2 id="{slug}">{esc(title)}</h2></div><div>{body}</div></section>'
 
 
@@ -59,7 +59,7 @@ def headline(plan: Plan, kpi: str) -> str:
         return f"Your first move is to review how AI is used in {lower_first(item.workstream_label)}, starting with {label}"
     if item.restricted_in_use:
         return f"Your first move is to settle how AI is used for {label}"
-    if item.quadrant == Quadrant.DEPRIORITIZE and item.effect_rated and not any(impact_level(row.impact) != "Low" for row in plan.plotted):
+    if item.quadrant == Quadrant.DEPRIORITIZE and not any(impact_level(row.impact) != "Low" for row in plan.plotted):
         return f"Nothing here ranks highly against {lower_first(kpi)}, so start with {label}"
     if item.rule in c.HEADLINE_RULES:
         return c.HEADLINE_RULES[item.rule].format(label=label)
@@ -86,7 +86,7 @@ def planning_line(plan: Plan) -> str:
     if within == 0:
         return f"Under our planning rules, the {count} that add software would each take over 90 days."
     share = f"each of the {count}" if within == len(software) else f"{within} of the {count}"
-    return f"Under our planning rules, {share} that add software could reach a first working version within 90 days if worked on alone."
+    return f"Under our planning rules, {share} that add software could reach a first working version within 90 days."
 
 
 def told(answers: Answers, field: str) -> bool:
@@ -109,7 +109,7 @@ def opening(answers: Answers, plan: Plan, library: Library, kpi: str) -> str:
         ("Firm", " · ".join(firm_bits)),
         ("Thesis", thesis),
         ("Priority", library.option_label("pressure", answers.pressure) if told(answers, "pressure") else ""),
-        ("Measured against", kpi),
+        ("Measured against", f"{kpi} ({answers.kpi_value})" if answers.kpi_value else kpi),
         ("Assessed", ", ".join(library.workstreams[work.id]["label"] for work in answers.workstreams)),
     ]
     quick = sum(1 for item in plan.plotted if item.quadrant == Quadrant.QUICK_WINS)
@@ -118,7 +118,7 @@ def opening(answers: Answers, plan: Plan, library: Library, kpi: str) -> str:
     if plan.hours_known:
         glance.append(f"{hours_text(plan)} hours a month reported")
     if plan.plotted:
-        glance += [plural(len(plan.plotted), "move"), f"{quick} at Medium effect or above within 90 days"]
+        glance += [plural(len(plan.plotted), "move"), f"{quick} at Medium effect or above within 60 days"]
     if stops:
         glance.append(f"{stops} to test stopping")
     if plan.people:
@@ -134,6 +134,11 @@ def opening(answers: Answers, plan: Plan, library: Library, kpi: str) -> str:
     return f'<div class="opening"><h1>{esc(headline(plan, kpi))}</h1>{first_html}{start}{reading_html}</div><dl class="ledger">{ledger}</dl><div class="spacer"></div>'
 
 
+def shape_mark(fits: bool) -> str:
+    inner = '<circle cx="6" cy="6" r="4.6"/>' if fits else '<path d="M6 .8 11.2 6 6 11.2 .8 6Z"/>'
+    return f'<svg class="shape-mark" viewBox="0 0 12 12" aria-hidden="true">{inner}</svg>'
+
+
 def recommendation(plan: Plan) -> str:
     if not plan.top:
         return ""
@@ -145,9 +150,9 @@ def recommendation(plan: Plan) -> str:
         moves.append(
             f'<li><div class="head"><span class="no">Move {index}</span><h3>{esc(item.label)}</h3></div>'
             f'<div class="body"><p>{esc(item.solution)}</p>{why}<p><span class="lead">First step.</span> {esc(item.first_step)}</p>{thesis}</div>'
-            f'<p class="meta"><span>{esc(c.VERDICT_LABELS[item.verdict])}</span><span>{esc(item.speed_label)}</span><span>Effect: {esc(effect_text(item.impact, item.effect_rated))}</span><span>{esc(item.relevance_note)}</span><span>Suggested owner: {esc(item.owner_role)}</span>{unknown}</p></li>'
+            f'<p class="meta"><span>{esc(c.VERDICT_LABELS[item.verdict])}</span><span>{esc(item.speed_label)}</span><span>Effect: {esc(effect_text(item.impact))}</span><span>{shape_mark(item.fits)} {esc(item.money_line)}</span><span>{esc(item.relevance_note)}</span><span>Suggested owner: {esc(item.owner_role)}</span>{unknown}</p></li>'
         )
-    return f'<p class="sec-lede soft">All times and effects in this report are planning estimates.</p><ol class="moves">{"".join(moves)}</ol>'
+    return f'<p class="sec-lede soft">{esc(c.STRATEGY_LINE)} All times, effects, and money levels in this report are planning estimates, not quotes.</p><ol class="moves">{"".join(moves)}</ol>'
 
 
 def position(answers: Answers, plan: Plan, library: Library) -> str:
@@ -178,33 +183,50 @@ def position(answers: Answers, plan: Plan, library: Library) -> str:
     if existing:
         lines = "".join(f'<li><span class="lead">{esc(item.label)}.</span> {esc(item.ai_note)}.</li>' for item in existing)
         existing_html = f'<h3 class="subhead">AI already in this work</h3><ul class="list">{lines}</ul>'
+    stuck = ""
+    if plan.stuck:
+        lines = "".join(f'<li><span class="lead">{esc(area)}.</span> {esc(" ".join(rows))}</li>' for area, rows in plan.stuck)
+        stuck = f'<h3 class="subhead">{esc(c.STUCK_TITLE)}</h3><ul class="list">{lines}</ul>'
     clear = ""
     if plan.foundations:
         lines = "".join(f'<li><span class="lead">{esc(title)}.</span> {esc(text)}</li>' for title, text, _ in plan.foundations)
         clear = f'<h3 class="subhead">Clear these first</h3><ol class="list">{lines}</ol>'
-    if not (ledger or existing_html or clear):
+    if not (ledger or existing_html or stuck or clear):
         return ""
     ledger_html = f'<dl class="ledger">{ledger}</dl>' if ledger else ""
-    return f"{ledger_html}{existing_html}{clear}"
+    return f"{ledger_html}{stuck}{existing_html}{clear}"
 
 
 def legend(plan: Plan) -> str:
     present = [v for v in Verdict if v != Verdict.LEAVE and any(item.verdict == v for item in plan.plotted)]
     rows = "".join(f"<li>{key_mark(v)}<span><b>{esc(c.VERDICT_LABELS[v])}</b>. {esc(c.VERDICT_DEFINITIONS[v])}</span></li>" for v in present)
-    return f'<ul class="legend">{rows}</ul>'
+    budget = plan.budget
+    shapes = ""
+    if budget and any(item.fits for item in plan.plotted):
+        shapes += f"<li>{shape_mark(True)}<span>{esc(c.SHAPE_KEY_FITS[budget])}</span></li>"
+    if any(not item.fits for item in plan.plotted):
+        shapes += f"<li>{shape_mark(False)}<span>{esc(c.SHAPE_KEY_NOT[budget])}</span></li>"
+    return f'<ul class="legend">{rows}</ul>' + (f'<ul class="legend">{shapes}</ul>' if shapes else "")
 
 
-def priorities(plan: Plan, kpi: str, library: Library, kpi_id: str) -> str:
+def kpi_note(view: Dict[str, str]) -> str:
+    """What the number on the axis feeds, with no size attached, or how a typed number was handled."""
+    if view.get("feeds"):
+        return " ".join((c.FEEDS_LINE.format(feeds=view["feeds"]), c.FEEDS_LINKS[view["feeds_link"]], c.RELATIVE_NOTE, c.NO_RETURNS_CLAIM))
+    if view.get("matched"):
+        return " ".join((c.KPI_MATCHED_NOTE.format(matched=lower_first(view["matched"])), c.RELATIVE_NOTE, c.NO_RETURNS_CLAIM))
+    return " ".join((c.KPI_OWN_NOTE, c.RELATIVE_NOTE, c.KPI_OWN_NO_FORECAST.format(kpi=view["words"])))
+
+
+def priorities(plan: Plan, kpi: str, view: Dict[str, str]) -> str:
     if not plan.plotted:
         return ""
-    key = "".join(f'<li><span class="mono soft">{item.number}</span><span>{esc(item.label)}</span></li>' for item in plan.plotted)
+    key = "".join(f'<li><span class="mono soft">{item.number}</span><span>{esc(item.label)}{" " + shape_mark(False) if not item.fits else ""}</span></li>' for item in plan.plotted)
     recommended = tuple(item.number for item in plan.top)
     marks = [c.QUADRANT_NOTE_TOP] if recommended else []
-    if any(not item.effect_rated for item in plan.plotted):
-        marks.append(c.QUADRANT_NOTE_UNRATED)
     return (
-        f'<figure class="flush"><p class="plot-y">How much each move could {esc(library.kpis[kpi_id]["effect_phrase"])}</p>{render_plot(plan.plotted, kpi, recommended)}{legend(plan)}<ol class="plot-key">{key}</ol>'
-        f'<figcaption class="note">{esc(" ".join(marks))} Speed is the estimated time to a first working version, or to finish a process change. Effect is the estimated effect on {esc(lower_first(kpi))}. Both are planning estimates, explained in the notes, not measurements.</figcaption></figure>'
+        f'<figure class="flush"><p class="plot-y">{esc(view.get("heading") or c.PLOT_HEADING.format(effect=view["effect_phrase"]))}</p><p class="note plot-note">{esc(kpi_note(view))}</p>{render_plot(plan.plotted, kpi, recommended)}{legend(plan)}<ol class="plot-key">{key}</ol>'
+        f'<figcaption class="note">{esc(" ".join(marks))} Speed is the estimated time to a first working version, or to finish a process change. Effect is the estimated effect on {esc(lower_first(kpi))}, compared with your other moves. Both are planning estimates, explained in the notes, not measurements. Money levels are planning estimates too, set by the type of move and your tools, for each move taken alone. They are not quotes.</figcaption></figure>'
     )
 
 
@@ -213,13 +235,13 @@ def connections(plan: Plan, kpi: str) -> str:
     linked = [row for row in plan.measure_rows if row[2] and row[4]]
     if not linked:
         return ""
-    numbers = {item.activity_id: item.number for item in plan.plotted}
+    numbers = {item.activity_id: item.number for item in plan.plotted if item.kpi_linked}
 
     def moves(tasks: List[str]) -> str:
-        return ", ".join(str(numbers[task]) for task in tasks if task in numbers) or "None"
+        return ", ".join(str(number) for number in sorted(numbers[task] for task in tasks if task in numbers)) or "None"
     rows = "".join(f'<tr><th scope="row">{esc(measure)}</th><td>{esc(c.LINK_LADDER[link])}</td><td>{esc(status)}</td><td>{esc(moves(tasks))}</td></tr>' for _, measure, link, status, tasks in linked)
     others = [row[1] for row in plan.measure_rows if not row[2]]
-    tail = f'<p class="note">Also tracked, with no link to {esc(lower_first(kpi))}: {esc(join_words([lower_first(name) for name in others]))}.</p>' if others else ""
+    tail = f'<p class="note">Also tracked, with only an indirect link to {esc(lower_first(kpi))}: {esc(join_words([lower_first(name) for name in others]))}.</p>' if others else ""
     return f'<p class="sec-lede soft">How each team\'s own number feeds {esc(lower_first(kpi))}. These links are planning assumptions, so ask each team whether they hold.</p><table class="link-table"><thead><tr><th scope="col">Team\'s number</th><th scope="col">Link</th><th scope="col">Today</th><th scope="col">Moves</th></tr></thead><tbody>{rows}</tbody></table>{tail}'
 
 
@@ -227,22 +249,27 @@ def roadmap(plan: Plan) -> str:
     if not plan.plotted:
         return ""
     columns = []
-    for horizon in Horizon:
-        rows = sorted((item for item in plan.plotted if item.horizon == horizon), key=lambda item: (item.verdict != Verdict.REMOVE, item.number))
+    start = 0
+    for index, (title, size) in enumerate(c.ROADMAP_WAVES):
+        size = (max(plan.start_moves) + 1 if plan.start_moves else size) if index == 0 else size
+        rows = plan.plotted[start:] if size is None else plan.plotted[start : start + size]
         if not rows:
             continue
-        body = "".join(f'<li><span class="mono soft">{item.number}</span><span>{esc(item.label)}<br><span class="small soft">{esc(c.VERDICT_LABELS[item.verdict])}</span></span></li>' for item in rows)
-        body = f"<ul>{body}</ul>"
-        columns.append(f'<div><h3>{esc(c.HORIZON_LABELS[horizon])}</h3><small>{esc(c.HORIZON_SPANS[horizon])}</small>{body}</div>')
+        span = c.ROADMAP_WAVE_ONE.format(first=rows[0].number) if len(rows) == 1 else c.ROADMAP_WAVE_SPAN.format(first=rows[0].number, last=rows[-1].number)
+        body = "".join(f'<li><span class="mono soft">{item.number}</span><span>{esc(item.label)}<br><span class="small soft">{esc(c.VERDICT_LABELS[item.verdict])} · {esc(item.speed_label)}{" · " + esc(item.fit_note) if item.fit_note else ""}</span></span></li>' for item in rows)
+        columns.append(f'<div><h3>{esc(title)}</h3><small>{esc(span)}</small><ul>{body}</ul></div>')
+        start += len(rows)
     return f'<p class="sec-lede soft">{esc(planning_line(plan))} Each estimate assumes the move is worked on alone. Running several at once takes longer.</p><div class="stages">{"".join(columns)}</div>'
 
 
 def detail_row(item: ScoredActivity, kpi: str = "") -> str:
     planned = item.verdict != Verdict.LEAVE
-    speed = f'<span class="col">{esc(item.speed_label)}</span><span class="col">{esc(effect_text(item.impact, item.effect_rated))}</span>' if planned else '<span class="col"></span><span class="col"></span>'
+    speed = f'<span class="col">{esc(item.speed_label)}</span><span class="col">{esc(effect_text(item.impact))}</span>' if planned else '<span class="col"></span><span class="col"></span>'
     fields = [("Why", item.reason), ("What changes for your team", item.solution)]
     if item.route:
         fields.append((c.ROUTE_LABEL, item.route))
+    if planned:
+        fields.append((c.MONEY_LABEL, item.money_line))
     fields += [("First step", item.first_step), ("Human check", item.check), ("Suggested owner", item.owner_role)]
     if item.relevance_note:
         fields.append((f"Link to {lower_first(kpi)}", item.relevance_note))
@@ -256,7 +283,7 @@ def detail_row(item: ScoredActivity, kpi: str = "") -> str:
         fields.append(("Source", c.NAMED_TAG))
     elif item.custom:
         fields.append(("Source", c.CUSTOM_TAG))
-    if item.depth == "quick" and planned:
+    if item.depth == Depth.QUICK.value and planned:
         fields.append(("Depth", c.NOT_EXAMINED))
     body = "".join(f"<div><dt>{esc(key)}</dt><dd>{esc(value)}</dd></div>" for key, value in fields)
     return (
@@ -281,20 +308,23 @@ def details_table(plan: Plan, kpi: str) -> str:
         steps = plan.walkthroughs.get(label)
         walk = f'<p><span class="lead">{esc(c.WALKTHROUGH_TITLE)}:</span> {esc("; ".join(steps))}.</p>' if steps else ""
         blocks.append(f'<div class="group"><h3>{esc(label)}</h3>{evidence}{walk}<div class="rows">{"".join(detail_row(item, kpi) for item in items)}</div></div>')
-    return f'<p class="sec-lede soft">Open a row to see why, what changes for your team, the first step, and who should own it. Effect is rated only against {esc(lower_first(kpi))}, so a task can matter to the firm and still rate Low here.</p>{TABLE_HEAD}{"".join(blocks)}'
+    rated_line = f" Effect is rated only against {esc(lower_first(kpi))}, so a task can matter to the firm and still rate Low here."
+    return f'<p class="sec-lede soft">Open a row to see why, what changes for your team, the first step, and who should own it.{rated_line}</p>{TABLE_HEAD}{"".join(blocks)}'
 
 
 def people(plan: Plan) -> str:
-    if not plan.people:
+    elsewhere = f'<p class="note">{esc(c.PEOPLE_ELSEWHERE.format(items=join_words([lower_first(label) for label in plan.people_elsewhere])))}</p>' if plan.people_elsewhere else ""
+    if not plan.people and not elsewhere:
         return ""
-    return f'<p class="sec-lede soft">{esc(c.STAYS_WITH_PEOPLE_LEDE)}</p><div class="rows">{"".join(detail_row(item) for item in plan.people)}</div>'
+    rows = f'<p class="sec-lede soft">{esc(c.STAYS_WITH_PEOPLE_LEDE)}</p><div class="rows">{"".join(detail_row(item) for item in plan.people)}</div>' if plan.people else ""
+    return rows + elsewhere
 
 
 def notes(answers: Answers, plan: Plan, library: Library) -> str:
     rows = [
         c.METHOD_NOTE,
         "The answers behind this report come from one person. Other people at your firm may see it differently.",
-        "We did not estimate cost. Ask for a price on your first move before committing.",
+        "Money levels are broad estimates, not prices. Ask for a price on your first move before committing.",
         "This is operational guidance generated with AI. It is not investment, legal, tax, or compliance advice, so have the right people review it before acting.",
         c.REGION_NOTES[answers.region],
     ]
@@ -302,7 +332,7 @@ def notes(answers: Answers, plan: Plan, library: Library) -> str:
         rows.append(c.CREDIT_NOTE)
     if plan.focus_missing:
         rows.append(f"You said {join_words(plan.focus_missing)} matters to your thesis, but it was not assessed in this run.")
-    quick = [work.id for work in answers.workstreams if work.depth != "deep"]
+    quick = [work.id for work in answers.workstreams if work.depth != Depth.DEEP.value]
     if quick:
         rows.append("These work areas had fewer questions, so their rows rest on less detail: " + ", ".join(library.workstreams[item]["label"] for item in quick) + ".")
     if plan.not_assessed:
@@ -328,7 +358,7 @@ def next_30_days(plan: Plan, answers: Answers, library: Library) -> str:
     data_owner = plan.top[0].owner_role if plan.top else c.FIRM_WIDE_OWNER
     rows = [("", action, data_owner if action.startswith(c.DATA_ACTION_START) else c.FIRM_WIDE_OWNER) for _, _, action in plan.foundations[: c.NEXT_30_MAX_FOUNDATIONS]]
     if not told(answers, "kpi_status"):
-        rows.append(("", library.kpis[answers.kpi]["baseline"], c.FIRM_WIDE_OWNER))
+        rows.append(("", library.kpi_view(answers.kpi, answers.kpi_name)["baseline"], c.FIRM_WIDE_OWNER))
     rows += [("", action, owner) for action, owner in plan.measure_actions[: c.MEASURE_ACTIONS_MAX]]
     if told(answers, "team") and answers.team == c.LARGE_TEAM:
         rows.append(("", c.TEAM_REVIEW_ACTION, c.FIRM_WIDE_OWNER))
@@ -338,6 +368,7 @@ def next_30_days(plan: Plan, answers: Answers, library: Library) -> str:
     named = [item for item in plan.plotted if item.named and item not in started]
     for item in started + named:
         rows.append((item.label, item.first_step, item.owner_role))
+    rows = list({action.split(". ")[0].lower(): (task, action, owner) for task, action, owner in reversed(rows)}.values())[::-1]
     lines = "".join(
         f'<li><span class="mono soft">{index}</span><span>{f"<span class=lead>{esc(task)}.</span> " if task else ""}{esc(action)}</span><span class="owner">{esc(owner)}</span></li>'
         for index, (task, action, owner) in enumerate(rows, start=1)
@@ -367,9 +398,14 @@ def department_roadmap(plan: Plan) -> str:
     for item in plan.plotted:
         departments.setdefault(item.workstream_label, []).append(item)
     for label, items in departments.items():
-        rows = "".join(timeline_row(str(item.number), item.label, f"{c.VERDICT_LABELS[item.verdict]} · {item.speed_label}", timeline_share(item.weeks), t.VERDICT_COLORS[item.verdict], item.verdict in t.VERDICT_HOLLOW) for item in sorted(items, key=lambda row: row.weeks))
+        rows = "".join(timeline_row(str(item.number), item.label, f"{c.VERDICT_LABELS[item.verdict]} · {item.speed_label}" + (f" · {item.fit_note}" if item.fit_note else ""), timeline_share(item.weeks), t.VERDICT_COLORS[item.verdict], item.verdict in t.VERDICT_HOLLOW) for item in sorted(items, key=lambda row: row.weeks))
         groups.append(f'<div class="tl-group"><h3>{esc(label)}</h3><p class="owner">Suggested owner: {esc(items[0].owner_role)}</p>{rows}</div>')
     return f'<p class="sec-lede soft">The same plan by department, so each owner can see their part. Each line shows the estimated time if started today and worked on alone. The scale is not even.</p><div class="timeline">{axis}{"".join(groups)}</div>'
+
+
+def scope_next() -> str:
+    rows = "".join(f'<li><span class="lead">{esc(title)}.</span> {esc(text)}</li>' for title, text in c.SCOPE_ITEMS)
+    return f'<p class="sec-lede soft">{esc(c.SCOPE_LEDE)}</p><ul class="list">{rows}</ul>'
 
 
 def plain_terms() -> str:
@@ -387,21 +423,19 @@ def closing(logo: str) -> str:
     )
 
 
-def render_blueprint(answers: Answers, plan: Plan, library: Library, today: dt.date) -> str:
-    kpi = library.kpis[answers.kpi]["label"]
-    logo = data_uri(c.LOGO_PATH, "image/png")
-    kpi_id = answers.kpi
-    early_blockers = answers.capacity == [Capacity.NOBODY.value] or answers.policy == Policy.RESTRICTED.value or (answers.policy == Policy.NONE.value and told(answers, "policy"))
-    stand = ("Where you stand", position(answers, plan, library))
+def view_body(answers: Answers, plan: Plan, library: Library, prefix: str = "") -> str:
+    """The whole report for one set of answers, from the headline to the notes."""
+    view = library.kpi_view(answers.kpi, answers.kpi_name)
+    kpi = view["label"]
     registry = [
+        ("Where you stand", position(answers, plan, library)),
         ("Recommendation", recommendation(plan)),
-        *([stand] if early_blockers else []),
-        ("What could move this number soonest", priorities(plan, kpi, library, kpi_id)),
+        ("What could move this number soonest", priorities(plan, kpi, view)),
         ("Your next 30 days", next_30_days(plan, answers, library)),
         ("How this work connects", connections(plan, kpi)),
-        *([] if early_blockers else [stand]),
         ("Roadmap", roadmap(plan)),
         ("Roadmap by department", department_roadmap(plan)),
+        (c.SCOPE_TITLE, scope_next() if plan.plotted else ""),
         ("Activity by activity", details_table(plan, kpi)),
         ("Leave with your people", people(plan)),
         ("In plain terms", plain_terms()),
@@ -409,13 +443,33 @@ def render_blueprint(answers: Answers, plan: Plan, library: Library, today: dt.d
         ("Notes", notes(answers, plan, library)),
     ]
     numbered = [(title, content) for title, content in registry if content]
-    sections = "".join(section(number, title, content) for number, (title, content) in enumerate(numbered, start=1))
-    body = opening(answers, plan, library, kpi) + sections + closing(logo)
-    page_title = f"Fund Blueprint: {answers.firm_name}" if answers.firm_name else f"Fund Blueprint by {c.SITE_NAME}"
+    sections = "".join(section(number, title, content, prefix) for number, (title, content) in enumerate(numbered, start=1))
+    return opening(answers, plan, library, kpi) + sections
+
+
+def budget_views(answers: Answers, plan: Plan, library: Library) -> str:
+    """Two tabs when the budget changes something, and one plain view when it does not. No script, so they work wherever the file opens."""
+    if not any(not item.fits for item in plan.plotted):
+        return view_body(answers, plan, library)
+    open_answers, open_plan = unlimited_view(library, answers)
+    return (
+        f'<div class="views" role="group" aria-label="{esc(c.VIEW_GROUP_LABEL)}">'
+        f'<input class="view-radio" type="radio" name="view" id="view-budget" checked><label class="view-tab" for="view-budget">{esc(c.VIEW_TAB_BUDGET)}</label>'
+        f'<input class="view-radio" type="radio" name="view" id="view-open"><label class="view-tab" for="view-open">{esc(c.VIEW_TAB_OPEN)}</label>'
+        f'<div class="view view-budget"><p class="view-print note">{esc(c.VIEW_PRINT_BUDGET)}</p>{view_body(answers, plan, library, "budget-")}</div>'
+        f'<div class="view view-open"><p class="view-print note">{esc(c.VIEW_PRINT_OPEN)}</p><p class="view-note note">{esc(c.VIEW_NOTE_OPEN)}</p>{view_body(open_answers, open_plan, library, "open-")}</div>'
+        "</div>"
+    )
+
+
+def render_blueprint(answers: Answers, plan: Plan, library: Library, today: dt.date) -> str:
+    logo = data_uri(c.LOGO_PATH, "image/png")
+    body = budget_views(answers, plan, library) + closing(logo)
+    page_title = f"{c.REPORT_NAME}: {answers.firm_name}" if answers.firm_name else f"{c.REPORT_NAME} by {c.SITE_NAME}"
     return (
         '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
         f'<title>{esc(page_title)}</title><meta name="generator" content="Fund Blueprint {c.VERSION}"><style>{stylesheet()}</style></head><body><div class="page">'
-        f'<header class="letterhead"><img class="logo" src="{logo}" alt="{c.SITE_NAME}"><p>Fund Blueprint<br>{today.day} {today.strftime("%B %Y")}</p></header><main>{body}</main>'
+        f'<header class="letterhead"><img class="logo" src="{logo}" alt="{c.SITE_NAME}"><p>{esc(c.REPORT_NAME)}<br>{today.day} {today.strftime("%B %Y")}</p></header><main>{body}</main>'
         f"<footer>Created by {esc(c.SITE_NAME)} · {c.CONTACT_EMAIL}</footer></div>"
         "<script>addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=true})})</script></body></html>"
     )
@@ -423,13 +477,13 @@ def render_blueprint(answers: Answers, plan: Plan, library: Library, today: dt.d
 
 def render_summary(answers: Answers, plan: Plan, library: Library) -> str:
     """Printed to the conversation, so the result survives any display failure."""
-    kpi_label = library.kpis[answers.kpi]["label"]
-    lines = [f"KPI: {kpi_label}", f"Reported hours a month: {hours_text(plan) if plan.hours_known else 'not answered'}", "", "| # | Activity | Id | Verdict | Speed, estimated | Impact, estimated |", "|---|---|---|---|---|---|"]
+    kpi_label = library.kpi_view(answers.kpi, answers.kpi_name)["label"]
+    lines = [f"KPI: {kpi_label}", f"Reported hours a month: {hours_text(plan) if plan.hours_known else 'not answered'}", "", f"| # | Activity | Id | Verdict | Speed, estimated | Impact, estimated | {c.MONEY_LABEL} |", "|---|---|---|---|---|---|---|"]
     for item in plan.items:
         speed = item.speed_label or "Not applicable"
-        impact = effect_text(item.impact, item.effect_rated) if item.verdict != Verdict.LEAVE else "Not applicable"
+        impact = effect_text(item.impact) if item.verdict != Verdict.LEAVE else "Not applicable"
         verdict = c.VERDICT_LABELS[item.verdict] + (c.AI_UNKNOWN_TABLE if item.ai_unknown else "")
-        lines.append(f"| {item.number} | {item.label} | {item.activity_id} | {verdict} | {speed} | {impact} |")
+        lines.append(f"| {item.number} | {item.label} | {item.activity_id} | {verdict} | {speed} | {impact} | {item.money_line or 'Not applicable'} |")
     return "\n".join(lines)
 
 
@@ -449,7 +503,7 @@ def render_email(answers: Answers, plan: Plan, library: Library) -> str:
         *([f"AUM: {library.option_label('aum', answers.aum)}"] if answers.aum else []),
         *([f"AI today: {library.option_label('ai_stage', answers.ai_stage)}"] if told(answers, "ai_stage") else []),
         *([f"Priority: {library.option_label('pressure', answers.pressure)}"] if told(answers, "pressure") else []),
-        f"KPI: {library.kpis[answers.kpi]['label']}",
+        f"KPI: {library.kpi_view(answers.kpi, answers.kpi_name)['label']}",
         *(["Top priorities: " + "; ".join(catalog_top)] if catalog_top else []),
         "",
         "Thank you",

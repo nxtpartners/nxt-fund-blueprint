@@ -3,114 +3,128 @@
   {
    "id": "deals_per_pro",
    "pressure": "deploy",
-   "label": "Deals reviewed per professional",
-   "effect_phrase": "raise deals reviewed per professional",
-   "baseline": "Count the deals reviewed last month, and divide by the people who reviewed them."
+   "label": "Deals screened per professional",
+   "effect_phrase": "raise deals screened per professional",
+   "baseline": "Count the deals screened last month, and divide by the people who screened them.",
+   "feeds": "deployment pace",
+   "feeds_link": "indirect"
   },
   {
    "id": "first_look_to_ic",
    "pressure": "deploy",
-   "label": "Time from first look to IC",
-   "effect_phrase": "shorten the time from first look to IC",
-   "baseline": "Take your last five IC papers, and record the days from first look to circulation."
+   "label": "Days to decide on a deal",
+   "effect_phrase": "cut the days to decide on a deal",
+   "baseline": "Take your last ten deals, and record the days from first look to the pass or proceed decision.",
+   "feeds": "deployment pace",
+   "feeds_link": "partial"
   },
   {
    "id": "diligence_cycle",
    "pressure": "deploy",
    "label": "Diligence cycle time",
    "effect_phrase": "shorten diligence cycle time",
-   "baseline": "Take your last three deals, and record the days from data room access to diligence complete."
-  },
-  {
-   "id": "proprietary_share",
-   "pressure": "deploy",
-   "label": "Share of proprietary deals",
-   "effect_phrase": "raise the share of proprietary deals",
-   "baseline": "Count the deals reviewed in the last year, and mark those you found yourselves."
+   "baseline": "Take your last three deals, and record the days from data room access to diligence complete.",
+   "feeds": "deployment pace",
+   "feeds_link": "partial"
   },
   {
    "id": "lp_report_cycle",
    "pressure": "raise",
    "label": "LP reporting cycle time",
    "effect_phrase": "shorten the LP reporting cycle",
-   "baseline": "Record the days from the last quarter end to the final LP report going out."
+   "baseline": "Record the days from the last quarter end to the final LP report going out.",
+   "feeds": "LP confidence",
+   "feeds_link": "indirect"
   },
   {
    "id": "ddq_turnaround",
    "pressure": "raise",
-   "label": "DDQ and LP request turnaround",
-   "effect_phrase": "speed up DDQ and LP request turnaround",
-   "baseline": "Take the last ten LP requests, and record the days from receipt to reply."
-  },
-  {
-   "id": "fundraise_conversion",
-   "pressure": "raise",
-   "label": "LP meetings that move to the next stage",
-   "effect_phrase": "move LP meetings to the next stage",
-   "baseline": "Take your last twenty first meetings, and count those with an agreed next step."
+   "label": "Days to answer LP requests and DDQs",
+   "effect_phrase": "cut the days to answer LP requests and DDQs",
+   "baseline": "Take the last ten LP requests, and record the days from receipt to reply.",
+   "feeds": "fundraising",
+   "feeds_link": "partial"
   },
   {
    "id": "fundraise_readiness",
    "pressure": "raise",
    "label": "Time to refresh fundraising materials",
    "effect_phrase": "shorten the time to refresh fundraising materials",
-   "baseline": "Record the days your last refresh of the deck and track record took."
+   "baseline": "Record the days your last refresh of the deck and track record took.",
+   "feeds": "fundraise launch timing",
+   "feeds_link": "direct"
   },
   {
    "id": "data_freshness",
    "pressure": "value",
-   "label": "Days to portfolio data after month end",
-   "effect_phrase": "cut days to portfolio data after month end",
-   "baseline": "Record the day each company's data arrived after the last period end."
+   "label": "Days to receive company data after period end",
+   "effect_phrase": "cut the days to receive company data after period end",
+   "baseline": "Record the day each company's data arrived after the last period end.",
+   "feeds": "earlier portfolio decisions",
+   "feeds_link": "indirect"
   },
   {
    "id": "underperformance_detection",
    "pressure": "value",
-   "label": "Time to spot underperformance",
-   "effect_phrase": "shorten the time to spot underperformance",
-   "baseline": "Take the last three problems you found, and record how long after the period end you saw each."
+   "label": "Days after period end to spot a problem",
+   "effect_phrase": "cut the days after period end to spot a problem",
+   "baseline": "Take the last three problems you found, and record how long after the period end you saw each.",
+   "feeds": "earlier intervention",
+   "feeds_link": "indirect"
   },
   {
    "id": "initiatives_on_track",
    "pressure": "value",
-   "label": "Value creation initiatives on track",
-   "effect_phrase": "keep value creation initiatives on track",
-   "baseline": "Count initiatives with a named owner, a date, and a measurable KPI, and the share on plan today."
+   "label": "Initiatives with an owner, a date, and a KPI",
+   "effect_phrase": "raise the share of initiatives with an owner, a date, and a KPI",
+   "baseline": "Count initiatives, and the share with a named owner, a date, and a measurable KPI today.",
+   "feeds": "evidence of value creation for LPs",
+   "feeds_link": "indirect"
   },
   {
    "id": "exit_readiness",
    "pressure": "value",
-   "label": "Time to exit readiness",
-   "effect_phrase": "shorten the time to exit readiness",
-   "baseline": "For your next planned exit, list the data still missing and how long you expect it to take."
+   "label": "Days to assemble exit data",
+   "effect_phrase": "cut the days to assemble exit data",
+   "baseline": "For your next planned exit, list the data still missing and how long you expect it to take.",
+   "feeds": "exit timing",
+   "feeds_link": "indirect"
   },
   {
    "id": "senior_hours",
    "pressure": "lean",
-   "label": "Senior hours freed per month",
-   "effect_phrase": "free senior hours",
-   "baseline": "Ask each partner for a rough count of hours last month on the assessed work."
+   "label": "Partner hours a month on routine work",
+   "effect_phrase": "cut partner hours on routine work",
+   "baseline": "Ask each partner for a rough count of hours last month on the assessed work.",
+   "feeds": "deal and LP capacity",
+   "feeds_link": "indirect"
   },
   {
    "id": "close_time",
    "pressure": "lean",
    "label": "Quarter-end close time",
    "effect_phrase": "shorten the quarter-end close",
-   "baseline": "Record the working days your last quarter-end close took."
+   "baseline": "Record the working days your last quarter-end close took.",
+   "feeds": "LP report timing",
+   "feeds_link": "direct"
   },
   {
    "id": "cost_ratio",
    "pressure": "lean",
    "label": "Operating cost as a share of fees",
    "effect_phrase": "lower operating cost as a share of fees",
-   "baseline": "Take the management company's operating cost last year, and divide it by management fees."
+   "baseline": "Take the management company's operating cost last year, and divide it by management fees.",
+   "feeds": "the firm's own economics, not fund returns",
+   "feeds_link": "direct"
   },
   {
    "id": "report_errors",
    "pressure": "lean",
    "label": "Errors in reports and filings",
    "effect_phrase": "reduce errors in reports and filings",
-   "baseline": "Count corrections after issue, across reports and filings, in the last four quarters."
+   "baseline": "Count corrections after issue, across reports and filings, in the last four quarters.",
+   "feeds": "LP trust and audit risk",
+   "feeds_link": "partial"
   }
  ],
  "sections": [
@@ -907,6 +921,29 @@
      "multi": true
     },
     {
+     "id": "budget",
+     "header": "Budget",
+     "text": "Is money set aside to improve how the firm runs in the next 12 months? Your answer decides which moves come first. It stays in this chat.",
+     "options": [
+      {
+       "id": "unset",
+       "label": "Not set yet"
+      },
+      {
+       "id": "under_100k",
+       "label": "Under $100K"
+      },
+      {
+       "id": "100k_500k",
+       "label": "$100K to $500K"
+      },
+      {
+       "id": "over_500k",
+       "label": "Over $500K"
+      }
+     ]
+    },
+    {
      "id": "region",
      "header": "Regulation",
      "text": "Where is the firm mainly regulated?",
@@ -1000,7 +1037,7 @@
    },
    {
     "id": "none",
-    "label": "Not really"
+    "label": "Indirectly"
    }
   ]
  },
@@ -1219,32 +1256,28 @@
      "label": "Add another part"
     }
    ]
-  }
- },
- "after_plan": {
-  "budget": {
-   "id": "budget",
-   "header": "Budget",
-   "text": "Is money set aside for this in the next 12 months? Your answer can change the tool suggestions in your report. It stays in this chat.",
+  },
+  "confirm_kpi": {
+   "id": "confirm_kpi",
+   "header": "Your number",
+   "text": "That sounds close to {kpi}. Should the plan treat it the same way?",
    "options": [
     {
-     "id": "unset",
-     "label": "Not set yet"
+     "id": "yes",
+     "label": "Yes, treat it the same"
     },
     {
-     "id": "under_100k",
-     "label": "Under $100K"
-    },
-    {
-     "id": "100k_500k",
-     "label": "$100K to $500K"
-    },
-    {
-     "id": "over_500k",
-     "label": "Over $500K"
+     "id": "own",
+     "label": "No, keep mine separate"
     }
    ]
   },
+  "kpi_value": {
+   "id": "kpi_value",
+   "text": "Roughly where is {kpi} today, and what is the target? You can skip this."
+  }
+ },
+ "after_plan": {
   "aum": {
    "id": "aum",
    "header": "AUM",

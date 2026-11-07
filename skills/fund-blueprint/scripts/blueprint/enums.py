@@ -147,3 +147,9 @@ class Rhythm(str, Enum):
     STEADY = "steady"
     PERIODIC = "periodic"
     BURSTS = "bursts"
+
+
+class Spend(str, Enum):
+    NONE = "none"
+    SMALL = "small"
+    DECISION = "decision"

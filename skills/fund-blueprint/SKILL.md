@@ -27,17 +27,17 @@ Do not give opinions or early conclusions in the conversation, including reassur
 
 ## Start
 
-Begin your first message, before running any command, with one neutral sentence saying you will run a guided assessment, then show this notice as written. It must appear first in every conversation, however much they have already told you:
+Begin your first message, before running any command, with one neutral sentence saying you will run a guided assessment, then show this notice word for word, every line, as a normal message. The respondent cannot see this file: the notice reaches them only if you write out all of it in your message. Never shorten, summarize, describe, or reword it, on any surface, including a terminal, and never refer to it as "the intro". It must appear first in every conversation, however much they have already told you:
 
 > **Fund Blueprint, a free tool by NXT Partners AI**
 >
-> This free tool is open to everyone. In about 12 minutes for one part of your firm, plus a few minutes for each part you add, you tell me how the work runs today. You get a ranked plan of what to automate, what AI could draft, what to stop, and what to leave with your people, with a first step for each. Most of it is multiple choice.
+> This free tool is open to everyone. In about 35 short questions for one part of your firm, plus 3 to 9 for each part you add, you tell me how the work runs today. You get a ranked plan of what to automate, what AI could draft, what to stop, and what to leave with your people, with a first step for each. Most of it is multiple choice.
 >
 > **NXT Partners AI does not receive your answers,** and this tool sends them to no one. They stay in this Claude conversation, which Claude processes under your account's terms, and in working files created here. If you choose to personalize it, your firm's name is used in a public web search.
 >
 > **Please do not enter confidential details**, such as the names of people, portfolio companies, LPs, or deals. Ranges and general descriptions are all it needs. The only name it may ask for is your own firm's, and only if you choose to personalize.
 >
-> I keep your answers in one working file here, `answers.json`, so the plan is built from exactly what you told me. You can ask to see or delete it.
+> I keep your answers in a working file in this chat, so the plan is built from exactly what you told me. You can ask to see or delete it.
 >
 > The result is operational guidance generated with AI, using planning estimates. It is not investment, legal, tax, or compliance advice.
 
@@ -55,7 +55,7 @@ python3 fund-blueprint-tool/scripts/build_blueprint.py --print-flow
 
 If `python3` is missing, try `python`. Do not read `references/catalog.json` directly: it is long, and the script already uses it.
 
-Then ask `fixed.consent` from the flow, and wait for the answer. If they choose "Not now" or skip it, thank them and stop. If they ask a question about it, answer only from the notice and ask again. The one exception: if they have said they want no questions, continue without asking.
+Then ask `fixed.consent` from the flow, and wait for the answer. In Claude Code, where a message before a command can get cut down, also put the notice's full text, word for word, at the start of the question you ask, so nobody can consent without seeing it. If they choose "Not now" or skip it, thank them and stop. If they ask a question about it, answer only from the notice and ask again. The one exception: if they have said they want no questions, continue without asking.
 
 Next, ask `pain_first` from the flow as plain text, followed by "You can skip this." It comes first because it is what they came for. Handle the answer as described under "The task they named". 
 
@@ -126,6 +126,21 @@ Before each deep work area, show how far along they are: "Work area 1 of 2: Port
 ## Keeping the answers on file
 
 Save `answers.json` with your file tool after each section, not only at the end, using the format under "Building the blueprint" for whatever you have so far. Before writing the summary, and before building, read the file back and use it, not your memory of the conversation. If they correct an answer, correct the file too. Do not run the script until the end, because a partial file is expected to fail its checks. If they ask to see the file, show it. If they ask to delete it, delete it and tell them the report can no longer be built from it.
+
+## Where the number stands
+
+After `kpi_status`, unless they do not track it, ask `fixed.kpi_value` as an open question. Restate their answer in a few words and record it as `kpi_value`, for example "9 days today, target 5". Do not ask for confidential figures, and never estimate it yourself. If they skip, leave it out.
+
+## A number of their own
+
+The number question offers a short list, and "Something else" lets them type their own. Do not force a typed number onto the list.
+
+- Restate it briefly so they can confirm the wording. Please do not name portfolio companies or investors.
+- **If a number on any priority's list is clearly the same thing,** ask `fixed.confirm_kpi`. If they choose "Yes, treat it the same", record that number's id as `kpi` and their wording as `kpi_name`.
+- **If nothing is close, or they keep their own,** record `kpi` as `custom` and their wording as `kpi_name`. This includes fund returns such as IRR, MOIC, or DPI.
+- **For `custom`,** estimate how each task they selected links to the number, and record it in `kpi_links` as task id or name to `direct`, `some`, or `none` (`none` means indirect: every task counts). List these links in the summary before the report, so they can correct them. Never leave a task out.
+
+- Use their wording in `kpi_status` and everywhere you say the number back.
 
 ## Going deep
 
@@ -227,13 +242,12 @@ Show the file itself, using this environment's way of displaying or sharing a fi
 
 Then, in the same reply, write a short message before asking anything else:
 
-1. The first three moves, one line each, in plain language.
+1. The first moves, up to three, one line each, in plain language. Rows marked "Leave with people" are not moves, so leave them out here.
 2. The largest blocker from "Clear these first" in the report, if there is one.
 3. The script's table, so the result is available even if the file cannot be displayed.
 
-After that message, ask `fixed.next_step` and `budget` from `after_plan` in the same call:
+After that message, ask `fixed.next_step`:
 
-- **`budget`:** if they answer, add it to `answers.json`, run the same command again, and show the updated file with one line saying the tool suggestions were updated. If they skip it, leave it out.
 - **Help me do my first step now:** work on move 1's first step with them, here in the chat, using only what they have told you and what they provide. If it needs firm data, remind them to use only tools their firm allows.
 - **Draft a note to my team or partners:** the first move, the first steps, and a short plain-language version of the plan.
 - **List questions for compliance:** only questions, taken from the report's blockers and human checks. Do not draft a policy or give compliance advice.

@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional
 
 from . import constants as c
-from .enums import Horizon, Nature, Quadrant, Rule, Verdict
+from .enums import Horizon, Nature, Quadrant, Rule, Verdict, Spend
 
 
 @dataclass
@@ -30,11 +30,12 @@ class Activity:
     input_documents: bool = False
     shared_data: str = ""
     process_solution: str = ""
+    check_ai: str = ""
     kpi_link: Optional[str] = None
 
     @classmethod
     def from_dict(cls, row: Dict[str, Any]) -> "Activity":
-        return cls(row["id"], row["workstream"], row["label"], Nature(row["nature"]), dict(row["kpis"]), row["solution"], row["first_step"], row["check"], effort=row.get("effort", "medium"), required=bool(row.get("required")), no_agent=bool(row.get("no_agent")), reads_documents=bool(row.get("reads_documents")), first_step_uses_ai=bool(row.get("first_step_uses_ai")), control=bool(row.get("control")), first_step_if_no_ai=row.get("first_step_if_no_ai", ""), needs_agreed_rules=bool(row.get("needs_agreed_rules")), input_documents=bool(row.get("input_documents")), shared_data=row.get("shared_data", ""), process_solution=row.get("process_solution", ""))
+        return cls(row["id"], row["workstream"], row["label"], Nature(row["nature"]), dict(row["kpis"]), row["solution"], row["first_step"], row["check"], effort=row.get("effort", "medium"), required=bool(row.get("required")), no_agent=bool(row.get("no_agent")), reads_documents=bool(row.get("reads_documents")), first_step_uses_ai=bool(row.get("first_step_uses_ai")), control=bool(row.get("control")), first_step_if_no_ai=row.get("first_step_if_no_ai", ""), needs_agreed_rules=bool(row.get("needs_agreed_rules")), input_documents=bool(row.get("input_documents")), shared_data=row.get("shared_data", ""), process_solution=row.get("process_solution", ""), check_ai=row.get("check_ai", ""))
 
     def to_dict(self) -> Dict[str, Any]:
         out = asdict(self)
@@ -92,6 +93,9 @@ class Answers:
     kpi_status: str
     kpi: str
     workstreams: List[WorkstreamAnswers]
+    kpi_name: str = ""
+    kpi_value: str = ""
+    kpi_links: Dict[str, str] = field(default_factory=dict)
     aum: str = ""
     budget: str = ""
     named_task: str = ""
@@ -138,12 +142,18 @@ class ScoredActivity:
     ai_assumed: bool = False
     ai_unknown: bool = False
     restricted_in_use: bool = False
-    effect_rated: bool = True
+    raw_impact: float = 0.0
+    off_measure: bool = False
+    speed_band: int = 0
     kpi_linked: bool = True
     owner_role: str = ""
     ai_note: str = ""
     thesis_note: str = ""
     workstream_id: str = ""
+    spend: Spend = Spend.NONE
+    fits: bool = True
+    money_line: str = ""
+    fit_note: str = ""
     why_line: str = ""
     chain_line: str = ""
     named: bool = False

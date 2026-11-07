@@ -225,9 +225,18 @@ def parse_answers(library: Library, raw: Any) -> Answers:
         raise AnswerError(f"Invalid ai_tools. Allowed: {', '.join(allowed_tools)}. Ask this question again.")
 
     kpi = raw.get(c.KEY_KPI)
-    if not isinstance(kpi, str) or kpi not in library.kpis:
-        raise AnswerError(f"A KPI is required. Allowed: {', '.join(library.kpis)}. Ask the KPI question again.")
-    if raw.get("pressure") is not None and library.kpis[kpi]["pressure"] != raw.get("pressure"):
+    kpi_name = clean_text(raw.get(c.KEY_KPI_NAME), c.KPI_NAME_MAX, c.KEY_KPI_NAME)
+    kpi_links = raw.get(c.KEY_KPI_LINKS) or {}
+    require_type(kpi_links, dict, c.KEY_KPI_LINKS)
+    if any(not isinstance(link, str) or link not in c.KPI_LINK_RELEVANCE for link in kpi_links.values()):
+        raise AnswerError(f"{c.KEY_KPI_LINKS} values must be: {', '.join(c.KPI_LINK_RELEVANCE)}.")
+    if any(len(word) > c.KPI_NAME_WORD_MAX for word in kpi_name.split()):
+        raise AnswerError(f"{c.KEY_KPI_NAME} has a word over {c.KPI_NAME_WORD_MAX} characters. Rewrite it and confirm it again.")
+    if kpi == c.CUSTOM_KPI and not kpi_name:
+        raise AnswerError(f"A typed KPI needs its confirmed name in {c.KEY_KPI_NAME}. Ask the KPI question again.")
+    if not isinstance(kpi, str) or (kpi not in library.kpis and kpi != c.CUSTOM_KPI):
+        raise AnswerError(f"A KPI is required. Allowed: {', '.join(library.kpis)}, or {c.CUSTOM_KPI} with {c.KEY_KPI_NAME}. Ask the KPI question again.")
+    if not kpi_name and raw.get("pressure") is not None and library.kpis[kpi]["pressure"] != raw.get("pressure"):
         raise AnswerError(f"KPI '{kpi}' does not belong to priority '{raw.get('pressure')}'. Ask the KPI question again.")
 
     selected = raw.get(c.KEY_WORKSTREAMS) or {}
@@ -257,8 +266,15 @@ def parse_answers(library: Library, raw: Any) -> Answers:
     notes_raw = raw.get(c.KEY_THESIS_NOTES) or {}
     require_type(notes_raw, dict, c.KEY_THESIS_NOTES)
     notes = {str(key): clean_text(value, c.THESIS_NOTE_MAX, "A thesis note") for key, value in notes_raw.items()}
+    known = {task for row in workstreams for task in row.activities} | {item[c.KEY_NAME] for row in workstreams for item in row.custom}
+    unknown = [task for task in kpi_links if task not in known]
+    if unknown:
+        raise AnswerError(f"{c.KEY_KPI_LINKS} names tasks not in the plan: {', '.join(unknown)}. Use the selected tasks.")
     return Answers(
         kpi=kpi, workstreams=workstreams, assumed=assumed, skipped=skipped, ai_assumed_areas=ai_assumed_areas, ai_tools=tools,
+        kpi_name=kpi_name,
+        kpi_value=clean_text(raw.get(c.KEY_KPI_VALUE), c.KPI_VALUE_MAX, c.KEY_KPI_VALUE),
+        kpi_links=kpi_links,
         thesis_summary=clean_text(raw.get(c.KEY_THESIS_SUMMARY), c.THESIS_SUMMARY_MAX, "thesis_summary"),
         thesis_focus=focus, thesis_notes=notes, named_task=named or "",
         firm_name=clean_text(raw.get(c.KEY_FIRM_NAME), c.FIRM_NAME_MAX, "firm_name"),

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import html
+import textwrap
 from typing import Dict, List, Tuple
 
 from . import constants as c
@@ -27,6 +28,14 @@ def timeline_share(weeks: float) -> float:
     return 1.0
 
 
+def mark_shape(x: float, y: float, size: float, fits: bool, attributes: str) -> str:
+    """A circle fits the budget. A diamond may not, and it is slightly larger so the two look the same weight."""
+    if fits:
+        return f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{size}" {attributes}/>'
+    reach = size * t.PLOT_DIAMOND_FACTOR
+    return f'<polygon points="{x:.1f},{y - reach:.1f} {x + reach:.1f},{y:.1f} {x:.1f},{y + reach:.1f} {x - reach:.1f},{y:.1f}" {attributes}/>'
+
+
 def level_index(impact: float) -> int:
     return c.LEVEL_NAMES.index(impact_level(impact))
 
@@ -42,28 +51,51 @@ class Canvas:
     def text(self, x: float, y: float, content: str, size: int, fill: str = t.COLOR_INK_SOFT, anchor: str = "middle", weight: int = 400) -> str:
         return f'<text x="{x:.0f}" y="{y:.0f}" font-size="{size}" fill="{fill}" text-anchor="{anchor}" font-weight="{weight}">{html.escape(content)}</text>'
 
+    def y_title(self, kpi_text: str) -> str:
+        """The firm's own number names the axis. A long name takes two lines, so it never runs off the plot."""
+        lines = textwrap.wrap(c.Y_AXIS_TITLE.format(kpi=kpi_text), self.spec["title_wrap"])[:2]
+        middle = (self.top + self.bottom) / 2
+        parts = []
+        for index, line in enumerate(lines):
+            x = t.PLOT_Y_TITLE_X + index * t.PLOT_Y_TITLE_LINE
+            parts.append(f'<text x="{x}" y="{middle:.0f}" transform="rotate(-90 {x} {middle:.0f})" font-size="{self.spec["axis"]}" fill="{t.COLOR_INK}" text-anchor="middle" font-weight="{t.PLOT_LABEL_WEIGHT}">{html.escape(line)}</text>')
+        return "".join(parts)
+
+    def cells(self, items: List[ScoredActivity]) -> Dict[Tuple[int, int], List[int]]:
+        found: Dict[Tuple[int, int], List[int]] = {}
+        for item in sorted(items, key=lambda row: row.number):
+            found.setdefault((band_index(item.weeks), level_index(item.impact)), []).append(item.number)
+        return found
+
+    def step(self) -> float:
+        return 2 * self.spec["radius"] + t.PLOT_MARK_GAP
+
+    def per_row(self) -> int:
+        return max(int((self.band_width - 4) // self.step()), 1)
+
+    def fit_height(self, items: List[ScoredActivity]) -> None:
+        """A crowded cell makes the plot taller, so marks never leave their row or cover a label."""
+        most = max((len(numbers) for numbers in self.cells(items).values()), default=1)
+        rows = -(-most // self.per_row())
+        needed = (rows - 1) * self.step() + 2 * self.spec["radius"] + 2 * t.PLOT_LABEL_STRIP + t.PLOT_MARK_GAP
+        extra = max(0.0, needed - self.level_height) * len(c.LEVEL_NAMES)
+        if extra:
+            self.spec = dict(self.spec, height=int(self.spec["height"] + extra))
+            self.bottom = self.spec["height"] - self.spec["bottom"]
+            self.level_height = (self.bottom - self.top) / len(c.LEVEL_NAMES)
+
     def place_markers(self, items: List[ScoredActivity]) -> Dict[int, Tuple[float, float]]:
         """Each band and impact level is one cell, and markers sit in a tidy grid inside it."""
-        cells: Dict[Tuple[int, int], List[int]] = {}
-        for item in sorted(items, key=lambda row: row.number):
-            cells.setdefault((band_index(item.weeks), level_index(item.impact)), []).append(item.number)
         spots: Dict[int, Tuple[float, float]] = {}
-        step = 2 * self.spec["radius"] + t.PLOT_MARK_GAP
-        per_row = max(int((self.band_width - 4) // step), 1)
-        most = max((len(numbers) for numbers in cells.values()), default=1)
-        rows_needed = -(-most // per_row)
-        room = self.level_height - 2 * self.spec["radius"] - t.PLOT_MARK_GAP - 2 * t.PLOT_LABEL_STRIP
-        if rows_needed > 1 and (rows_needed - 1) * step > room:
-            step = max(room / (rows_needed - 1), 2 * self.spec["radius"] + 2)
-        for (band, level), numbers in cells.items():
+        step, per_row = self.step(), self.per_row()
+        for (band, level), numbers in self.cells(items).items():
             center_x = self.left + (band + 0.5) * self.band_width
             center_y = self.bottom - (level + 0.5) * self.level_height
             rows = [numbers[i : i + per_row] for i in range(0, len(numbers), per_row)]
             top = center_y - (len(rows) - 1) * step / 2
             top_edge = self.bottom - (level + 1) * self.level_height + t.PLOT_LABEL_STRIP + self.spec["radius"]
             bottom_edge = self.bottom - level * self.level_height - t.PLOT_LABEL_STRIP - self.spec["radius"]
-            span = (len(rows) - 1) * step
-            top = max(top_edge, min(top, bottom_edge - span)) if span <= bottom_edge - top_edge else top_edge
+            top = max(top_edge, min(top, bottom_edge - (len(rows) - 1) * step))
             for row_index, row in enumerate(rows):
                 left = center_x - (len(row) - 1) * step / 2
                 for column, number in enumerate(row):
@@ -71,6 +103,7 @@ class Canvas:
         return spots
 
     def render(self, items: List[ScoredActivity], kpi_label: str, recommended: Tuple[int, ...]) -> str:
+        self.fit_height(items)
         spec = self.spec
         label, axis = spec["label"], spec["axis"]
         kpi_text = lower_first(kpi_label)
@@ -105,19 +138,20 @@ class Canvas:
             parts.append(self.text(self.right - (index + 0.5) * self.band_width, self.bottom + t.PLOT_BAND_LABEL_OFFSET, band, label))
         parts.append(self.text((self.left + self.right) / 2, spec["height"] - t.PLOT_AXIS_TITLE_OFFSET, "Estimated speed, faster to the right", axis, fill=t.COLOR_INK, weight=t.PLOT_LABEL_WEIGHT))
 
+        parts.append(self.y_title(kpi_text))
+
         spots = self.place_markers(items)
         for item in sorted(items, key=lambda row: row.number):
             x, y = spots[item.number]
             color = t.VERDICT_COLORS[item.verdict]
             hollow = item.verdict in t.VERDICT_HOLLOW
             fill, stroke, ink = (t.COLOR_SURFACE, color, color) if hollow else (color, t.COLOR_SURFACE, t.COLOR_SURFACE)
-            summary = f"{item.number}. {item.label}: {c.VERDICT_LABELS[item.verdict]}, {item.speed_label}, {effect_text(item.impact, item.effect_rated, kpi_text)}"
-            ring = f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{spec["radius"] + t.PLOT_RING_GAP}" fill="none" stroke="{t.COLOR_INK}" stroke-width="{t.PLOT_RING_STROKE}"/>' if item.number in recommended else ""
-            dash = f' stroke-dasharray="{t.PLOT_UNRATED_DASH}"' if not item.effect_rated else ""
+            summary = f"{item.number}. {item.label}: {c.VERDICT_LABELS[item.verdict]}, {item.speed_label}, {effect_text(item.impact, kpi_text)}, {item.money_line}"
+            ring = mark_shape(x, y, spec["radius"] + t.PLOT_RING_GAP, item.fits, f'fill="none" stroke="{t.COLOR_INK}" stroke-width="{t.PLOT_RING_STROKE}"') if item.number in recommended else ""
             parts.append(
                 f'<g class="mark" tabindex="0" role="img" aria-label="{html.escape(summary, quote=True)}"><title>{html.escape(summary)}</title>{ring}'
-                f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{spec["radius"]}" fill="{fill}" stroke="{stroke}" stroke-width="{t.PLOT_MARK_STROKE}"{dash}/>'
-                f'<text x="{x:.0f}" y="{y + t.PLOT_TEXT_NUDGE:.0f}" font-size="{label}" fill="{ink}" text-anchor="middle" font-weight="{t.PLOT_LABEL_WEIGHT}" aria-hidden="true">{item.number}</text></g>'
+                + mark_shape(x, y, spec["radius"], item.fits, f'fill="{fill}" stroke="{stroke}" stroke-width="{t.PLOT_MARK_STROKE}"')
+                + f'<text x="{x:.0f}" y="{y + t.PLOT_TEXT_NUDGE:.0f}" font-size="{label}" fill="{ink}" text-anchor="middle" font-weight="{t.PLOT_LABEL_WEIGHT}" aria-hidden="true">{item.number}</text></g>'
             )
         parts.append("</svg>")
         return "".join(parts)

@@ -80,6 +80,17 @@ class Library:
                     return option["label"]
         raise KeyError(option_id)
 
+    def kpi_view(self, kpi_id: str, typed_name: str = "") -> Dict[str, str]:
+        """The number as this firm named it. A typed name keeps a listed number's rules if they chose that, and has no rules otherwise."""
+        listed = self.kpis.get(kpi_id)
+        if not typed_name:
+            return listed
+        words = typed_name[0].lower() + typed_name[1:] if typed_name[1:2].islower() else typed_name
+        return {
+            "id": kpi_id, "label": typed_name, "effect_phrase": c.KPI_TYPED_EFFECT.format(kpi=words), "baseline": c.KPI_TYPED_BASELINE.format(kpi=words),
+            "feeds": "", "feeds_link": "", "matched": listed["label"] if listed else "", "heading": c.KPI_TYPED_HEADING.format(kpi=words), "words": words,
+        }
+
     def flow(self) -> Dict[str, Any]:
         """What the conversation needs, without the private-to-the-script catalog text."""
         strip = lambda row: {key: row[key] for key in ("id", "label", "description") if key in row}

@@ -4,9 +4,9 @@ from __future__ import annotations
 from pathlib import Path
 from urllib.parse import quote
 
-from .enums import Horizon, KpiClaim, Nature, Quadrant, Rule, Verdict
+from .enums import Horizon, KpiClaim, Nature, Quadrant, Rule, Verdict, Spend
 
-VERSION = "0.14.0"
+VERSION = "0.22.5"
 
 SKILL_DIR = Path(__file__).resolve().parents[2]
 CATALOG_PATH = SKILL_DIR / "references" / "catalog.json"
@@ -61,6 +61,10 @@ WALKTHROUGH_STEP_MAX = 80
 KEY_AI_TOOLS = "ai_tools"
 KEY_AI_TASKS = "ai_tasks"
 KEY_KPI = "kpi"
+KEY_KPI_NAME = "kpi_name"
+CUSTOM_KPI = "custom"
+KPI_NAME_MAX = 44
+KPI_NAME_WORD_MAX = 24
 KEY_WORKSTREAMS = "workstreams"
 KEY_ACTIVITIES = "activities"
 KEY_CUSTOM = "custom"
@@ -69,7 +73,11 @@ KEY_NATURE = "nature"
 KEY_USES_AI = "uses_ai"
 KEY_KPI_LINK = "kpi_link"
 KPI_LINK_RELEVANCE = {"direct": 3, "some": 1, "none": 0}
-CUSTOM_DEFAULT_RELEVANCE = 0
+CUSTOM_DEFAULT_RELEVANCE = 1
+KEY_KPI_LINKS = "kpi_links"
+RELEVANCE_FLOOR = 0.5
+RELATIVE_IMPACT = {"High": 4.0, "Medium": 3.0, "Low": 2.0}
+RELATIVE_TIERS = ("High", "Medium", "Low")
 CUSTOM_NAME_MAX = 80
 KEY_THESIS_SUMMARY = "thesis_summary"
 KEY_THESIS_FOCUS = "thesis_focus"
@@ -167,8 +175,8 @@ SPEED_BANDS = (
     (WEEKS_NEXT, WEEKS_AXIS_MAX, "Over 90 days"),
 )
 SPEED_BANDS_SHORT = ("Under 30d", "30-60d", "60-90d", "Over 90d")
-SLOW_BAND_COUNT = 1
-QUADRANT_WEEKS = WEEKS_NEXT
+SLOW_BAND_COUNT = 2
+QUADRANT_WEEKS = WEEKS_SIXTY
 QUADRANT_IMPACT = 2.5
 IMPACT_LEVELS = ((2.5, "Low"), (3.7, "Medium"), (99.0, "High"))
 LEVEL_NAMES = ("Low", "Medium", "High")
@@ -199,19 +207,19 @@ RULES = {
     Rule.KEEP_CONTROL: {"verdict": Verdict.OPTIMIZE, "reason": "You said few would notice if this changed, but this work is a control, so keep it and make it simpler.", "solution": "Keep the control, and remove a step only where whoever leads compliance agrees it adds no protection.", "claim": KpiClaim.NONE},
     Rule.PAUSE_USE: {"verdict": Verdict.OPTIMIZE, "reason": "You said AI is used here, and also that your policy restricts it. Settle that before anything else.", "solution": "Bring any AI use here under your policy, or pause it, before doing anything more with AI.", "first_step": "Ask whoever leads compliance to review how AI is used on {task} today.", "check": "The current owner reviews any change to this process.", "claim": KpiClaim.NONE},
     Rule.BUILD_ON: {"verdict": Verdict.BUILD_ON, "claim": KpiClaim.FULL},
-    Rule.ONE_PERSON: {"verdict": Verdict.OPTIMIZE, "reason": "You said this depends on one or two people, so it needs writing down before automation or AI can help.", "solution": "Write down how {task} runs, who holds what, and what they check, so someone else could run one cycle, before adding technology.", "check": "The current owner reviews any change to this process.", "claim": KpiClaim.PREPARES},
+    Rule.ONE_PERSON: {"verdict": Verdict.OPTIMIZE, "reason": "You said this depends on one or two people, so it needs writing down before automation or AI can help.", "solution": "Write down the steps for {task}, who holds what, and what they check, so someone else could run one cycle, before adding technology.", "check": "The current owner reviews any change to this process.", "claim": KpiClaim.PREPARES},
     Rule.OUTSIDE: {"verdict": Verdict.OPTIMIZE, "reason": "You said an outside provider does this, so check what they can deliver under your agreement before buying or building anything.", "solution": "Agree with your provider what they deliver for {task}, in what format, and by when. Whoever owns this work decides what is re-checked.", "check": "The current owner reviews any change to this process.", "claim": KpiClaim.SOME},
     Rule.QUICK_REVIEW: {"verdict": Verdict.OPTIMIZE, "reason": "We did not examine this in detail, so review it before choosing a tool.", "solution": "Review how {task} runs today, and come back to this plan with what you find.", "claim": KpiClaim.PREPARES},
-    Rule.NOT_SAME_WAY: {"verdict": Verdict.OPTIMIZE, "reason": "You said each team runs this its own way, so automating it now would mean automating several versions.", "solution": "Agree one standard way of doing {task} across teams, then automate what repeats.", "check": "The current owner reviews any change to this process.", "claim": KpiClaim.SOME},
+    Rule.NOT_SAME_WAY: {"verdict": Verdict.OPTIMIZE, "reason": "You said each team runs this its own way, so automating it now would mean automating several versions.", "solution": "Agree one standard across teams for {task}, then automate what repeats.", "check": "The current owner reviews any change to this process.", "claim": KpiClaim.SOME},
     Rule.REDO: {"verdict": Verdict.OPTIMIZE, "reason": "You said time goes on fixing errors and mismatches here, so fix the cause before automating it.", "solution": "For {task}, agree the definitions and the source for the figures that disagree, and check them at the point of entry. Keep every existing review and approval.", "check": "The current owner reviews any change to this process.", "claim": KpiClaim.SOME},
     Rule.SIGNOFFS: {"verdict": Verdict.OPTIMIZE, "reason": "You said this waits on internal sign-off, and software will not shorten that.", "solution": "Agree a clear turnaround for each sign-off on {task}, and cut only those nothing requires.", "check": "Whoever leads compliance confirms that required controls stay.", "claim": KpiClaim.SOME},
     Rule.TEMPLATE_ENOUGH: {"verdict": Verdict.OPTIMIZE, "reason": "You said this runs a few times a year with few hours, so a good template may be all it needs.", "solution": "Build one reusable template and checklist for {task}, and revisit automation only if volumes grow.", "check": "The current owner reviews the template.", "claim": KpiClaim.SOME},
     Rule.AGREE_FIRST: {"verdict": Verdict.OPTIMIZE, "reason": "You said this runs on {sources}, with no system behind it. Agree one template and one set of definitions first, if you have not already, then automate what repeats.", "reason_unknown": "You did not say where this information lives. If it has no system behind it, agree one template and one set of definitions first, then automate what repeats.", "solution": "Agree one template and one set of definitions for {task}, so that what repeats can be automated next.", "claim": KpiClaim.SOME},
     Rule.CUSTOM_RULES: {"verdict": Verdict.AUTOMATE, "reason": "You said it follows fixed rules, so ordinary automation may be enough.", "claim": KpiClaim.FULL},
-    Rule.SERIOUS_PROCESS_FIRST: {"verdict": Verdict.OPTIMIZE, "reason": "This work is required or high stakes, and the process is not settled yet. Standardize it first, then consider AI.", "claim": KpiClaim.SOME},
-    Rule.CUSTOM_WRITE_RULES: {"verdict": Verdict.OPTIMIZE, "reason": "You said it follows fixed rules. No AI is needed to start, so this can begin before any decision on AI.", "solution": "Write the rules down for {task}, and keep one live version, so nobody rebuilds it each time.", "first_step": "Write down what goes into {task}, where each field comes from, and who reads it.", "claim": KpiClaim.SOME},
+    Rule.SERIOUS_PROCESS_FIRST: {"verdict": Verdict.OPTIMIZE, "reason": "You said a mistake here could cause serious harm. Standardize it first, then consider AI.", "reason_unknown": "This work may be required, or costly if wrong. Standardize it first, then consider AI.", "claim": KpiClaim.SOME},
+    Rule.CUSTOM_WRITE_RULES: {"verdict": Verdict.OPTIMIZE, "reason": "You said it follows fixed rules. No AI is needed to start, so this can begin before any decision on AI.", "solution": "Write the rules down for {task}, keep one live version, then automate what repeats.", "first_step": "Write down what goes into {task}, where each field comes from, and who reads it.", "claim": KpiClaim.PREPARES},
     Rule.DOCS_PLAIN: {"verdict": Verdict.ADD_AI, "reason": "The rules are clear, but the information arrives in {doc_sources}, so AI extracts it, fixed checks verify it, and a person handles exceptions.", "claim": KpiClaim.FULL},
-    Rule.DOCS_REVIEW: {"verdict": Verdict.ADD_AI, "reason": "The rules are clear, but the information arrives in {doc_sources}, and this work is required or high stakes. AI extracts the information, and a person checks it.", "claim": KpiClaim.FULL},
+    Rule.DOCS_REVIEW: {"verdict": Verdict.ADD_AI, "reason": "The rules are clear, but the information arrives in {doc_sources}, and this work may be required, or costly if wrong. AI extracts the information, and a person checks it.", "claim": KpiClaim.FULL},
     Rule.AUTOMATE: {"verdict": Verdict.AUTOMATE, "reason": "It follows fixed rules, so ordinary automation can do it without AI.", "claim": KpiClaim.FULL},
     Rule.RESTRICTED: {"verdict": Verdict.OPTIMIZE, "reason": "Your policy restricts AI today, so the best available gain is a simpler process.", "solution": "Simplify how {task} runs now, then revisit AI once policy allows it.", "check": "The current owner reviews any change to this process.", "claim": KpiClaim.SOME},
     Rule.REKEY_AUTOMATE: {"verdict": Verdict.AUTOMATE, "reason": "You said people retype what already sits in your tools, so connect the tools. This needs no AI.", "solution": "Connect the tools behind {task}, so this information moves once, with no retyping.", "claim": KpiClaim.FULL},
@@ -250,7 +258,7 @@ DOCS_REVIEW_SUFFIX = " A person reviews every item AI extracts."
 AI_UNKNOWN_NOTE = "You did not say whether AI is already used here"
 AI_UNKNOWN_ACTION = "Ask the people doing {area} whether they already use AI there."
 AI_ASSUMED_NOTE = "AI is used somewhere in this work area, but you did not say on which tasks"
-ASSUMED_FIRST_STEP = "Find out whether AI is used on this task, and how."
+ASSUMED_FIRST_STEP = "Find out whether AI is used on {task}, and how."
 INFORMAL_STAGE = "adhoc"
 DEPLOYED_IMPACT_CAP = 3.6
 RELEVANCE_PREPARES = "Prepares the ground for later work on {kpi}"
@@ -259,13 +267,13 @@ RELEVANCE_PAUSE = "Settles a policy question first. This does not itself move {k
 RELEVANCE_ONCE_FIXED = "{link} to {kpi}, once this process is fixed"
 
 BUILD_ON_TEXT = {
-    ("task", "any"): ("You said AI is already used on this task.", "Review how it is used, and agree one approved approach with clear review.", "Ask who uses AI on this task, and how."),
-    ("adhoc", "any"): ("You said some people already use AI here informally, with no shared approach.", "Turn personal use into one approved way of working, with shared templates and clear review.", "Ask each person how they use AI on this task today."),
-    ("pilot", "measured"): ("You have a trial here, and you said AI has shown measured gains at the firm. The decision is whether this one goes to the whole team.", "Decide whether to take this trial into daily use, with an owner and a monthly results check.", "Agree the results that would justify using it across the team."),
-    ("pilot", "any"): ("You have a trial here, and you did not report measured gains from AI at the firm. Find out whether this one works before expanding it.", "Compare the trial with the old process, then decide whether to expand, fix, or stop it.", "Choose five cases to time with the current process and with the trial."),
-    ("deployed", "measured"): ("This is standard for the team here, and you said AI has shown measured gains at the firm. Look next at the steps around it.", "Look for gains in the steps before and after this task, and keep measuring.", "Map the steps before and after this task, and find where people still rework the output."),
-    ("deployed", "disappointing"): ("This is standard for the team here, and you described AI results at the firm as disappointing. Check whether that applies here before extending it.", "Review it against what users actually need, then fix, replace, or stop it.", "Ask three regular users what works and what does not, and review a sample of recent outputs."),
-    ("deployed", "any"): ("This is standard for the team here, and you did not report measured gains from AI at the firm. Without a starting measure, you cannot tell whether to invest further.", "Measure time saved and error rates before spending more here.", "Pick two measures and start collecting them."),
+    ("task", "any"): ("You said AI is already used on this task.", "Review how it is used, and agree one approved approach with clear review.", "Ask who uses AI on {task}, and how."),
+    ("adhoc", "any"): ("You said some people already use AI here informally, with no shared approach.", "Turn personal use into one approved way of working, with shared templates and clear review.", "Ask each person how they use AI on {task} today."),
+    ("pilot", "measured"): ("You have a trial here, and you said AI has shown measured gains at the firm. The decision is whether this one goes to the whole team.", "Decide whether to take this trial into daily use, with an owner and a monthly results check.", "For {task}, agree the results that would justify using it across the team."),
+    ("pilot", "any"): ("You have a trial here, and you did not report measured gains from AI at the firm. Find out whether this one works before expanding it.", "Compare the trial with the old process, then decide whether to expand, fix, or stop it.", "For {task}, choose five cases to time with the current process and with the trial."),
+    ("deployed", "measured"): ("This is standard for the team here, and you said AI has shown measured gains at the firm. Look next at the steps around it.", "Look for gains in the steps before and after this task, and keep measuring.", "Map the steps before and after {task}, and find where people still rework the output."),
+    ("deployed", "disappointing"): ("This is standard for the team here, and you described AI results at the firm as disappointing. Check whether that applies here before extending it.", "Review it against what users actually need, then fix, replace, or stop it.", "For {task}, ask three regular users what works and what does not, and review a sample of recent outputs."),
+    ("deployed", "any"): ("This is standard for the team here, and you did not report measured gains from AI at the firm. Without a starting measure, you cannot tell whether to invest further.", "Measure time saved and error rates before spending more here.", "For {task}, pick two measures and start collecting them."),
 }
 DEFAULT_IN_USE_STAGE = "task"
 GOAL_PREFIX = "The goal: "
@@ -292,7 +300,80 @@ ROUTES = {
     (Verdict.OPTIMIZE, "any"): "No new technology needed yet",
     (Verdict.REMOVE, "any"): "No technology needed",
 }
-BUDGET_TIER = {"under_100k": "low", "100k_500k": "mid", "over_500k": "high"}
+BUDGET_TIER = {"unset": "low", "under_100k": "low", "100k_500k": "mid", "over_500k": "high"}
+# Money levels are planning estimates set by the type of move and the firm's tools. They are not quotes.
+SPEND_LABELS = {Spend.NONE: "No new money expected", Spend.SMALL: "Small spend", Spend.DECISION: "Needs a budget decision"}
+ALL_SPEND = (Spend.NONE, Spend.SMALL, Spend.DECISION)
+BUDGET_COVERS = {"": ALL_SPEND, "unset": (Spend.NONE,), "under_100k": (Spend.NONE, Spend.SMALL), "100k_500k": ALL_SPEND, "over_500k": ALL_SPEND}
+# A skipped answer means no limit: normal order, all circles, one view.
+BUDGET_REORDERS = ("unset", "under_100k")
+SPEND_ENDINGS = {"": ("", ""), "unset": ("", ", and nothing is set aside yet"), "under_100k": (", which should fit what you set aside", ", which may be more than you set aside"), "100k_500k": (", which should fit what you set aside", ""), "over_500k": (", which should fit what you set aside", "")}
+SHAPE_KEY_FITS = {"unset": "No new money expected", "under_100k": "Should fit what you set aside", "100k_500k": "Should fit what you set aside", "over_500k": "Should fit what you set aside"}
+SHAPE_KEY_NOT = {"unset": "Needs money you have not set aside", "under_100k": "May need more than you set aside"}
+FIT_NOTES = {"unset": "Needs money", "under_100k": "May need more"}
+BUDGET_READING = {"unset": "You have no money set aside yet, so moves that need none come first.", "under_100k": "With under $100K set aside, moves that may need more come after the rest."}
+BUDGET_READING_COVERED = "Taken one at a time, the moves that need money should fit what you set aside, so your budget did not change the order. Doing them all at once may not fit."
+BUDGET_READING_NONE_FIT = "Every move in this plan needs money you have not set aside, so a budget decision comes first."
+BUDGET_WORTH_FUNDING = "The move most worth finding money for is {label}, rated {level} compared with your other moves."
+LEADS_BUDGET = "It comes ahead of {next_task}, which may need money you have not set aside."
+NAMED_REASON_BUDGET = "It may need money you have not set aside, so it comes after moves that do not."
+NAMED_REASON_BUDGET_LIFTED = "It may need money you have not set aside, but you named it, so it stays in the top three."
+BUDGET_READING_EXCEPTION = " The task you named is the one exception."
+START_NONE_FIT = "Decide the budget for move 1 before you start it."
+START_BUDGET = "Start with move 1. The next moves may need money you have not set aside."
+MONEY_LABEL = "Money, estimated"
+CONNECT_DATA_TITLE = "Connect your core data"
+SCOPE_TITLE = "After this blueprint: what to scope"
+SCOPE_LEDE = "This blueprint decides which activities to take forward. Scoping each one comes next, and covers these."
+SCOPE_ITEMS = (
+    ("Data", "What data the move touches, how good it is, and who may see it. This includes LP data, inside information, and personal data."),
+    ("Systems", "Where that data lives, and whether it can be exported or connected."),
+    ("Vendor and cost", "Which tools fit, what they cost, and how they handle your data."),
+    ("Compliance", "Whether compliance has cleared the tool, how outputs are kept, and whether any LP or regulatory statement is affected."),
+    ("People", "Who owns the move, and how many hours they really have."),
+)
+KEY_KPI_VALUE = "kpi_value"
+KPI_VALUE_MAX = 60
+ROADMAP_WAVES = (("Start now", 3), ("Then", 4), ("After that", None))
+ROADMAP_WAVE_SPAN = "Moves {first} to {last}"
+ROADMAP_WAVE_ONE = "Move {first}"
+COVERAGE_LINE = "Your number depends most on {areas}, which you did not assess. Add it for a fuller plan."
+COVERAGE_MAX = 2
+PEOPLE_ELSEWHERE = "Across the firm, these also stay with your people: {items}."
+STRATEGY_LINE = "This is your AI strategy and blueprint, built from one person's answers. It sets which activities to take forward, and in what order."
+REPORT_NAME = "AI Strategy and Blueprint"
+KPI_STATUS_ROW = {"on_target": "On target, you said", "off_target": "Off target, you said", "no_target": "Tracked, no target set"}
+STUCK_TITLE = "Where the work gets stuck"
+STUCK_TIME = "{task}: time goes on {what}."
+STUCK_TIME_AREA = "Time goes on {what}."
+STUCK_SLOW_AREA = "The slowest step is {step}."
+STUCK_ONE_PERSON_AREA = "Know-how is held by one or two people."
+STUCK_VARIES_AREA = "It runs differently by team."
+STUCK_SLOW = "{task}: the slowest step is {step}."
+STUCK_ONE_PERSON = "{task}: know-how is held by one or two people."
+STUCK_VARIES = "{task}: it runs differently by team."
+STUCK_HABIT = "{task}: done mainly out of habit."
+STUCK_SOURCES = "Information is split across {sources}, with no system holding it."
+STUCK_SOURCES_SYSTEM = "Information is split across {sources}."
+CAPACITY_TECH_OWNER = {"in_house": "Your tech team, with {owner}", "partner": "{owner}, with your outside firm"}
+Y_AXIS_TITLE = "Relative effect on {kpi}"
+KPI_TYPED_EFFECT = "change {kpi}"
+KPI_TYPED_HEADING = "How your moves compare on {kpi}"
+PLOT_HEADING = "How much each move could {effect}"
+KPI_OWN_NO_FORECAST = "The ratings rank your moves against each other. They do not predict any change in {kpi}."
+KPI_TYPED_BASELINE = "Record where {kpi} stands today, and how you measure it."
+FEEDS_LINE = "This number feeds {feeds}."
+FEEDS_LINKS = {"direct": "The link is direct.", "partial": "The link is partial, because other factors also matter.", "indirect": "The link is indirect, because other factors also matter."}
+NO_RETURNS_CLAIM = "This plan makes no claim about IRR, MOIC, or DPI."
+KPI_MATCHED_NOTE = "You chose your own number. Effect is estimated with the rules for {matched}, the closest on our list."
+KPI_OWN_NOTE = "You chose your own number. Each move shows its link to it."
+RELATIVE_NOTE = "Effect compares your moves with each other, using each task's link and the hours behind it. It is not a forecast."
+VIEW_GROUP_LABEL = "Report view"
+VIEW_TAB_BUDGET = "With your budget"
+VIEW_TAB_OPEN = "No budget limit"
+VIEW_NOTE_OPEN = "This view ignores your budget. The moves are the same, in the order they would take with no limit. Tool suggestions and money levels can differ."
+VIEW_PRINT_BUDGET = "This printout shows the plan with your budget. The report file also has a view with no budget limit."
+VIEW_PRINT_OPEN = "This printout shows the view with no budget limit. The report file also has the plan with your budget."
 # What they already run comes first, so nobody is told to buy what they own. First hit wins.
 TOOL_ROUTES = (
     ("custom", "Your own team, on the custom AI you already run, and a specialist tool only if that falls short"),
@@ -322,7 +403,8 @@ CUSTOM_SOLUTIONS = {
     Nature.MULTI_SYSTEM: "Connect the tools involved, and let an agent carry the steps, with the owner approving the result.",
     Nature.JUDGMENT: "Keep the decision with your people. AI can prepare background and past examples.",
 }
-CUSTOM_FIRST_STEP = "Write down this task's inputs, decisions, and who receives the result."
+CUSTOM_FIRST_STEP = "Write down the inputs, decisions, and who receives the result for {task}."
+CUSTOM_SERIOUS_CHECK = "Have a second person check the results while this is new."
 CUSTOM_PREPARE_SOLUTION = "Have AI gather the information and prepare the work, and have the owner carry out each step."
 CUSTOM_CHECK = "The current owner reviews the results."
 CUSTOM_TAG = "Added by you"
@@ -330,7 +412,7 @@ CUSTOM_TAG = "Added by you"
 SOURCE_PHRASES = {"system": "a proper system", "spreadsheets": "spreadsheets", "email": "email", "documents": "documents"}
 WHO_PHRASES = {"partners": "partners or principals", "investment": "VPs, associates, or analysts", "operations": "finance, IR, compliance, or ops staff", "outside": "an outside provider"}
 TIME_PHRASES = {"wait_outside": "waiting on outside parties", "wait_signoff": "waiting on internal sign-off", "rekey": "retyping or rebuilding", "fixing": "fixing errors and mismatches"}
-LINK_WORDS = {3: "has a direct link to", 2: "has a strong link to", 1: "has some link to", 0: "has no link to"}
+LINK_WORDS = {3: "has a direct link to", 2: "has a strong link to", 1: "has some link to", 0: "has an indirect link to"}
 # Fixes the first step on the hardest task in a work area, from where they said the time goes. First hit wins.
 TIME_STEP_ENDINGS = (
     ("wait_signoff", " Also list who signs, and what each changed last cycle."),
@@ -340,13 +422,12 @@ TIME_STEP_ENDINGS = (
 TRACKED_MEASURE_ENDING = " Watch {measure}, which you already track."
 SIGNOFF_SUFFIX = " Agree which items need sign-off, with a turnaround for each, because you said time goes there."
 RHYTHM_STEP_ENDINGS = {"periodic": " Test on last period's files, because the next live run is at the next period end.", "bursts": " Test on a past burst, using files from the last deal or request."}
-SLOW_STEP_TEXT = "Write down how this step runs and what it checks: {slow_step}. Keep any check that protects the numbers."
+SLOW_STEP_TEXT = "You said the slowest step is: {slow_step}. Write down how it runs and what it checks, and keep any check that protects the numbers."
 SLOW_STEP_ENDING = " You said the slowest step is: {slow_step}."
 NOT_EXAMINED = "Not examined in detail, because you chose a quick check of this work area."
 WALKTHROUGH_TITLE = "How it runs today, as you described it"
 HOURS_PHRASES = {"under_20": "under 20 hours", "20_60": "20 to 60 hours", "60_200": "60 to 200 hours", "over_200": "over 200 hours"}
-LINK_LADDER = {3: "Direct link", 2: "Strong link", 1: "Some link", 0: "No link"}
-RELEVANCE_NOT_ASSESSED = "Link to {kpi} not rated"
+LINK_LADDER = {3: "Direct link", 2: "Strong link", 1: "Some link", 0: "Indirect link"}
 
 FIRM_WIDE_LABEL = "Firm-wide"
 FIRM_WIDE_OWNER = "COO or managing partner"
@@ -369,7 +450,7 @@ QUADRANT_LABELS = {Quadrant.QUICK_WINS: "Fast, higher effect", Quadrant.STRATEGI
 
 SHADOW_FOUNDATION = ("Bring existing AI use under a policy", "You said people use AI, and that the firm has no AI policy. Confidential data may be reaching tools you have not approved. Set rules before adding anything new.", "Agree which AI tools are approved, and what data may go into them.")
 SHADOW_RESTRICTED_FOUNDATION = ("Settle how existing AI use fits your policy", "You said people use AI, and also that your policy restricts it. Find out what is happening in practice, and decide what is allowed.", "Ask whoever leads compliance to review how AI is used today, against your policy.")
-ONE_PERSON_FOUNDATION = ("Write down what only one or two people know", "You said {area} depends on one or two people{harm}.", "Have the person who knows {area} write down how it runs.")
+ONE_PERSON_FOUNDATION = ("Write down what only one or two people know", "You said {subject} depends on one or two people{harm}.", "Have the person who knows {subject} write down how it runs.")
 ONE_PERSON_HARM = ", and a mistake there could cause serious harm"
 OWNER_FOUNDATION = ("Name an owner", "Nobody is set to carry out this work yet, so the plan has no one to run it. Name one accountable person first.", "Name one accountable person, and protect time for them.")
 DATA_ACTION = "List the data that {task} relies on, and pick one source to clean up."
@@ -390,18 +471,17 @@ FOUNDATIONS = {
 SHARED_DATA_FOUNDATION = ("Build this data once", "You selected {count} tasks that draw on the same portfolio data: {tasks}. Agree one owner and one copy, and let each task draw from it.", "Name one owner for the portfolio data that these tasks share.")
 
 # Reading the answers together, on the first page.
-READING_MAX = 3
+READING_MAX = 4
 COUNT_WORDS = {Verdict.AUTOMATE: ("automates with fixed rules", "automate with fixed rules"), Verdict.OPTIMIZE: ("fixes the process", "fix the process"), Verdict.REMOVE: ("tests stopping", "test stopping"), Verdict.ADD_AI: ("uses AI to prepare work", "use AI to prepare work"), Verdict.AGENTIC: ("lets AI run the steps", "let AI run the steps"), Verdict.BUILD_ON: ("builds on AI already here", "build on AI already here")}
 NAMED_FIRST = "You named {task} as the task to take off your team, and it comes first."
 NAMED_LATER = "You named {task} as the task to take off your team. It is move {position}. {reason} If freeing that time matters more than this number, start there instead."
-NAMED_REASON_CLOSER = "The moves above it have a closer link to {kpi}."
-NAMED_REASON_TIME = "More senior time or hours sit with the moves above it, on your answers."
-NAMED_REASON_SPEED = "It ranks here on the estimated time under our planning rules."
-NAMED_REASON_LIFTED = "On {kpi} alone it would rank lower, so it is placed here because you named it."
-NAMED_REASON_UNRATED = "Its link to {kpi} was not rated, so it is placed here because you named it."
+NAMED_REASON_CLOSER = "{above} a closer link to {kpi}."
+NAMED_REASON_TIME = "More senior time or hours sit with {above_lower}, on your answers."
+NAMED_REASON_SCORE = "{above} a higher score under our planning rules."
+NAMED_REASON_LIFTED = "It is placed here because you named it."
 KPI_STATUS_READING = {
     "untracked": "You chose {kpi}, and you do not track it today, so measuring it comes before judging any move.",
-    "off_target": "You said {kpi} is off target, so moves that act on it rank higher.",
+    "off_target": "You said {kpi} is off target, so the plan weighs effect on it more heavily.",
     "on_target": "You said {kpi} is on target, so hours count for more in this ranking. Check that it is the right number to move.",
 }
 CHANGE_NAMES_MAX = 3
@@ -415,20 +495,19 @@ LEVER_CAPACITY = "someone were responsible for this work"
 HUMAN_NATURE_VALUES = ("judgment", "relationship")
 QUADRANT_NOTE_TOP = "Ringed: the moves recommended above."
 QUADRANT_LABELS_SHORT = {Quadrant.QUICK_WINS: "Fast, high", Quadrant.STRATEGIC_BETS: "Slow, high", Quadrant.FILL_INS: "Fast, low", Quadrant.DEPRIORITIZE: "Slow, low"}
-QUADRANT_NOTE_UNRATED = "Dashed: effect not rated, shown in the lowest row."
 
-STAYS_WITH_PEOPLE_LEDE = "These stay with your people. Work that rests on judgment or relationships is included for every work area you assessed."
+STAYS_WITH_PEOPLE_LEDE = "These stay with your people, because they rest on judgment or relationships."
 NAMED_TAG = "You named this as the task to take off your team"
 MEASURE_ACTIONS_MAX = 1
 
 RULE_ANCHOR_STEPS = {
-    Rule.ONE_PERSON: "Have the person who knows this walk a colleague through one full cycle, and record it.",
-    Rule.NOT_SAME_WAY: "Pick one team's way as the starting standard, and list where the others differ.",
-    Rule.REDO: "Collect the reasons for the last ten corrections.",
-    Rule.SIGNOFFS: "List who signs, and what each changed last cycle. Keep every required control.",
-    Rule.OUTSIDE: "List what you send the provider, and what you re-check afterwards.",
-    Rule.TEMPLATE_ENOUGH: "Build the template from last period's work.",
-    Rule.REKEY_AUTOMATE: "Count how often the same figure is typed, and which source wins.",
+    Rule.ONE_PERSON: "Have the person who knows {task} walk a colleague through one full cycle, and record it.",
+    Rule.NOT_SAME_WAY: "For {task}, pick one team's way as the starting standard, and list where the others differ.",
+    Rule.REDO: "For {task}, collect the reasons for the last ten corrections.",
+    Rule.SIGNOFFS: "For {task}, list who signs, and what each changed last cycle. Keep every required control.",
+    Rule.OUTSIDE: "For {task}, list what you send the provider, and what you re-check afterwards.",
+    Rule.TEMPLATE_ENOUGH: "Build the template for {task} from last period's work.",
+    Rule.REKEY_AUTOMATE: "For {task}, count how often the same figure is typed, and which source wins.",
 }
 DEPENDS_PHRASES = {"yes": "the know-how written down", "effort": "know-how someone else could pick up with some effort", "no": "know-how held by one or two people"}
 RHYTHM_PHRASES = {"steady": "running daily or weekly", "monthly": "running every month", "periodic": "running quarterly or yearly", "bursts": "running in bursts"}
@@ -441,7 +520,7 @@ PRIORITY_WEIGHTS_BY_STATUS = {"off_target": (0.75, 0.25), "on_target": (0.4, 0.6
 HEADLINE_RULES = {
     Rule.AGREE_FIRST: "Your first move is to agree the rules for {label}",
     Rule.ONE_PLACE: "Your first move is to set up one shared place for {label}",
-    Rule.ONE_PERSON: "Your first move is to write down how {label} works",
+    Rule.ONE_PERSON: "Your first move is to write down the steps for {label}",
     Rule.OUTSIDE: "Your first move is to agree what your provider delivers for {label}",
     Rule.NOT_SAME_WAY: "Your first move is to agree one standard across teams for {label}",
     Rule.REDO: "Your first move is to fix the cause of errors in {label}",
@@ -456,13 +535,14 @@ HEADLINE_RULES = {
     Rule.CUSTOM_WRITE_RULES: "Your first move is to write down the rules for {label}",
 }
 CHANGE_WORDS = {Verdict.OPTIMIZE: "a process fix", Verdict.ADD_AI: "AI that prepares the work", Verdict.AUTOMATE: "automation", Verdict.AGENTIC: "AI that runs the steps", Verdict.BUILD_ON: "building on AI already here", Verdict.REMOVE: "testing a stop"}
+LEADS_NAMED = "It leads because you named it."
 LEADS_MORE_DIRECT = "It leads because it has a closer link to {kpi} than {next_task}."
 LEADS_MORE_HOURS = "It leads because more senior time or hours are at stake here than on {next_task}."
 LEADS_FASTER = "It leads because it should reach a result sooner than {next_task}."
 LEADS_TIE = "It is level with {next_task} under our rules, so start with whichever causes more trouble today."
-TIE_START = "Moves 1 and 2 rank level. Start with both, or with whichever causes more trouble today."
+TIE_START = "Start with moves 1 and 2. The top moves rank level, so choose what suits your team."
 READING_TITLE = "What in your answers shaped this plan"
-PLANNING_LINE_ONE = "Under our planning rules, the one move that adds software {timing}, if worked on alone."
+PLANNING_LINE_ONE = "Under our planning rules, the one move that adds software {timing}."
 ASKED_LISTS_AT_DEPTH = {"deep": ("legacy_tasks", "harm_tasks", "heavy_task", "measures", "walkthrough"), "second": ("legacy_tasks", "heavy_task", "measures"), "quick": ()}
 CHANGE_GROUPS_MAX = 2
 COUNTED_AS_UNTOLD = ("ai_adoption", "ai_results", "thesis")
@@ -470,7 +550,10 @@ CREDIT_NOTE_STRATEGY = "credit"
 NAMED_PRIORITY_FACTOR = 1.35
 AI_NOT_ASKED_NOTE = "Not asked in this quick check"
 AND_OTHERS = "and others"
-START_OFF_TARGET = "Start with moves {first} and {second}. Move {first} acts on {measure}, the measure you said is off target."
+START_OFF_TARGET = "Start with moves 1 and 3. Move 3 acts on {measure}, the measure you said is off target."
 AI_BEHIND = "You said AI is standard across teams, but in the areas assessed it is less than that. Check whether these areas are behind, or whether the answer needs correcting."
 PROCESS_TEXT_RULES = (Rule.KEEP_MINIMAL, Rule.RESTRICTED, Rule.AGREE_FIRST, Rule.REDO, Rule.ONE_PLACE, Rule.SERIOUS_PROCESS_FIRST)
 DATA_ACTION_START = "List the data that"
+HARDEST_FACTS = "On {task}: {facts}."
+SLOW_STEP_WHY = "You said the slowest step is: {slow_step}."
+MORE_CHANGES = "Other moves would change too."

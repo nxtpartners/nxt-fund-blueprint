@@ -48,6 +48,7 @@ h1{{font-family:{t.FONT_DISPLAY};font-size:{t.TEXT_HEADLINE};line-height:1.12;le
 .link-table td{{padding:.45rem .75rem .45rem 0;border-bottom:{t.RULE_LIGHT};vertical-align:top}}
 .link-table th[scope=row]{{font-weight:600;color:{t.COLOR_INK};border-bottom:{t.RULE_LIGHT};padding:.45rem .75rem .45rem 0}}
 .plot-y{{font-weight:600;line-height:1.3;margin:0 0 .6rem;max-width:44ch}}
+.plot-note{{margin:0 0 .9rem;max-width:60ch}}
 @container (min-width:{t.RAIL_BREAKPOINT}){{.opening~.ledger>div{{grid-template-columns:{t.SECTION_RAIL} 1fr!important;column-gap:{t.SPACE_GAP}!important}}}}
 .ledger>div{{display:grid;grid-template-columns:minmax(5.5rem,24%) 1fr;gap:.25rem 1rem;padding-block:.5rem;border-top:{t.RULE_LIGHT}}}
 .ledger>div:last-child{{border-bottom:{t.RULE_LIGHT}}}
@@ -82,6 +83,22 @@ h3{{font-family:{t.FONT_BODY};font-weight:600;font-size:{t.TEXT_ITEM};line-heigh
 .legend .key-mark{{margin-top:.38em}}
 .legend{{display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;margin-top:.9rem;font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT}}}
 .legend b{{color:{t.COLOR_INK};font-weight:600}}
+.legend+.legend{{margin-top:.3rem}}
+.views{{position:relative;display:flex;flex-wrap:wrap;column-gap:.35rem;align-items:flex-end;margin-top:{t.SPACE_BLOCK}}}
+.view-radio{{position:absolute;top:0;left:0;width:1px;height:1px;opacity:0;margin:0}}
+.view-tab{{position:relative;display:inline-flex;align-items:center;min-height:2.75rem;padding-inline:clamp(.6rem,2.5vw,1.1rem);font-weight:600;color:{t.COLOR_INK_SOFT};background:{t.COLOR_TAB_IDLE};border:1px solid {t.COLOR_LINE_STRONG};border-bottom:0;cursor:pointer}}
+.view-tab:hover{{color:{t.COLOR_INK}}}
+.view-radio:checked+.view-tab{{color:{t.COLOR_INK};background:{t.COLOR_SURFACE};border-color:{t.COLOR_INK};border-top-width:3px;z-index:1;margin-bottom:-1px}}
+.view-radio:focus-visible+.view-tab{{outline:2px solid {t.COLOR_ACCENT};outline-offset:2px}}
+.view{{flex:0 0 100%;min-width:0;border-top:1px solid {t.COLOR_INK};padding-top:{t.SPACE_BLOCK}}}
+.view-open{{display:none}}
+#view-open:checked~.view-budget{{display:none}}
+#view-open:checked~.view-open{{display:block}}
+.view-print{{display:none}}
+.view-note{{margin:0 0 {t.SPACE_BLOCK}}}
+@media print{{.view-tab,.view-radio{{display:none}}.view-print{{display:block;margin:0 0 {t.SPACE_BLOCK}}}}}
+.shape-mark{{width:.72em;height:.72em;fill:none;stroke:currentColor;stroke-width:1.6;display:inline-block;vertical-align:-.02em}}
+.legend .shape-mark{{margin-top:.38em}}
 .plot-key{{columns:2 16rem;column-gap:{t.SPACE_GAP};margin-top:{t.SPACE_BLOCK};font-size:{t.TEXT_SMALL}}}
 .plot-key li{{break-inside:avoid;display:grid;grid-template-columns:2em 1fr;padding-block:.18rem}}
 .note{{margin-top:.75rem;font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT};max-width:68ch}}
@@ -141,7 +158,7 @@ details[open] .toggle::before{{content:'\\2212'}}
 .button{{display:inline-flex;align-items:center;min-height:{t.MIN_TARGET};padding:.55rem 1.15rem;background:{t.COLOR_ACCENT};color:{t.COLOR_SURFACE};border-radius:{t.RADIUS_BUTTON};font-weight:600;text-decoration:none}}
 .button:hover{{background:{t.COLOR_ACCENT_HOVER}}}
 footer{{border-top:{t.RULE_LIGHT};padding-block:1rem 2rem;font-family:{t.FONT_MONO};font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT}}}
-@media print{{.toggle{{display:none}}.button{{background:none;color:{t.COLOR_ACCENT};padding:0;min-height:0}}.sec{{display:block;break-inside:auto}}.stages>div,figure{{break-inside:avoid}}.key-mark,.tl-bar,.tl-dot,.tl-track{{print-color-adjust:exact;-webkit-print-color-adjust:exact}}.sec-head,.group h3,.group>p,.tl-group h3,.subhead,.sec-lede{{break-after:avoid}}.row-body,.row-body dl{{display:block}}.row-body dl>div{{break-inside:avoid;margin-bottom:.55rem}}.plot-wide{{display:block!important}}.plot-narrow{{display:none!important}}.moves li{{break-inside:auto}}}}
+@media print{{.toggle{{display:none}}.button{{background:none;color:{t.COLOR_ACCENT};padding:0;min-height:0}}.sec{{display:block;break-inside:auto}}.stages>div,figure{{break-inside:avoid}}.key-mark,.tl-bar,.tl-dot,.tl-track{{print-color-adjust:exact;-webkit-print-color-adjust:exact}}.sec-head,.group h3,.group>p,.tl-group h3,.subhead,.sec-lede{{break-after:avoid}}.row-body,.row-body dl{{display:block}}.row-body dl>div{{break-inside:avoid;margin-bottom:.55rem}}.plot-wide{{display:block!important}}.plot-narrow{{display:none!important}}.moves li,.moves .body,.moves .meta{{display:block}}.moves .body>*{{margin-bottom:.5rem}}.moves .meta{{break-inside:avoid;margin-top:.5rem}}.tl-row,.close{{break-inside:avoid}}.moves .meta span:not(:last-child)::after{{content:" · "}}.tl-axis{{break-inside:avoid;break-after:avoid}}.moves{{display:block}}.moves li{{margin-bottom:1.2rem}}.moves .head{{break-after:avoid}}footer{{break-before:avoid}}}}
 """
 
 

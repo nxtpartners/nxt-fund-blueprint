@@ -55,9 +55,7 @@
     {
      "id": "src_own_share",
      "label": "Share of deals we found ourselves",
-     "links": {
-      "proprietary_share": 3
-     },
+     "links": {},
      "tasks": [
       "market_mapping",
       "crm_capture",
@@ -83,7 +81,8 @@
      "tasks": [
       "data_room_review",
       "financial_spreading"
-     ]
+     ],
+     "same_as": "diligence_cycle"
     },
     {
      "id": "dd_open_items",
@@ -209,7 +208,8 @@
      },
      "tasks": [
       "kpi_collection"
-     ]
+     ],
+     "same_as": "data_freshness"
     },
     {
      "id": "rp_late",
@@ -291,7 +291,8 @@
      },
      "tasks": [
       "initiative_tracking"
-     ]
+     ],
+     "same_as": "initiatives_on_track"
     },
     {
      "id": "vc_plan_days",
@@ -330,14 +331,14 @@
      },
      "tasks": [
       "exit_data"
-     ]
+     ],
+     "same_as": "exit_readiness"
     },
     {
      "id": "xt_gaps",
      "label": "Open data gaps per planned exit",
      "links": {
-      "exit_readiness": 2,
-      "data_freshness": 1
+      "exit_readiness": 2
      },
      "tasks": [
       "exit_data"
@@ -374,7 +375,8 @@
      "tasks": [
       "report_consolidation",
       "quarterly_letter"
-     ]
+     ],
+     "same_as": "lp_report_cycle"
     },
     {
      "id": "lr_corrections",
@@ -460,14 +462,13 @@
      "tasks": [
       "pitch_materials",
       "track_record"
-     ]
+     ],
+     "same_as": "fundraise_readiness"
     },
     {
      "id": "fr_next",
      "label": "First meetings that reach a next step",
-     "links": {
-      "fundraise_conversion": 3
-     },
+     "links": {},
      "tasks": [
       "lp_targeting"
      ]
@@ -496,7 +497,6 @@
      "id": "rl_followups",
      "label": "Promised follow-ups closed on time",
      "links": {
-      "fundraise_conversion": 3,
       "ddq_turnaround": 1
      },
      "tasks": [
@@ -507,7 +507,6 @@
      "id": "rl_notes",
      "label": "Days to file a meeting note",
      "links": {
-      "fundraise_conversion": 1,
       "senior_hours": 1
      },
      "tasks": [
@@ -517,9 +516,7 @@
     {
      "id": "rl_records",
      "label": "Share of LP records checked this year",
-     "links": {
-      "fundraise_conversion": 2
-     },
+     "links": {},
      "tasks": [
       "lp_crm"
      ]
@@ -543,7 +540,8 @@
      "tasks": [
       "admin_review",
       "valuation_pack"
-     ]
+     ],
+     "same_as": "close_time"
     },
     {
      "id": "ac_breaks",
@@ -709,8 +707,9 @@
    },
    "solution": "Read each inbound teaser or CIM, score it against your investment criteria, and produce a one-page summary with the reasons to pass or proceed.",
    "first_step": "Write your investment criteria as explicit pass and proceed rules.",
-   "check": "A deal professional reviews every pass close to the line and samples clear passes each week. Load CIMs only into tools your NDAs and whoever leads compliance allow.",
-   "effort": "low"
+   "check": "A deal professional reviews every pass close to the line and samples clear passes each week.",
+   "effort": "low",
+   "check_ai": "Load CIMs only into tools your NDAs and whoever leads compliance allow."
   },
   {
    "id": "market_mapping",
@@ -718,15 +717,15 @@
    "label": "Building market maps and target lists",
    "nature": "drafting",
    "kpis": {
-    "proprietary_share": 3,
     "deals_per_pro": 2
    },
    "solution": "Build and refresh target lists from licensed databases and public filings, with each company tagged by sub-sector, size indicators, and ownership.",
    "first_step": "Choose one sector and compare a generated list with the best list your team has built by hand.",
-   "check": "A deal professional confirms each shortlisted name before anyone acts on it. Check that your data licenses allow this use before loading licensed data into any AI tool.",
+   "check": "A deal professional confirms each shortlisted name before anyone acts on it.",
    "effort": "low",
    "first_step_uses_ai": true,
-   "first_step_if_no_ai": "Choose one sector, and write down how your best target list was built."
+   "first_step_if_no_ai": "Choose one sector, and write down how your best target list was built.",
+   "check_ai": "Check that your data licenses allow this use before loading licensed data into any AI tool."
   },
   {
    "id": "crm_capture",
@@ -734,7 +733,6 @@
    "label": "Logging deals and contacts in the CRM",
    "nature": "multi_system",
    "kpis": {
-    "proprietary_share": 2,
     "senior_hours": 1,
     "deals_per_pro": 1
    },
@@ -749,7 +747,6 @@
    "label": "Tracking intermediary coverage and follow-ups",
    "nature": "multi_system",
    "kpis": {
-    "proprietary_share": 1,
     "deals_per_pro": 2
    },
    "solution": "Watch CRM and email for contacts going cold, then draft a follow-up with relevant context for the deal owner to approve.",
@@ -769,13 +766,14 @@
    },
    "solution": "Index the data room documents your access terms allow you to process, extract key terms and figures with citations to the source page, and flag gaps against your checklist.",
    "first_step": "Choose one closed deal as a test, and write down what the team actually found on it.",
-   "check": "Check the NDA and data room rules before loading anything into a tool, and keep clean team and privileged material out. Every extracted fact links to its page, and the deal team opens the page for anything that reaches a memo.",
+   "check": "Keep clean team and privileged material out of general review. The deal team checks anything that reaches a memo against the document itself.",
    "effort": "high",
    "required": true,
    "first_step_uses_ai": true,
    "input_documents": true,
    "first_step_if_no_ai": "Choose one closed deal, and write down what the team actually found in the data room.",
-   "process_solution": "Agree a standard checklist for data room review, and record what each review found."
+   "process_solution": "Agree a standard checklist for data room review, and record what each review found.",
+   "check_ai": "Check the NDA and data room rules before loading anything into a tool. Every extracted fact links to its page, and the deal team opens the page for anything that reaches a memo."
   },
   {
    "id": "request_tracking",
@@ -819,10 +817,11 @@
    },
    "solution": "Pull figures from management accounts and CIMs into your model template, mapped to your line items, with each number traceable to its source.",
    "first_step": "Fix one template and mapping, then spread three past sets of accounts with different formats by hand and note where the mapping breaks.",
-   "check": "Load CIMs and management accounts only into tools your NDAs and whoever leads compliance allow. A person on the deal team ties totals back to source. The model structure and assumptions stay with the team.",
+   "check": "A person on the deal team ties totals back to source. The model structure and assumptions stay with the team.",
    "effort": "high",
    "required": false,
-   "input_documents": true
+   "input_documents": true,
+   "check_ai": "Load CIMs and management accounts only into tools your NDAs and whoever leads compliance allow."
   },
   {
    "id": "memo_drafting",
@@ -839,7 +838,8 @@
    "check": "The deal team owns the argument and the recommendation, and ties every figure to its source before the memo circulates.",
    "effort": "medium",
    "required": true,
-   "process_solution": "Agree one memo template and one review path, so that drafts stop being rebuilt from scratch."
+   "process_solution": "Agree one memo template and one review path, so that drafts stop being rebuilt from scratch.",
+   "check_ai": "Keep this within tools approved for firm data."
   },
   {
    "id": "precedent_search",
@@ -899,8 +899,9 @@
    },
    "solution": "Assemble the pipeline review from the deal tracker and recent notes, and draft a short status for each active deal.",
    "first_step": "Agree the five fields every active deal must show in the review.",
-   "check": "Deal leads confirm each status before the meeting. Keep the draft within tools approved for deal information.",
-   "effort": "low"
+   "check": "Deal leads confirm each status before the meeting.",
+   "effort": "low",
+   "check_ai": "Keep the draft within tools approved for deal information."
   },
   {
    "id": "document_comparison",
@@ -1036,7 +1037,8 @@
    "check": "The person who leads the investment edits and signs off, and causes the data does not support must be marked as unexplained.",
    "effort": "medium",
    "first_step_uses_ai": true,
-   "first_step_if_no_ai": "Choose one company, and write down which variances your readers actually use."
+   "first_step_if_no_ai": "Choose one company, and write down which variances your readers actually use.",
+   "check_ai": "Keep this within tools approved for firm data."
   },
   {
    "id": "early_warnings",
@@ -1161,7 +1163,8 @@
    "solution": "Make past plans, operating reviews, and results searchable, so a new company can start from what worked in similar situations.",
    "first_step": "Write up five past initiatives with their results in a single format.",
    "check": "Check for sensitive company data before sharing anything between portfolio companies, and ask counsel first if they compete.",
-   "effort": "medium"
+   "effort": "medium",
+   "check_ai": "Keep this within tools approved for firm data."
   },
   {
    "id": "benchmarking",
@@ -1197,8 +1200,7 @@
    "label": "Tracking add-on targets for portfolio companies",
    "nature": "multi_system",
    "kpis": {
-    "initiatives_on_track": 2,
-    "proprietary_share": 2
+    "initiatives_on_track": 2
    },
    "solution": "Keep one list of add-on targets per platform company, with the last contact and next step for each, and flag stalled conversations.",
    "first_step": "Put the current add-on targets for one platform company in one list, with an owner and a next step.",
@@ -1212,8 +1214,7 @@
    "label": "Preparing exit data and history",
    "nature": "multi_system",
    "kpis": {
-    "exit_readiness": 3,
-    "data_freshness": 1
+    "exit_readiness": 3
    },
    "solution": "Assemble the performance history, KPI bridges, and sell-side or vendor diligence inputs from your portfolio data, and flag gaps early.",
    "first_step": "Choose one company and list what an exit readiness check should cover.",
@@ -1337,7 +1338,7 @@
    },
    "solution": "Combine administrator, portfolio, and valuation data into one quarter-end dataset, reconcile it, and send breaks to named owners.",
    "first_step": "Map the data flow for one quarter and note where it is copied by hand.",
-   "check": "Reconciliation breaks need a person to resolve them, with a record of why.",
+   "check": "Reconciliation breaks need a person to resolve them, with a record of why. Finance signs off the merged figures.",
    "effort": "high",
    "required": true,
    "no_agent": true,
@@ -1418,9 +1419,7 @@
    "workstream": "lp_requests",
    "label": "Sensitive LP conversations and meetings",
    "nature": "relationship",
-   "kpis": {
-    "fundraise_conversion": 1
-   },
+   "kpis": {},
    "solution": "Keep these conversations with partners and IR. AI can prepare a short brief on the investor's history and open points.",
    "first_step": "Decide what a good pre-call brief includes for your top ten LPs.",
    "check": "A partner decides what is said and sent, and the brief contains nothing about any other investor. Whoever leads compliance reviews anything that gives this investor information not already given to all investors.",
@@ -1500,7 +1499,6 @@
    "label": "Identifying and prioritizing LPs",
    "nature": "drafting",
    "kpis": {
-    "fundraise_conversion": 3,
     "senior_hours": 1
    },
    "solution": "Rank prospective LPs on mandate fit, past commitments, and relationships, using licensed data and the CRM, with the reasoning shown.",
@@ -1516,7 +1514,6 @@
    "label": "Keeping LP records in the CRM current",
    "nature": "multi_system",
    "kpis": {
-    "fundraise_conversion": 2,
     "senior_hours": 1
    },
    "solution": "Update LP contacts and interaction history from email and calendar, flag duplicates and departures, and take commitment amounts only from the official investor records.",
@@ -1531,7 +1528,6 @@
    "label": "Writing up LP meetings",
    "nature": "drafting",
    "kpis": {
-    "fundraise_conversion": 2,
     "senior_hours": 2
    },
    "solution": "Turn meeting notes or approved recordings into a structured summary with next steps, filed against the investor.",
@@ -1545,7 +1541,6 @@
    "label": "Tracking investor follow-ups",
    "nature": "multi_system",
    "kpis": {
-    "fundraise_conversion": 3,
     "ddq_turnaround": 1
    },
    "solution": "Track promised follow-ups across email and CRM, remind owners, and draft replies with the right materials attached.",
@@ -1560,8 +1555,7 @@
    "nature": "drafting",
    "kpis": {
     "senior_hours": 2,
-    "lp_report_cycle": 1,
-    "fundraise_conversion": 1
+    "lp_report_cycle": 1
    },
    "solution": "Draft the agenda, pack, and minutes from approved materials, track the consents and votes the LPA requires, and keep the record of each decision.",
    "first_step": "List every LPAC consent and annual meeting item from the last two years, with the LPA clause behind each one.",
@@ -1587,7 +1581,7 @@
    "required": true,
    "no_agent": true,
    "reads_documents": true,
-   "process_solution": "Standardize the notice and the reconciliation, and remove retyping, before spending anything on them. Keep two-person payment approval."
+   "process_solution": "Standardize the notice and the reconciliation, and remove retyping, before spending anything on them. Payment approvals should have two-person sign-off."
   },
   {
    "id": "fee_calculations",
@@ -1795,7 +1789,6 @@
    "nature": "drafting",
    "kpis": {
     "senior_hours": 2,
-    "proprietary_share": 1,
     "deals_per_pro": 1
    },
    "solution": "Produce regular sector briefings from licensed and public sources, with citations and a note on what changed.",
@@ -1872,6 +1865,19 @@
    "effort": "low",
    "required": true,
    "control": true
+  },
+  {
+   "id": "covenant_workouts",
+   "workstream": "board",
+   "label": "Covenant waivers and workouts",
+   "nature": "judgment",
+   "kpis": {},
+   "solution": "Keep the decision with the partners and credit leads who own it. AI can compile the covenant terms, history, and correspondence.",
+   "first_step": "Write down who decides a waiver or workout, and where the reason is recorded.",
+   "check": "The deal lead and whoever leads compliance record each decision and why.",
+   "effort": "medium",
+   "required": true,
+   "no_agent": true
   }
  ]
 }
