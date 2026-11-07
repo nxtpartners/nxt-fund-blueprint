@@ -149,9 +149,9 @@ README.md                      This file
 
 | Area | State |
 |---|---|
-| Plugin, question set, scoring, and report | In testing, 2026-11-06 |
-| Tested on | Test firms on claude.ai with one paid account, and Claude Code's evaluation sandbox, 2026-11-06. No real firm has used it yet |
-| Claude Code interactive run | Not started |
+| Plugin, question set, scoring, and report | In testing, 2026-11-07 |
+| Tested on | Test firms on claude.ai with one paid account, and Claude Code up to the consent question, 2026-11-07. No real firm has used it yet |
+| Full question-by-question run in Claude Code | Not started |
 | Review by a practitioner | Not started |
 | Ready-made download | Not started |
 | Claude directory listing | Not started |
@@ -162,6 +162,6 @@ README.md                      This file
 
 ## License
 
-Released under the [MIT License](LICENSE). The embedded fonts are under the SIL Open Font License 1.1.
+Released under the [MIT License](LICENSE). The embedded fonts are under the [SIL Open Font License 1.1](skills/fund-blueprint/assets/fonts/OFL.txt).
 
 Created by NXT Partners AI, [info@nxtpartners.ai](mailto:info@nxtpartners.ai)
