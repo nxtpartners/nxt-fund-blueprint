@@ -52,17 +52,16 @@ Each activity gets one verdict: remove it, automate it, optimize it, add AI that
 
 **Requirements:** a regular Claude chat with code execution turned on, or Claude Code. It does not run in incognito chats. We have tested it on one paid claude.ai account. We have not tested Free, Team, or Enterprise plans, where an administrator may need to allow it.
 
-On claude.ai, build the plugin file, then upload it under **Customize > Plugins**:
+On claude.ai:
+
+1. [Download the plugin file](https://github.com/nxtpartners/nxt-fund-blueprint/releases/latest/download/nxt-fund-blueprint.zip).
+2. Upload it under **Customize > Plugins > Add > Upload plugin**.
+
+In Claude Code:
 
 ```sh
 git clone https://github.com/nxtpartners/nxt-fund-blueprint.git   # get the code
 cd nxt-fund-blueprint
-zip -qr nxt-fund-blueprint.zip .claude-plugin skills README.md LICENSE   # build the plugin file to upload
-```
-
-In Claude Code, from the same folder:
-
-```sh
 claude --plugin-dir .   # start Claude Code with the plugin loaded
 ```
 
@@ -153,7 +152,7 @@ README.md                      This file
 | Tested on | Test firms on claude.ai with one paid account, and Claude Code up to the consent question, 2026-11-07. No real firm has used it yet |
 | Full question-by-question run in Claude Code | Not started |
 | Review by a practitioner | Not started |
-| Ready-made download | Not started |
+| Ready-made download | Available, 2026-11-07 |
 | Claude directory listing | Not started |
 
 ## About NXT Partners AI
