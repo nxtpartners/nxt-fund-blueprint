@@ -141,6 +141,7 @@ skills/fund-blueprint/
   assets/                      NXT logo and fonts
 examples/                      Sample report for a fictional firm, and its images
 REVIEW.md                      How to try it and what feedback we ask for
+.github/                       Builds the download and publishes each release
 LICENSE                        MIT
 README.md                      This file
 ```
