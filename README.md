@@ -76,7 +76,7 @@ Two things happen only if you choose them:
 - **Personalizing:** your firm's name is used in a public web search, and you confirm each fact it finds before it counts.
 - **Writing to NXT Partners AI:** the tool drafts a short summary and you send it yourself. Nothing is sent from the chat.
 
-Please do not enter confidential details, such as the names of people, portfolio companies, LPs, or deals. The only name it may ask for is your own firm's, and only if you choose to personalize.
+The tool does not need names of people, portfolio companies, LPs, or deals: ranges and general descriptions are enough. The only name it may ask for is your own firm's, and only if you choose to personalize.
 
 **What your compliance team may want to check:** whether your firm's Claude account and its terms are approved for this kind of operational description, and whether a public web search on the firm's name is acceptable. The code is here for anyone to read.
 

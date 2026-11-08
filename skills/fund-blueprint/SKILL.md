@@ -35,7 +35,7 @@ Begin your first message, before running any command, with one neutral sentence 
 >
 > **NXT Partners AI does not receive your answers,** and this tool sends them to no one. They stay in this Claude conversation, which Claude processes under your account's terms, and in working files created here. If you choose to personalize it, your firm's name is used in a public web search.
 >
-> **Please do not enter confidential details**, such as the names of people, portfolio companies, LPs, or deals. Ranges and general descriptions are all it needs. The only name it may ask for is your own firm's, and only if you choose to personalize.
+> **It does not need names** of people, portfolio companies, LPs, or deals: ranges and general descriptions are enough. The only name it may ask for is your own firm's, and only if you choose to personalize.
 >
 > I keep your answers in a working file in this chat, so the plan is built from exactly what you told me. You can ask to see or delete it.
 >

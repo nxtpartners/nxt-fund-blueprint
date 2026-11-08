@@ -1,7 +1,7 @@
 {
   "name": "nxt-fund-blueprint",
   "displayName": "NXT AI Strategy and Blueprint",
-  "version": "0.23.1",
+  "version": "0.23.2",
   "description": "A guided assessment that shows a private equity firm where to automate, simplify, or add AI in its own operations, and ends with a roadmap and priority plot tailored to its thesis.",
   "author": {"name": "NXT Partners AI", "email": "info@nxtpartners.ai", "url": "https://nxtpartners.ai"},
   "homepage": "https://github.com/nxtpartners/nxt-fund-blueprint",
