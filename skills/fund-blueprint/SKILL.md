@@ -79,7 +79,7 @@ Only confirmed facts count. They go into `public_facts`, and the name into `firm
 
 ## Asking questions
 
-Use the tool that shows clickable options to the user, such as `AskUserQuestion`, whenever it exists. If no such tool exists, show lettered options and accept replies like "A, C".
+Use the tool that shows clickable options to the user, such as `AskUserQuestion`, whenever it exists. If no such tool exists, show lettered options and accept replies like "A, C". If a reply's numbers do not match the questions shown, do not record it as given: say how you read it and confirm before it counts. Without that tool there is no "Something else" box, so end each set of lettered questions with one line: "You can also answer in your own words, or skip a question." Leave out "or skip a question" when none of them can be skipped. When an open question shares a message with lettered ones, show it last and include it in the reply example.
 
 - Show `Section N of 7: <title>` once at the start of each section, in the first question's text.
 - Group related questions into one call when the tool allows several (up to four), which keeps the number of screens low.
@@ -90,7 +90,7 @@ Use the tool that shows clickable options to the user, such as `AskUserQuestion`
 
 If they skip a closed question, record `null` for it and move on. The report treats it as not answered. A few answers are needed to build a plan: `pressure` and `kpi`, at least one work area, and at least one task in each work area. Ask for a skipped one once more. If they skip it again, explain that the plan cannot be built without it, and stop.
 
-Do not ask what they have already told you. If their opening message clearly answers a question (for example, "a buyout firm" answers `strategy`), record it, say what you noted, and skip that question, because repeating it makes the tool feel like a form. Only do this when they actually said it. Ask about anything you would have to infer, such as how the team feels about AI. The confirmation step lets them correct anything.
+Do not ask what they have already told you. If their opening message clearly answers a question (for example, "a buyout firm" answers `strategy`), record it, say what you noted, and skip that question, because repeating it makes the tool feel like a form. Only do this when they actually said it: a deal stage or a sector, such as "Series B", is not a strategy. Ask about anything you would have to infer, such as how the team feels about AI. The confirmation step lets them correct anything.
 
 ## Understanding the thesis
 
@@ -113,13 +113,13 @@ Use the answer to `pain_first` to make sure their real pain is in the plan. Comp
 - **If nothing matches,** restate and confirm it as a new task as described below, add it to `custom` in the work area it belongs to, and record its confirmed name as `named_task`.
 - **If it is mainly a judgment or a relationship,** such as a valuation decision, say that part stays with their people, and match the routine work around it, such as assembling the valuation pack.
 
-If they choose "Closer to a listed task", show that work area's tasks and let them pick. If they choose "Leave it out", drop it and carry on. The named task's work area is the first one you go deep on. Then ask `fixed.stay_or_add` instead of `areas`: if they stay, skip `areas` and `workstreams`.
+If they choose "No, it is different", ask them to say in a few words what the task involves, then compare again. If it now matches a listed task, confirm that one; if not, treat it as a new task. Do not add hints of your own to `fixed.confirm_match`. If they choose "Closer to a listed task" when confirming a new task, show that work area's tasks and let them pick. List first any task you matched earlier, even one they said was different, and show up to four. If they choose "Leave it out", drop it and carry on. The named task's work area is the first one you go deep on. Then ask `fixed.stay_or_add` instead of `areas`: if they stay, skip `areas` and `workstreams`.
 
 For a new task, the KPI link waits until they have chosen a KPI, and the AI question waits until they have answered `ai_stage`.
 
 ## Saying it back
 
-So that this feels like someone learning about their firm, restate what you have heard, using the templates in `say_back` from the flow, as a normal message: after priorities and the KPI (`after_goal`), after the AI section (`after_ai`), halfway through a deep work area (`halfway`), after each work area (`end_of_area`), and before the constraints (`before_constraints`). Fill them only with their own answers, in the words of the options, and leave out any part they skipped. Add no opinion, no comparison, and no conclusion.
+So that this feels like someone learning about their firm, restate what you have heard, using the templates in `say_back` from the flow, as a normal message: after priorities and the KPI (`after_goal`), after the AI section (`after_ai`), halfway through a deep work area (`halfway`), after each work area (`end_of_area`), and before the constraints (`before_constraints`). Fill them only with their own answers, in the words of the options, and leave out any part they skipped. For `{remaining}` in `halfway`, count the questions you will actually still ask in that work area. In `end_of_area`, do not repeat facts the `halfway` message already gave. Add no opinion, no comparison, and no conclusion.
 
 Before each deep work area, show how far along they are: "Work area 1 of 2: Portfolio reporting. About 13 short questions."
 
@@ -158,7 +158,7 @@ For a deep work area, offer `walkthrough` after they pick tasks. It can save the
 2. Restate it as at most six numbered steps of at most 80 characters each, using only their words.
 3. List which closed answers their words settle, using the option labels. Only `sources`, `time_goes`, `legacy_tasks`, and `rhythm` may be settled this way. Never settle `hours`, `error_cost`, or `who` unless they said it plainly.
 4. Ask `fixed.confirm_walkthrough`. Nothing counts until they choose "Correct". If they choose "Leave it out", delete it and ask the closed questions.
-5. If there are at least two steps, ask `slow_step`, with the first four steps as options.
+5. If there are at least two steps, ask `slow_step`, with up to four steps as options. If there are more than four, choose the four their answers point to, such as a sign-off step when time goes on waiting for sign-off. They can also name another step.
 6. Ask only what their words did not settle. Record `walkthrough` as `{"steps": [...], "slow_step": "..."}`.
 
 ## Validating anything they type
@@ -242,7 +242,7 @@ Show the file itself, using this environment's way of displaying or sharing a fi
 
 Then, in the same reply, write a short message before asking anything else:
 
-1. The first moves, up to three, one line each, in plain language. Rows marked "Leave with people" are not moves, so leave them out here.
+1. The first moves, up to three, one line each, in plain language. Rows marked "Leave with people" are not moves, so leave them out here. Use only what the report says about each move: do not link moves to each other or add details the report does not give. Use the report's words for its columns, such as "Effect".
 2. The largest blocker from "Clear these first" in the report, if there is one.
 3. The script's table, so the result is available even if the file cannot be displayed.
 

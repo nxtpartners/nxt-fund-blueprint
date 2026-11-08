@@ -8,6 +8,7 @@ from ..data import Library
 from ..enums import AiStage
 from ..models import Answers, Plan
 from ..planning.facts import told
+from ..text import label_list
 from .common import esc, lead_item, ledger_rows
 
 
@@ -34,9 +35,9 @@ def position_rows(answers: Answers, library: Library) -> List[Tuple[str, str]]:
     if told(answers, "systems"):
         rows.append((c.SYSTEMS_LABEL, library.option_label("systems", answers.systems)))
     if told(answers, "trust"):
-        rows.append((c.TRUST_LABEL, ", ".join(library.option_label("trust", value) for value in answers.trust)))
+        rows.append((c.TRUST_LABEL, label_list([library.option_label("trust", value) for value in answers.trust])))
     if told(answers, "capacity"):
-        capacity = ", ".join(library.option_label("capacity", value) for value in answers.capacity)
+        capacity = label_list([library.option_label("capacity", value) for value in answers.capacity])
         rows.append((c.CAPACITY_LABEL, capacity))
     if answers.budget:
         rows.append(("Budget", library.option_label("budget", answers.budget)))

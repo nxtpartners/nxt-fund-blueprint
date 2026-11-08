@@ -17,7 +17,7 @@ def render_summary(answers: Answers, plan: Plan, library: Library) -> str:
         f"KPI: {kpi_label}",
         f"Reported hours a month: {hours_text(plan) if plan.hours_known else 'not answered'}",
         "",
-        f"| # | Activity | Id | Verdict | Speed, estimated | Impact, estimated | {c.MONEY_LABEL} |",
+        f"| # | Activity | Id | Verdict | Speed, estimated | Effect, estimated | {c.MONEY_LABEL} |",
         "|---|---|---|---|---|---|---|",
     ]
     for item in plan.items:

@@ -1374,7 +1374,7 @@
    },
    "solution": "Build an approved answer library and draft each new DDQ from it, with citations and a flag on anything stale or unanswered.",
    "first_step": "Put your last three completed DDQs in one document and mark which answers remain approved.",
-   "check": "IR and compliance approve answers, because these are representations to investors.",
+   "check": "Whoever signs off answers today still approves each one, and whoever leads compliance reviews any new statement, because these are representations to investors.",
    "effort": "medium",
    "required": true,
    "no_agent": true,

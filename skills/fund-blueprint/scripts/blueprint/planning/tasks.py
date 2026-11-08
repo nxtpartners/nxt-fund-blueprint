@@ -181,10 +181,9 @@ def anchor_first_step(ctx: WorkContext, d: Decision, first_step: str) -> str:
     """The hardest task's first step also carries what they said about where its time goes."""
     work, library = ctx.work, ctx.library
     fixed_step = "first_step" in d.row or d.ai_assumed or d.verdict == Verdict.BUILD_ON
-    if work.slow_step and not fixed_step:
-        first_step = c.SLOW_STEP_TEXT.format(slow_step=work.slow_step)
-    elif work.slow_step:
-        first_step += c.SLOW_STEP_ENDING.format(slow_step=work.slow_step)
+    if work.slow_step:
+        if not fixed_step:
+            first_step = c.SLOW_STEP_TEXT.format(slow_step=work.slow_step)
     elif d.rule in c.RULE_ANCHOR_STEPS:
         first_step = c.RULE_ANCHOR_STEPS[d.rule].replace("{task}", lower_first(d.activity.label))
     elif not fixed_step:

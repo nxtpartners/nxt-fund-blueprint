@@ -148,11 +148,11 @@ README.md                      This file
 
 | Area | State |
 |---|---|
-| Plugin, question set, scoring, and report | In testing, 2026-11-07 |
-| Tested on | Test firms on claude.ai with one paid account, and Claude Code up to the consent question, 2026-11-07. No real firm has used it yet |
-| Full question-by-question run in Claude Code | Not started |
+| Plugin, question set, scoring, and report | In testing, 2026-11-08 |
+| Tested on | Test firms on claude.ai with one paid account, and in Claude Code, 2026-11-08. No real firm has used it yet |
+| Full question-by-question run in Claude Code | Done with test firms, 2026-11-08 |
 | Review by a practitioner | Not started |
-| Ready-made download | Available, 2026-11-07 |
+| Ready-made download | Available, 2026-11-08 |
 | Claude directory listing | Not started |
 
 ## About NXT Partners AI

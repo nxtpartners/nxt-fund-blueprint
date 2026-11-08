@@ -411,14 +411,11 @@ KPI_STATUS_ROW = {
     "no_target": "Tracked, no target set",
 }
 STUCK_TITLE = "Where the work gets stuck"
-STUCK_TIME = "{task}: time goes on {what}."
+STUCK_TASK = "{task}: {facts}"
 STUCK_TIME_AREA = "Time goes on {what}."
 STUCK_SLOW_AREA = "The slowest step is {step}."
 STUCK_ONE_PERSON_AREA = "Know-how is held by one or two people."
 STUCK_VARIES_AREA = "It runs differently by team."
-STUCK_SLOW = "{task}: the slowest step is {step}."
-STUCK_ONE_PERSON = "{task}: know-how is held by one or two people."
-STUCK_VARIES = "{task}: it runs differently by team."
 STUCK_HABIT = "{task}: done mainly out of habit."
 STUCK_SOURCES = "Information is split across {sources}, with no system holding it."
 STUCK_SOURCES_SYSTEM = "Information is split across {sources}."
@@ -532,7 +529,6 @@ RHYTHM_STEP_ENDINGS = {
     "bursts": " Test on a past burst, using files from the last deal or request.",
 }
 SLOW_STEP_TEXT = "You said the slowest step is: {slow_step}. Write down how it runs and what it checks, and keep any check that protects the numbers."
-SLOW_STEP_ENDING = " You said the slowest step is: {slow_step}."
 NOT_EXAMINED = "Not examined in detail, because you chose a quick check of this work area."
 WALKTHROUGH_TITLE = "How it runs today, as you described it"
 HOURS_PHRASES = {
@@ -576,9 +572,9 @@ HORIZON_SPANS = {
     Horizon.LATER: "Over 90 days, estimated",
 }
 QUADRANT_LABELS = {
-    Quadrant.QUICK_WINS: "Fast, higher effect",
+    Quadrant.QUICK_WINS: "Faster, higher effect",
     Quadrant.STRATEGIC_BETS: "Slower, higher effect",
-    Quadrant.FILL_INS: "Fast, lower effect",
+    Quadrant.FILL_INS: "Faster, lower effect",
     Quadrant.DEPRIORITIZE: "Slower, lower effect",
 }
 

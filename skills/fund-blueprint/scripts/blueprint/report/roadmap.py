@@ -99,7 +99,7 @@ def department_roadmap(plan: Plan) -> str:
             f"<p>{esc(c.FIRM_WIDE_SPEED)}: {esc(titles)}.</p></div>"
         )
     for label, items in by_workstream(plan.plotted).items():
-        rows = "".join(item_timeline_row(item) for item in sorted(items, key=lambda row: row.weeks))
+        rows = "".join(item_timeline_row(item) for item in sorted(items, key=lambda row: (row.weeks, row.number)))
         groups.append(
             f'<div class="tl-group"><h3>{esc(label)}</h3>'
             f'<p class="owner">Suggested owner: {esc(items[0].owner_role)}</p>{rows}</div>'

@@ -52,16 +52,19 @@ def evidence_for(work: WorkstreamAnswers, answers: Answers, library: Library) ->
 def stuck_lines(work: WorkstreamAnswers, answers: Answers, library: Library) -> List[str]:
     """Where this work gets stuck, using only what they said about it."""
     label = hardest_task_label(work, answers, library)
-    line = lambda named, area, **words: named.format(task=label, **words) if label else area.format(**words)
-    lines: List[str] = []
-    if told_here(work, answers, "time_goes"):
-        lines += [line(c.STUCK_TIME, c.STUCK_TIME_AREA, what=c.TIME_PHRASES[item]) for item in work.time_goes]
+    facts: List[str] = []
+    if told_here(work, answers, "time_goes") and work.time_goes:
+        facts.append(c.STUCK_TIME_AREA.format(what=join_words([c.TIME_PHRASES[item] for item in work.time_goes])))
     if work.slow_step:
-        lines.append(line(c.STUCK_SLOW, c.STUCK_SLOW_AREA, step=work.slow_step))
+        facts.append(c.STUCK_SLOW_AREA.format(step=work.slow_step))
     if told_here(work, answers, "depends") and work.depends == "no":
-        lines.append(line(c.STUCK_ONE_PERSON, c.STUCK_ONE_PERSON_AREA))
+        facts.append(c.STUCK_ONE_PERSON_AREA)
     if told_here(work, answers, "same_way") and work.same_way == "different":
-        lines.append(line(c.STUCK_VARIES, c.STUCK_VARIES_AREA))
+        facts.append(c.STUCK_VARIES_AREA)
+    if label and facts:
+        lines = [c.STUCK_TASK.format(task=label, facts=" ".join([lower_first(facts[0])] + facts[1:]))]
+    else:
+        lines = list(facts)
     lines += [
         c.STUCK_HABIT.format(task=library.activities[task].label)
         for task in work.legacy_tasks
