@@ -1,5 +1,6 @@
 # Pushing a version tag such as v0.23.3 builds the plugin zip and publishes it as the latest release.
-name: Release
+name: "🚀 Publish plugin release"
+run-name: "🚀 Publish ${{ github.ref_name }}"
 
 on:
   push:
@@ -14,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check the tag matches the plugin version
+      - name: 🔎 Check the tag matches the plugin version
         run: |
           version=$(python3 -c "import json; print(json.load(open('.claude-plugin/plugin.json'))['version'])")
           if [ "v$version" != "$GITHUB_REF_NAME" ]; then
@@ -26,12 +27,12 @@ jobs:
             exit 1
           fi
 
-      - name: Build the plugin zip
+      - name: 📦 Build the plugin zip
         run: |
           zip_path=$(bash .github/scripts/package.sh)
           cp "$zip_path" nxt-fund-blueprint.zip
 
-      - name: Publish the release
+      - name: 🏷️ Publish the release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

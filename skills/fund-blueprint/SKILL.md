@@ -135,7 +135,7 @@ After `kpi_status`, unless they do not track it, ask `fixed.kpi_value` as an ope
 
 The number question offers a short list, and "Something else" lets them type their own. Do not force a typed number onto the list.
 
-- Restate it briefly so they can confirm the wording. Please do not name portfolio companies or investors.
+- Restate it briefly so they can confirm the wording. Names are not needed.
 - **If a number on any priority's list is clearly the same thing,** ask `fixed.confirm_kpi`. If they choose "Yes, treat it the same", record that number's id as `kpi` and their wording as `kpi_name`.
 - **If nothing is close, or they keep their own,** record `kpi` as `custom` and their wording as `kpi_name`. This includes fund returns such as IRR, MOIC, or DPI.
 - **For `custom`,** estimate how each task they selected links to the number, and record it in `kpi_links` as task id or name to `direct`, `some`, or `none` (`none` means indirect: every task counts). List these links in the summary before the report, so they can correct them. Never leave a task out.
