@@ -9,12 +9,18 @@ from ..text import lower_first
 from .common import esc
 
 
+def foundation_owner(action: str, data_owner: str) -> str:
+    """Data work goes to the first move's owner, written-down know-how to whoever does the work."""
+    if action.startswith(c.DATA_ACTION_START):
+        return data_owner
+    if action.startswith(c.ONE_PERSON_ACTION_START):
+        return c.ONE_PERSON_OWNER
+    return c.FIRM_WIDE_OWNER
+
+
 def next_30_days(plan: Plan, answers: Answers, library: Library) -> str:
     data_owner = plan.top[0].owner_role if plan.top else c.FIRM_WIDE_OWNER
-    rows = [
-        ("", action, data_owner if action.startswith(c.DATA_ACTION_START) else c.FIRM_WIDE_OWNER)
-        for _, _, action in plan.foundations[: c.NEXT_30_MAX_FOUNDATIONS]
-    ]
+    rows = [("", action, foundation_owner(action, data_owner)) for _, _, action in plan.foundations[: c.NEXT_30_MAX_FOUNDATIONS]]
     if not told(answers, "kpi_status"):
         rows.append(("", library.kpi_view(answers.kpi, answers.kpi_name)["baseline"], c.FIRM_WIDE_OWNER))
     rows += [("", action, owner) for action, owner in plan.measure_actions[: c.MEASURE_ACTIONS_MAX]]

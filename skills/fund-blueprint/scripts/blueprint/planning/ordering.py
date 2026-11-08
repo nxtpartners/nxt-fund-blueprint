@@ -24,10 +24,14 @@ def priority(item: ScoredActivity, status: str = "", boost_named: bool = True) -
     return (-round(base, 4), 0 if item.named else 1, item.label)
 
 
-def add_comparison(plotted: List[ScoredActivity], kpi_text: str, status: str, money_ordered: bool = False) -> None:
+def add_comparison(
+    plotted: List[ScoredActivity], kpi_text: str, status: str, money_ordered: bool = False, thesis_focus: List[str] = ()
+) -> None:
     """Say why the first move leads over the second, using the same score that ranked them."""
     if len(plotted) < 2:
         return
+    for earlier, later in zip(plotted[1:], plotted[2:]):
+        explain_follow(earlier, later, thesis_focus)
     first, second = plotted[0], plotted[1]
     next_task = lower_first(second.label)
     if money_ordered and first.fits and not second.fits:
@@ -45,6 +49,31 @@ def add_comparison(plotted: List[ScoredActivity], kpi_text: str, status: str, mo
     else:
         return
     first.why_line = f"{first.why_line} {line}".strip()
+
+
+def looks_same(one: ScoredActivity, other: ScoredActivity) -> bool:
+    """Two moves whose cards show the same verdict, speed, effect, money, and link."""
+    return (one.verdict, one.speed_label, one.impact, one.spend, one.fits, one.relevance) == (
+        other.verdict, other.speed_label, other.impact, other.spend, other.fits, other.relevance
+    )
+
+
+def explain_follow(earlier: ScoredActivity, later: ScoredActivity, thesis_focus: List[str]) -> None:
+    """When two moves in a row look the same, say on the second why the first comes ahead of it."""
+    if earlier.named or later.named or not looks_same(earlier, later):
+        return
+    prev_task = lower_first(earlier.label)
+    if earlier.workstream_id in thesis_focus and later.workstream_id not in thesis_focus:
+        line = c.FOLLOWS_THESIS
+    elif round(earlier.value, 3) > round(later.value, 3):
+        line = c.FOLLOWS_HOURS
+    elif (earlier.raw_impact or 0) > (later.raw_impact or 0):
+        line = c.FOLLOWS_EFFECT
+    elif (earlier.weeks or 0) < (later.weeks or 0):
+        line = c.FOLLOWS_FASTER
+    else:
+        line = c.FOLLOWS_TIE
+    later.why_line = f"{later.why_line} {line.format(prev_task=prev_task)}".strip()
 
 
 def order_moves(

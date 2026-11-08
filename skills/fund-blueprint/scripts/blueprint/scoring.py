@@ -63,7 +63,7 @@ def score_answers(library: Library, answers: Answers, with_levers: bool = True) 
     assessed = {work.id for work in answers.workstreams}
     kept_with_people = {item.activity_id for item in leave}
     measure_rows, measure_actions = measure_view(answers, library, say)
-    add_comparison(plotted, kpi_text, status, answers.budget in c.BUDGET_REORDERS)
+    add_comparison(plotted, kpi_text, status, answers.budget in c.BUDGET_REORDERS, list(answers.thesis_focus))
     start, start_moves = start_line(answers, plotted, status, off_target_map(answers, library, say))
     foundations = foundations_for(answers, library, plotted[0].label if plotted else "", ordered)
     hours_low, hours_high, hours_known = reported_hours(answers)

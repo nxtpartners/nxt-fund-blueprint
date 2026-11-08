@@ -119,7 +119,7 @@ For a new task, the KPI link waits until they have chosen a KPI, and the AI ques
 
 ## Saying it back
 
-So that this feels like someone learning about their firm, restate what you have heard, using the templates in `say_back` from the flow, as a normal message: after priorities and the KPI (`after_goal`), after the AI section (`after_ai`), halfway through a deep work area (`halfway`), after each work area (`end_of_area`), and before the constraints (`before_constraints`). Fill them only with their own answers, in the words of the options, and leave out any part they skipped. For `{remaining}` in `halfway`, count the questions you will actually still ask in that work area. In `end_of_area`, do not repeat facts the `halfway` message already gave. Add no opinion, no comparison, and no conclusion.
+So that this feels like someone learning about their firm, restate what you have heard, using the templates in `say_back` from the flow, as a normal message: after priorities and the KPI (`after_goal`), after the AI section (`after_ai`), halfway through a deep work area (`halfway`), after each work area (`end_of_area`), and before the constraints (`before_constraints`). Fill them only with their own answers, in the words of the options, and leave out any part they skipped. In `end_of_area`, do not repeat facts the `halfway` message already gave. Add no opinion, no comparison, and no conclusion.
 
 Before each deep work area, show how far along they are: "Work area 1 of 2: Portfolio reporting. About 13 short questions."
 
@@ -238,7 +238,7 @@ The script writes the whole page, including the scores and the NXT branding. Do 
 
 ## Presenting the result
 
-Show the file itself, using this environment's way of displaying or sharing a file, without retyping or rebuilding its contents. The page embeds its fonts and logo, and retyping would corrupt them and waste time. In Claude Code, give the path and offer to open it.
+Show the file itself, using this environment's way of displaying or sharing a file, without retyping or rebuilding its contents. The page embeds its fonts and logo, and retyping would corrupt them and waste time. In Claude Code, give the path and say they can open it in a browser. Do not ask whether to open it: the only question in this reply is `fixed.next_step`.
 
 Then, in the same reply, write a short message before asking anything else:
 
@@ -249,10 +249,12 @@ Then, in the same reply, write a short message before asking anything else:
 After that message, ask `fixed.next_step`:
 
 - **Help me do my first step now:** work on move 1's first step with them, here in the chat, using only what they have told you and what they provide. If it needs firm data, remind them to use only tools their firm allows.
-- **Draft a note to my team or partners:** the first move, the first steps, and a short plain-language version of the plan.
-- **List questions for compliance:** only questions, taken from the report's blockers and human checks. Do not draft a policy or give compliance advice.
+- **Draft something for my team or compliance:** ask `fixed.draft_kind`, then write that draft.
+  - **A note to my team or partners:** the first move, the first steps, and a short plain-language version of the plan.
+  - **Questions for compliance:** only questions, taken from the report's blockers and human checks. Do not draft a policy or give compliance advice.
 - **Summary to send to NXT Partners AI:** if `aum` is not known yet, ask `aum` from `after_plan`, add it to `answers.json`, and run the command again. Then show the script's email draft as it is, and tell them to review it and send it themselves. This tool never sends anything.
+- **That's all for now:** close the session in two short lines: the report is above (in Claude Code, at its path), and they can ask to see or delete the working files. Ask nothing more.
 
-Anything you draft must use only the report and what they confirmed. Label it as a draft for them to review. In the note and the compliance questions, keep every timeline and impact marked as estimated, and include the line that this is not investment, legal, tax, or compliance advice. After a draft, ask again with the options they have not used. If one option remains or they skip, stop.
+Anything you draft must use only the report and what they confirmed. Label it as a draft for them to review. In the note and the compliance questions, keep every timeline and impact marked as estimated, and include the line that this is not investment, legal, tax, or compliance advice. After a draft or the first step, ask `fixed.next_step` again without the options they have used, always keeping "That's all for now". If they skip, close the same way.
 
 Do not pitch further at any point.

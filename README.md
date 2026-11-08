@@ -103,7 +103,7 @@ flowchart LR
     H -- No --> I{Is the summary<br/>right?}
     I -- Correct it --> G
     I -- Yes --> J[Report: roadmap<br/>and priority chart]
-    J --> K[Help with your first step,<br/>or drafts for your team]
+    J --> K[Help with your first step,<br/>a draft, or finish here]
 ```
 
 Anything you type is restated for you to confirm before it counts. Everything in the report is something you said, a public fact you confirmed with its source, a labelled planning estimate, general advice from the tool's fixed text, or a short note Claude writes linking a move to the thesis you confirmed.

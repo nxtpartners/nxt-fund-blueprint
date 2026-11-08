@@ -1116,16 +1116,31 @@
      "label": "Help me do my first step now"
     },
     {
-     "id": "note",
-     "label": "Draft a note to my team or partners"
-    },
-    {
-     "id": "cco_questions",
-     "label": "List questions for compliance"
+     "id": "draft",
+     "label": "Draft something for my team or compliance"
     },
     {
      "id": "nxt_summary",
      "label": "Summary to send to NXT Partners AI"
+    },
+    {
+     "id": "done",
+     "label": "That's all for now"
+    }
+   ]
+  },
+  "draft_kind": {
+   "id": "draft_kind",
+   "header": "Draft",
+   "text": "Which draft would help?",
+   "options": [
+    {
+     "id": "note",
+     "label": "A note to my team or partners"
+    },
+    {
+     "id": "cco_questions",
+     "label": "Questions for compliance"
     }
    ]
   },
@@ -1311,7 +1326,7 @@
  "say_back": {
   "after_goal": "So far: {strategy}, {team} people. The priority for the next 12 months is {priority}, and you want this plan judged on {kpi}.",
   "after_ai": "On AI: {stage}. You described results so far as: {results}.",
-  "halfway": "So far on {work_area}: {hours} a month, in {sources}, and the time goes on {time_goes}. About {remaining} more.",
+  "halfway": "So far on {work_area}: {hours} a month, in {sources}, and the time goes on {time_goes}. A few more questions on this part.",
   "end_of_area": "{work_area}, as you describe it: {hours} a month, with {who} on it, in {sources}. The time goes on {time_goes}. If the main person left: {depends}. Done mainly out of habit: {legacy}. That is {n} of {total} done.",
   "before_constraints": "That is the work: {areas}. Last part: a few short questions on what could slow this down, then your plan."
  }

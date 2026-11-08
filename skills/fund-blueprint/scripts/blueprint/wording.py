@@ -592,8 +592,11 @@ SHADOW_RESTRICTED_FOUNDATION = (
 ONE_PERSON_FOUNDATION = (
     "Write down what only one or two people know",
     "You said {subject} depends on one or two people{harm}.",
-    "Have the person who knows {subject} write down how it runs.",
+    "Write down how {subject} runs today, step by step.",
 )
+# The person who does the work writes it down. A senior owner only signs it off.
+ONE_PERSON_ACTION_START = "Write down how"
+ONE_PERSON_OWNER = "Whoever does this today, signed off by the COO or managing partner"
 ONE_PERSON_HARM = ", and a mistake there could cause serious harm"
 OWNER_FOUNDATION = (
     "Name an owner",
@@ -773,6 +776,12 @@ LEADS_MORE_DIRECT = "It leads because it has a closer link to {kpi} than {next_t
 LEADS_MORE_HOURS = "It leads because more senior time or hours are at stake here than on {next_task}."
 LEADS_FASTER = "It leads because it should reach a result sooner than {next_task}."
 LEADS_TIE = "It is level with {next_task} under our rules, so start with whichever causes more trouble today."
+# A move rated the same as the one before it says why it comes second.
+FOLLOWS_THESIS = "It is rated the same as {prev_task}, which comes first because its work is in your thesis focus."
+FOLLOWS_HOURS = "It is rated the same as {prev_task}, which comes first because more senior time or hours are at stake there."
+FOLLOWS_EFFECT = "It is rated the same as {prev_task}, which comes first because it scored slightly higher on effect under our rules."
+FOLLOWS_FASTER = "It is rated the same as {prev_task}, which comes first because it should reach a result a little sooner."
+FOLLOWS_TIE = "It is level with {prev_task} under our rules, so take whichever causes more trouble today first."
 TIE_START = "Start with moves 1 and 2. The top moves rank level, so choose what suits your team."
 READING_TITLE = "What in your answers shaped this plan"
 PLANNING_LINE_ONE = "Under our planning rules, the one move that adds software {timing}."
