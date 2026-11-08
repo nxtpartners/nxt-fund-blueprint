@@ -21,6 +21,10 @@ jobs:
             echo "::error::Tag $GITHUB_REF_NAME does not match version $version in .claude-plugin/plugin.json"
             exit 1
           fi
+          if ! grep -q "^VERSION = \"$version\"$" skills/fund-blueprint/scripts/blueprint/constants.py; then
+            echo "::error::VERSION in constants.py does not match $version in .claude-plugin/plugin.json"
+            exit 1
+          fi
 
       - name: Build the plugin zip
         run: |

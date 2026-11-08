@@ -6,7 +6,7 @@ from pathlib import Path
 from .enums import Rule, Spend, Verdict
 from .wording import *  # noqa: F401,F403
 
-VERSION = "0.23.3"
+VERSION = "0.23.4"
 
 SKILL_DIR = Path(__file__).resolve().parents[2]
 CATALOG_PATH = SKILL_DIR / "references" / "catalog.json"

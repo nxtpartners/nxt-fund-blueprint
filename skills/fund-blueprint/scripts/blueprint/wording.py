@@ -405,6 +405,7 @@ COVERAGE_LINE = "Your number depends most on {areas}, which you did not assess. 
 PEOPLE_ELSEWHERE = "Across the firm, these also stay with your people: {items}."
 STRATEGY_LINE = "This is your AI strategy and blueprint, built from one person's answers. It sets which activities to take forward, and in what order."
 REPORT_NAME = "AI Strategy and Blueprint for PE Funds"
+VERSION_LABEL = "Version {version}"
 KPI_STATUS_ROW = {
     "on_target": "On target, you said",
     "off_target": "Off target, you said",
