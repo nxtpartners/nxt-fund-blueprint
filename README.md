@@ -140,6 +140,7 @@ skills/fund-blueprint/
   scripts/blueprint/           Validation, planning rules, and report sections
   assets/                      NXT logo and fonts
 examples/                      Sample report for a fictional firm, and its images
+REVIEW.md                      How to try it and what feedback we ask for
 LICENSE                        MIT
 README.md                      This file
 ```
@@ -157,7 +158,7 @@ README.md                      This file
 
 ## About NXT Partners AI
 
-[NXT Partners AI](https://nxtpartners.ai) made this tool and offers help putting a plan like this into practice. Questions, corrections, and problems: [info@nxtpartners.ai](mailto:info@nxtpartners.ai).
+[NXT Partners AI](https://nxtpartners.ai) made this tool and offers help putting a plan like this into practice. Questions, corrections, and problems: [info@nxtpartners.ai](mailto:info@nxtpartners.ai). To review it for us, see [REVIEW.md](REVIEW.md).
 
 ## License
 
