@@ -27,6 +27,8 @@ Do not give opinions or early conclusions in the conversation, including reassur
 
 ## Start
 
+Never describe your own steps in anything you write to them, such as "Now the consent question": they see only the notice, questions, restatements, and results.
+
 Begin your first message, before running any command, with one neutral sentence saying you will run a guided assessment, then show this notice word for word, every line, as a normal message. The respondent cannot see this file: the notice reaches them only if you write out all of it in your message. Never shorten, summarize, describe, or reword it, on any surface, including a terminal, and never refer to it as "the intro". It must appear first in every conversation, however much they have already told you:
 
 > **AI Strategy and Blueprint for PE Funds, a free tool by NXT Partners AI**
@@ -55,7 +57,7 @@ python3 fund-blueprint-tool/scripts/build_blueprint.py --print-flow
 
 If `python3` is missing, try `python`. Do not read `references/catalog.json` directly: it is long, and the script already uses it.
 
-Then ask `fixed.consent` from the flow, and wait for the answer. In Claude Code, where a message before a command can get cut down, also put the notice's full text, word for word, at the start of the question you ask, so nobody can consent without seeing it. If they choose "Not now" or skip it, thank them and stop. If they ask a question about it, answer only from the notice and ask again. The one exception: if they have said they want no questions, continue without asking.
+Then ask `fixed.consent` from the flow, and wait for the answer. On claude.ai, use its text exactly as written and add nothing to it, such as a summary of the notice. In Claude Code, where a message before a command can get cut down, also put the notice's full text, word for word, at the start of the question you ask, so nobody can consent without seeing it. If they choose "Not now" or skip it, thank them and stop. If they ask a question about it, answer only from the notice and ask again. The one exception: if they have said they want no questions, continue without asking.
 
 Once they agree, write this recommendation as a normal message, word for word: "For the best results, use Claude Opus 5.5 or newer with thinking effort set to Medium or higher. You can change both in the chat box before you answer." If you know you are running on an older or smaller model, add one plain line saying which model this chat uses. Do not wait for a reply: continue in the same message.
 
@@ -99,6 +101,9 @@ Use the tool that shows clickable options to the user, such as `AskUserQuestion`
 - Once `strategy` is known, use that strategy's wording from `strategy_words` in the flow in everything you show, such as task names: for real estate, "properties" instead of "portfolio companies" or "portcos".
 - The options box is for a short question and short options only. Anything longer, such as a list, a summary, or facts, is printed as a normal message that ends your turn, with the question in plain text at the end of it. Text printed right before an options box can be folded away and never seen.
 - Never describe your own steps to the respondent, such as "Now the consent question" or "Matching your task". They see only questions, restatements, and the facts.
+- Never add options of your own, such as "None of these": the box already has "Skip" and "Something else".
+- If `ai_stage` is "Not used yet", leave "Some rely on it daily" out of `trust`, because it would contradict their answer.
+- If the number they chose for `kpi` also appears in the list of measures, leave it out of that list: you already know whether they track it.
 - A question can show at most four options, and the flow never needs more. Do not add an "Other" option, because the tool already adds its own way to type an answer, called "Something else". Do not mention "Other" in the question text.
 - A question with `multi: true` allows several answers.
 - `options_from` and `options_by` point to the right list in the flow. Use the list for the respondent's earlier answer.
@@ -124,7 +129,7 @@ For `thesis_detail`:
 
 Use the answer to `pain_first` to make sure their real pain is in the plan. Compare it with every task in `activities_for_workstream`:
 
-- **If it matches a listed task,** confirm with `fixed.confirm_match`. If correct, include that work area, select that task for them, and record its id as `named_task`. Do not add it again as a custom task, because the same work would then appear twice in the plan.
+- **If it matches a listed task,** confirm with `fixed.confirm_match`. If correct, include that work area, select that task for them, and record its id as `named_task`. When you later ask `activities` for that work area, leave the named task out of the options and say in the question that it is already included. Do not add it again as a custom task, because the same work would then appear twice in the plan.
 - **If nothing matches,** restate and confirm it as a new task as described below, add it to `custom` in the work area it belongs to, and record its confirmed name as `named_task`.
 - **If it is mainly a judgment or a relationship,** such as a valuation decision, say that part stays with their people, and match the routine work around it, such as assembling the valuation pack.
 
