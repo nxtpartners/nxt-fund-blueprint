@@ -11,7 +11,7 @@ def join_words(words: List[str]) -> str:
 
 
 def label_list(labels: List[str]) -> str:
-    """Option labels joined into one phrase: "Some use it daily and some are skeptical"."""
+    """Option labels joined into one phrase: "Some rely on it daily and some are skeptical"."""
     return join_words(labels[:1] + [lower_first(label) for label in labels[1:]])
 
 

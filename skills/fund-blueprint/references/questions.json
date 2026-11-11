@@ -898,7 +898,7 @@
      "options": [
       {
        "id": "daily",
-       "label": "Some use it daily"
+       "label": "Some rely on it daily"
       },
       {
        "id": "experimenting",
@@ -918,7 +918,7 @@
     {
      "id": "capacity",
      "header": "Who sets up",
-     "text": "Who would set these changes up? Choose all that apply.",
+     "text": "Who would set up the changes this plan suggests? Choose all that apply.",
      "options": [
       {
        "id": "in_house",

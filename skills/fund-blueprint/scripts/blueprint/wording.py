@@ -37,6 +37,7 @@ STRATEGY_WORDS = {
         ("teasers and CIMs", "offering memoranda"),
         ("CIMs", "offering memoranda"),
         ("CIM", "offering memorandum"),
+        ("PE tools", "real estate tools"),
     ),
 }
 MULTI_STRATEGY_STEP_LEAD = "Pick one strategy to start in. "

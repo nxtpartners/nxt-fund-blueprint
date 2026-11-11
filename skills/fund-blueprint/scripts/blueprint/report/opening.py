@@ -9,7 +9,7 @@ from ..enums import Quadrant, Verdict
 from ..models import Answers, Plan
 from ..planning.facts import told
 from ..planning.levels import impact_level
-from ..text import join_words, lower_first
+from ..text import join_words, label_list, lower_first
 from .common import esc, hours_text, ledger_rows, plural
 
 
@@ -51,7 +51,7 @@ def firm_line(answers: Answers, library: Library) -> str:
         bits.append(f"{library.option_label('team', answers.team)} people")
     if answers.fund_stage and told(answers, "fund_stage"):
         stages = [library.option_label("fund_stage", stage) for stage in answers.fund_stage]
-        bits.append(f"{join_words(stages)} now")
+        bits.append(f"{label_list(stages)} now")
     return " · ".join(bits)
 
 
