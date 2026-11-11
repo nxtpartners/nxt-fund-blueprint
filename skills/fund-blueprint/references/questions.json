@@ -1090,7 +1090,7 @@
   "confirm_facts": {
    "id": "confirm_facts",
    "header": "Check facts",
-   "text": "Here is what I found about {firm}. Are these facts right? {facts}",
+   "text": "Are the facts listed above about {firm} right?",
    "options": [
     {
      "id": "yes",
