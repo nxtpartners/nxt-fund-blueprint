@@ -1087,6 +1087,21 @@
     }
    ]
   },
+  "confirm_settled": {
+   "id": "confirm_settled",
+   "header": "Research",
+   "text": "Based on the research, I noted: {settled}. Is that right?",
+   "options": [
+    {
+     "id": "yes",
+     "label": "Yes, that is right"
+    },
+    {
+     "id": "change",
+     "label": "Change something"
+    }
+   ]
+  },
   "confirm_facts": {
    "id": "confirm_facts",
    "header": "Check facts",
