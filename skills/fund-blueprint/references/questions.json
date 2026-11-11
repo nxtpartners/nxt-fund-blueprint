@@ -138,12 +138,13 @@
      "text": "What is the firm's main strategy?",
      "options": [
       {
-       "id": "buyout",
-       "label": "Buyout"
+       "id": "private_equity",
+       "label": "Private equity",
+       "description": "Buyout or growth"
       },
       {
-       "id": "growth",
-       "label": "Growth or venture"
+       "id": "real_estate",
+       "label": "Real estate"
       },
       {
        "id": "credit",
@@ -233,6 +234,24 @@
        {
         "id": "origination",
         "label": "Proprietary origination"
+       }
+      ],
+      "real_estate": [
+       {
+        "id": "core_income",
+        "label": "Steady rental income"
+       },
+       {
+        "id": "value_add",
+        "label": "Value-add and repositioning"
+       },
+       {
+        "id": "development",
+        "label": "Development"
+       },
+       {
+        "id": "sector",
+        "label": "Sector specialization"
        }
       ],
       "default": [

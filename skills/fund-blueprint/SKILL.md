@@ -87,7 +87,7 @@ The rules for research exist because one wrong "fact" about their own firm would
 
 If they choose "Partly", ask which number is wrong and the right version, in plain text. If they correct a fact, use their version for the assessment, and leave that fact out of `public_facts`, because a source link must show what that page says. If they name a fact as wrong without the right version, ask for it once in plain text. If they say it is not their firm after all, discard everything, including the name.
 
-Only confirmed facts count. They go into `public_facts`, and the name into `firm_name`. Never ask what the confirmed facts already answer: that makes the research look wasted. Settle every question they answer clearly: `strategy`, `team` (from a stated headcount), `aum` (a figure clearly inside one band), and `fund_stage` (a recent close or recent buying means deploying, recent sales or exits mean harvesting, a fund in market means raising). Prepare `thesis_detail` as a restatement to confirm. Right after the facts are confirmed, ask `fixed.confirm_settled`, with the answers you settled in place of `{settled}`, in the words of the options and separated by semicolons, for example "Strategy: Buyout; Team: 50 to 150; Funds: Deploying". If they choose "Change something", ask those questions in the normal way. Skip `fixed.confirm_settled` when the facts settled nothing. Ask a question only when the facts do not answer it, or when no option fits what the facts say: a region of investment is not where a firm is regulated. Public sources say nothing about how the firm runs inside, so always ask about operations, AI use, and constraints. Do not state anything in the plan about the firm that is not confirmed.
+Only confirmed facts count. They go into `public_facts`, and the name into `firm_name`. Never ask what the confirmed facts already answer: that makes the research look wasted. Settle every question they answer clearly: `strategy`, `team` (from a stated headcount), `aum` (a figure clearly inside one band), and `fund_stage` (a recent close or recent buying means deploying, recent sales or exits mean harvesting, a fund in market means raising). Prepare `thesis_detail` as a restatement to confirm. Right after the facts are confirmed, ask `fixed.confirm_settled`, with the answers you settled in place of `{settled}`, in the words of the options and separated by semicolons, for example "Strategy: Real estate; Team: 50 to 150; Funds: Deploying". If they choose "Change something", ask those questions in the normal way. Skip `fixed.confirm_settled` when the facts settled nothing. Ask a question only when the facts do not answer it, or when no option fits what the facts say: a region of investment is not where a firm is regulated. Public sources say nothing about how the firm runs inside, so always ask about operations, AI use, and constraints. Do not state anything in the plan about the firm that is not confirmed.
 
 ## Asking questions
 
@@ -204,7 +204,7 @@ Write the answers as JSON using the option ids from the flow:
 ```json
 {
   "named_task": "kpi_collection",
-  "strategy": "buyout", "team": "15_50", "fund_stage": ["deploying", "harvesting"],
+  "strategy": "private_equity", "team": "15_50", "fund_stage": ["deploying", "harvesting"],
   "thesis": "buy_build", "pressure": "value", "kpi": "data_freshness", "kpi_status": "off_target",
   "thesis_summary": "Confirmed sentence, or an empty string",
   "thesis_focus": ["reporting", "value_creation"],

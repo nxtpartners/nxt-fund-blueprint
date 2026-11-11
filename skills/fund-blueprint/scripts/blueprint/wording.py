@@ -28,13 +28,15 @@ STRATEGY_WORDS = {
         ("portcos", "borrowers"),
         ("portco", "borrower"),
     ),
-    "growth": (
-        ("inbound teaser or CIM", "inbound deck"),
-        ("teasers and CIMs", "inbound decks"),
-        ("CIMs", "decks"),
-        ("CIM", "deck"),
-        ("teasers", "inbound decks"),
-        ("teaser", "inbound deck"),
+    "real_estate": (
+        ("portfolio companies", "properties"),
+        ("portfolio company", "property"),
+        ("portcos", "properties"),
+        ("portco", "property"),
+        ("inbound teaser or CIM", "inbound offering memorandum"),
+        ("teasers and CIMs", "offering memoranda"),
+        ("CIMs", "offering memoranda"),
+        ("CIM", "offering memorandum"),
     ),
 }
 MULTI_STRATEGY_STEP_LEAD = "Pick one strategy to start in. "

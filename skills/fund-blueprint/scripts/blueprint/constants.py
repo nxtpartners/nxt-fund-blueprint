@@ -155,6 +155,9 @@ THESIS_WORKSTREAMS = {
     "income": ("reporting", "compliance", "accounting"),
     "special_situations": ("diligence", "execution", "reporting"),
     "origination": ("sourcing", "relations", "knowledge"),
+    "core_income": ("reporting", "accounting", "relations"),
+    "value_add": ("value_creation", "diligence", "reporting"),
+    "development": ("execution", "diligence", "value_creation"),
 }
 STAGE_AREAS = {"raising": ("investors",), "deploying": ("investing",), "harvesting": ("portfolio",)}
 
