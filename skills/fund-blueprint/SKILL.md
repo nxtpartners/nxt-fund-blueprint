@@ -59,7 +59,7 @@ Then ask `fixed.consent` from the flow, and wait for the answer. In Claude Code,
 
 Once they agree, write this recommendation as a normal message, word for word: "For the best results, use Claude Opus 5.5 or newer with thinking effort set to Medium or higher. You can change both in the chat box before you answer." If you know you are running on an older or smaller model, add one plain line saying which model this chat uses. Do not wait for a reply: continue in the same message.
 
-Next, ask `fixed.personalize`, as described under "Personalizing with public information". Then ask `pain_first` from the flow as plain text, followed by "You can skip this." It comes right after, because it is what they came for. Handle the answer as described under "The task they named". 
+Next, ask `fixed.personalize`, as described under "Personalizing with public information". Then ask `pain_first` from the flow as plain text, followed by "If you would rather not answer, just reply "skip"." It comes right after, because it is what they came for. Handle the answer as described under "The task they named". 
 
 ## Personalizing with public information
 
@@ -91,7 +91,7 @@ Only confirmed facts count. They go into `public_facts`, and the name into `firm
 
 ## Asking questions
 
-Use the tool that shows clickable options to the user, such as `AskUserQuestion`, whenever it exists. If no such tool exists, show lettered options and accept replies like "A, C". If a reply's numbers do not match the questions shown, do not record it as given: say how you read it and confirm before it counts. Without that tool there is no "Something else" box, so end each set of lettered questions with one line: "You can also answer in your own words, or skip a question." Leave out "or skip a question" when none of them can be skipped. When an open question shares a message with lettered ones, show it last and include it in the reply example.
+Use the tool that shows clickable options to the user, such as `AskUserQuestion`, whenever it exists. If no such tool exists, show lettered options and accept replies like "A, C". If a reply's numbers do not match the questions shown, do not record it as given: say how you read it and confirm before it counts. Without that tool there is no "Something else" box, so end each set of lettered questions with one line: "You can also answer in your own words, or reply "skip" to move on." Leave out "or reply "skip" to move on" when none of them can be skipped. When an open question shares a message with lettered ones, show it last and include it in the reply example.
 
 - Show `Section N of 7: <title>` once at the start of each section, in the first question's text.
 - Group related questions into one call when the tool allows several (up to four), which keeps the number of screens low.
@@ -100,7 +100,7 @@ Use the tool that shows clickable options to the user, such as `AskUserQuestion`
 - A question with `multi: true` allows several answers.
 - `options_from` and `options_by` point to the right list in the flow. Use the list for the respondent's earlier answer.
 
-If they skip a closed question, record `null` for it and move on. The report treats it as not answered. A few answers are needed to build a plan: `pressure` and `kpi`, at least one work area, and at least one task in each work area. Ask for a skipped one once more. If they skip it again, explain that the plan cannot be built without it, and stop.
+A reply such as "skip", "pass", "next", or "no idea" counts as skipping, for any question. If they skip a closed question, record `null` for it and move on. The report treats it as not answered. A few answers are needed to build a plan: `pressure` and `kpi`, at least one work area, and at least one task in each work area. Ask for a skipped one once more. If they skip it again, explain that the plan cannot be built without it, and stop.
 
 Do not ask what they have already told you. If their opening message clearly answers a question (for example, "a buyout firm" answers `strategy`), record it, say what you noted, and skip that question, because repeating it makes the tool feel like a form. Only do this when they actually said it: a deal stage or a sector, such as "Series B", is not a strategy. Ask about anything you would have to infer, such as how the team feels about AI. The confirmation step lets them correct anything.
 
@@ -108,7 +108,7 @@ Do not ask what they have already told you. If their opening message clearly ans
 
 This is where the tool earns trust, so listen closely.
 
-The flow has open questions, marked `type: open`: `pain_first`, `thesis_detail`, and `walkthrough`. Ask these as plain text in the conversation, not through the options tool, using the text in the flow followed by "You can skip this." All are optional. Add nothing of your own after the question, such as what the answer will be used for. Ask the closed `thesis` question only if they skip `thesis_detail`.
+The flow has open questions, marked `type: open`: `pain_first`, `thesis_detail`, and `walkthrough`. Ask these as plain text in the conversation, not through the options tool, using the text in the flow followed by "If you would rather not answer, just reply "skip"." All are optional. Add nothing of your own after the question, such as what the answer will be used for. Ask the closed `thesis` question only if they skip `thesis_detail`.
 
 For `thesis_detail`:
 

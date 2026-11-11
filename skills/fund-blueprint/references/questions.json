@@ -1301,7 +1301,7 @@
   },
   "kpi_value": {
    "id": "kpi_value",
-   "text": "What are the figures behind {kpi}? For example, where it is today and the target. You can skip this."
+   "text": "What are the figures behind {kpi}? For example, where it is today and the target. If you would rather not answer, just reply \"skip\"."
   }
  },
  "after_plan": {
