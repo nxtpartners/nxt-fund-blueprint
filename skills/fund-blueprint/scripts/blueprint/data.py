@@ -156,4 +156,5 @@ class Library:
             "workstreams_for_area": by_area,
             "activities_for_workstream": by_workstream,
             "measures_for_workstream": measures,
+            "strategy_words": {key: [list(pair) for pair in pairs] for key, pairs in c.STRATEGY_WORDS.items()},
         }
