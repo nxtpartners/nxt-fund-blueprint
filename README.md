@@ -55,7 +55,7 @@ Each activity gets one verdict: remove it, automate it, optimize it, add AI that
 On claude.ai:
 
 1. [Download the plugin file](https://github.com/nxtpartners/nxt-fund-blueprint/releases/latest/download/nxt-fund-blueprint.zip).
-2. Upload it under **Customize > Plugins > Add > Upload plugin**.
+2. Upload it under **Customize > Plugins > Add > Upload plugin**. Upload the `.zip` file itself. If your browser unzipped it into a folder (Safari on a Mac does this by default), download it again in another browser, or turn off "Open safe files after downloading" in Safari's settings.
 
 In Claude Code:
 
@@ -93,7 +93,8 @@ The tool does not need names of people, portfolio companies, LPs, or deals: rang
 flowchart LR
     A[Read the notice<br/>and agree] --> B[Name the one task<br/>you most want gone]
     B --> C{Personalize with<br/>public information?}
-    C -- Yes --> D[Confirm public facts,<br/>each with its source]
+    C -- Yes --> W[Confirm your<br/>firm's website]
+    W --> D[Confirm public facts,<br/>each with its source]
     C -- No --> E[Thesis, priority,<br/>and the number to move]
     D --> E
     E --> F[AI already in use]

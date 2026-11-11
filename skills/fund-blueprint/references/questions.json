@@ -1072,10 +1072,25 @@
     }
    ]
   },
+  "confirm_site": {
+   "id": "confirm_site",
+   "header": "Website",
+   "text": "Is this your firm's website? {site}",
+   "options": [
+    {
+     "id": "yes",
+     "label": "Yes, that is our website"
+    },
+    {
+     "id": "no",
+     "label": "No, I'll type our address"
+    }
+   ]
+  },
   "confirm_facts": {
    "id": "confirm_facts",
    "header": "Check facts",
-   "text": "Is this your firm, and is this right?",
+   "text": "Here is what I found about {firm}. Are these facts right? {facts}",
    "options": [
     {
      "id": "yes",
@@ -1083,11 +1098,8 @@
     },
     {
      "id": "partly",
-     "label": "Partly, let me correct it"
-    },
-    {
-     "id": "no",
-     "label": "Not my firm"
+     "label": "Partly, let me correct it",
+     "description": "Tell me the number and the right version"
     }
    ]
   },

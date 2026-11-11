@@ -6,7 +6,7 @@ from pathlib import Path
 from .enums import Rule, Spend, Verdict
 from .wording import *  # noqa: F401,F403
 
-VERSION = "0.23.6"
+VERSION = "0.23.7"
 
 SKILL_DIR = Path(__file__).resolve().parents[2]
 CATALOG_PATH = SKILL_DIR / "references" / "catalog.json"
@@ -59,7 +59,7 @@ KEY_STEPS = "steps"
 KEY_SLOW_STEP = "slow_step"
 KEY_NAMED_TASK = "named_task"
 WALKTHROUGH_STEPS_MAX = 6
-WALKTHROUGH_STEP_MAX = 80
+WALKTHROUGH_STEP_MAX = 160
 KEY_AI_TOOLS = "ai_tools"
 KEY_AI_TASKS = "ai_tasks"
 KEY_KPI = "kpi"
@@ -80,7 +80,7 @@ KEY_KPI_LINKS = "kpi_links"
 RELEVANCE_FLOOR = 0.5
 RELATIVE_IMPACT = {"High": 4.0, "Medium": 3.0, "Low": 2.0}
 RELATIVE_TIERS = ("High", "Medium", "Low")
-CUSTOM_NAME_MAX = 80
+CUSTOM_NAME_MAX = 160
 KEY_THESIS_SUMMARY = "thesis_summary"
 KEY_THESIS_FOCUS = "thesis_focus"
 KEY_THESIS_NOTES = "thesis_notes"
@@ -91,7 +91,7 @@ KEY_FIRM_NAME = "firm_name"
 KEY_PUBLIC_FACTS = "public_facts"
 KEY_FACT = "fact"
 KEY_SOURCE = "source"
-FIRM_NAME_MAX = 80
+FIRM_NAME_MAX = 160
 PUBLIC_FACT_MAX = 200
 PUBLIC_FACTS_MAX = 6
 SOURCE_URL_MAX = 300
