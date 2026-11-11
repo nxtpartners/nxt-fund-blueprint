@@ -1106,36 +1106,11 @@
     }
    ]
   },
-  "confirm_settled": {
-   "id": "confirm_settled",
-   "header": "Research",
-   "text": "Based on the research, I noted: {settled}. Is that right?",
-   "options": [
-    {
-     "id": "yes",
-     "label": "Yes, that is right"
-    },
-    {
-     "id": "change",
-     "label": "Change something"
-    }
-   ]
-  },
   "confirm_facts": {
    "id": "confirm_facts",
+   "type": "open",
    "header": "Check facts",
-   "text": "Are the facts listed above about {firm} right?",
-   "options": [
-    {
-     "id": "yes",
-     "label": "Yes, all correct"
-    },
-    {
-     "id": "partly",
-     "label": "Partly, let me correct it",
-     "description": "Tell me the number and the right version"
-    }
-   ]
+   "text": "Is this right? Reply \"yes\" if it is, or tell me what to change."
   },
   "custom_uses_ai": {
    "id": "uses_ai",
