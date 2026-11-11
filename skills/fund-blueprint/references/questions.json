@@ -1333,7 +1333,7 @@
   "id": "bottleneck",
   "type": "open",
   "header": "One task",
-  "text": "Before anything else: if you could take one recurring task off your team tomorrow, what would it be? No names needed."
+  "text": "If you could take one recurring task off your team tomorrow, what would it be? No names needed."
  },
  "say_back": {
   "after_goal": "So far: {strategy}, {team} people. The priority for the next 12 months is {priority}, and you want this plan judged on {kpi}.",

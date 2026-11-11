@@ -50,7 +50,7 @@ Each activity gets one verdict: remove it, automate it, optimize it, add AI that
 
 ## Install
 
-**Requirements:** a regular Claude chat with code execution turned on, or Claude Code. It does not run in incognito chats. We have tested it on one paid claude.ai account. We have not tested Free, Team, or Enterprise plans, where an administrator may need to allow it.
+**Requirements:** a regular Claude chat with code execution turned on, or Claude Code. It does not run in incognito chats. For the best results, use Claude Opus 5.5 or newer with thinking effort set to Medium or higher: the plan's scores come from fixed rules, but reading your typed answers and researching your firm depend on the model. We have tested it on one paid claude.ai account. We have not tested Free, Team, or Enterprise plans, where an administrator may need to allow it.
 
 On claude.ai:
 
@@ -91,12 +91,12 @@ The tool does not need names of people, portfolio companies, LPs, or deals: rang
 
 ```mermaid
 flowchart LR
-    A[Read the notice<br/>and agree] --> B[Name the one task<br/>you most want gone]
-    B --> C{Personalize with<br/>public information?}
+    A[Read the notice<br/>and agree] --> C{Personalize with<br/>public information?}
     C -- Yes --> W[Confirm your<br/>firm's website]
     W --> D[Confirm public facts,<br/>each with its source]
-    C -- No --> E[Thesis, priority,<br/>and the number to move]
-    D --> E
+    C -- No --> B[Name the one task<br/>you most want gone]
+    D --> B
+    B --> E[Thesis, priority,<br/>and the number to move]
     E --> F[AI already in use]
     F --> G[Go deep on the work<br/>that hurts most]
     G --> H{Another<br/>work area?}

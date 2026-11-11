@@ -57,11 +57,13 @@ If `python3` is missing, try `python`. Do not read `references/catalog.json` dir
 
 Then ask `fixed.consent` from the flow, and wait for the answer. In Claude Code, where a message before a command can get cut down, also put the notice's full text, word for word, at the start of the question you ask, so nobody can consent without seeing it. If they choose "Not now" or skip it, thank them and stop. If they ask a question about it, answer only from the notice and ask again. The one exception: if they have said they want no questions, continue without asking.
 
-Next, ask `pain_first` from the flow as plain text, followed by "You can skip this." It comes first because it is what they came for. Handle the answer as described under "The task they named". 
+Once they agree, write this recommendation as a normal message, word for word: "For the best results, use Claude Opus 5.5 or newer with thinking effort set to Medium or higher. You can change both in the chat box before you answer." If you know you are running on an older or smaller model, add one plain line saying which model this chat uses. Do not wait for a reply: continue in the same message.
+
+Next, ask `fixed.personalize`, as described under "Personalizing with public information". Then ask `pain_first` from the flow as plain text, followed by "You can skip this." It comes right after, because it is what they came for. Handle the answer as described under "The task they named". 
 
 ## Personalizing with public information
 
-After they agree, ask `fixed.personalize`. If they stay anonymous, skip the rest of this section, do not ask again, and leave `firm_name` empty even if they mention the name later.
+This comes right after the recommendation, before `pain_first`, so the firm is known before they describe their work. If they stay anonymous, skip the rest of this section, do not ask again, and leave `firm_name` empty even if they mention the name later.
 
 If yes, ask for the firm's name in plain text. This is the one name the tool asks for, so the rule against repeating names does not apply to it. Never include their answers in a search. If you have no web search here, say so in one line, leave `firm_name` empty, and continue with the normal questions.
 
