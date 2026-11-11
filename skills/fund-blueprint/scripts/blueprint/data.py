@@ -124,6 +124,20 @@ class Library:
             "words": words,
         }
 
+    def kpi_fit(self) -> Dict[str, Dict[str, str]]:
+        """For each priority and work area, the KPI its tasks move most, so the fit is a lookup, not a judgment."""
+        pressure_of = {kpi["id"]: kpi["pressure"] for kpi in self.questions["kpis"]}
+        scores: Dict[str, Dict[str, Dict[str, int]]] = {}
+        for activity in self.catalog["activities"]:
+            for kpi_id, weight in activity.get("kpis", {}).items():
+                if kpi_id in pressure_of:
+                    cell = scores.setdefault(pressure_of[kpi_id], {}).setdefault(activity["workstream"], {})
+                    cell[kpi_id] = cell.get(kpi_id, 0) + weight
+        return {
+            pressure: {workstream: max(sorted(cell), key=cell.get) for workstream, cell in sorted(by_ws.items())}
+            for pressure, by_ws in sorted(scores.items())
+        }
+
     def flow(self) -> Dict[str, Any]:
         """What the conversation needs, without the private-to-the-script catalog text."""
         strip = lambda row: {key: row[key] for key in ("id", "label", "description") if key in row}
@@ -157,4 +171,5 @@ class Library:
             "activities_for_workstream": by_workstream,
             "measures_for_workstream": measures,
             "strategy_words": {key: [list(pair) for pair in pairs] for key, pairs in c.STRATEGY_WORDS.items()},
+            "kpi_fit": self.kpi_fit(),
         }

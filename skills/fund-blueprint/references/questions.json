@@ -1076,6 +1076,21 @@
     }
    ]
   },
+  "model_check": {
+   "id": "model_check",
+   "header": "Settings",
+   "text": "For the best results, use Claude Opus 5.5 or newer, with thinking effort Medium or higher. You can change both at the bottom of the chat box. Is it set?",
+   "options": [
+    {
+     "id": "set",
+     "label": "Yes, it is set"
+    },
+    {
+     "id": "as_is",
+     "label": "Continue as it is"
+    }
+   ]
+  },
   "personalize": {
    "id": "personalize",
    "header": "Personalize",
