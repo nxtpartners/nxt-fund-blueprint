@@ -92,7 +92,7 @@ The tool does not need names of people, portfolio companies, LPs, or deals: rang
 ```mermaid
 flowchart LR
     A[Read the notice<br/>and agree] --> C{Personalize with<br/>public information?}
-    C -- Yes --> W[Confirm your<br/>firm's website]
+    C -- Yes --> W[Confirm it is<br/>your firm]
     W --> D[Confirm public facts,<br/>each with its source]
     C -- No --> B[Name the one task<br/>you most want gone]
     D --> B

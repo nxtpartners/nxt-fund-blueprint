@@ -1072,18 +1072,18 @@
     }
    ]
   },
-  "confirm_site": {
-   "id": "confirm_site",
-   "header": "Website",
-   "text": "Is this your firm's website? {site}",
+  "confirm_firm": {
+   "id": "confirm_firm",
+   "header": "Your firm",
+   "text": "Is this your firm? {firm_summary}",
    "options": [
     {
      "id": "yes",
-     "label": "Yes, that is our website"
+     "label": "Yes, that is us"
     },
     {
      "id": "no",
-     "label": "No, I'll type our address"
+     "label": "No, a different firm"
     }
    ]
   },
