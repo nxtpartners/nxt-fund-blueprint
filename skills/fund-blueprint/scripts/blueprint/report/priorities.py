@@ -8,7 +8,7 @@ from ..enums import Verdict
 from ..models import Plan
 from ..plot import render_plot
 from ..text import lower_first
-from .common import esc, key_mark, shape_mark
+from .common import esc, key_mark, priority_no, shape_mark
 
 
 def legend(plan: Plan) -> str:
@@ -41,8 +41,8 @@ def priorities(plan: Plan, kpi: str, view: Dict[str, str]) -> str:
     if not plan.plotted:
         return ""
     key = "".join(
-        f'<li><span class="mono soft">{item.number}</span>'
-        f'<span>{esc(item.label)}{" " + shape_mark(False) if not item.fits else ""}</span></li>'
+        f'<li>{priority_no(item)}'
+        f'<span>{esc(item.label)}</span></li>'
         for item in plan.plotted
     )
     recommended = tuple(item.number for item in plan.top)
@@ -53,7 +53,7 @@ def priorities(plan: Plan, kpi: str, view: Dict[str, str]) -> str:
         f'{render_plot(plan.plotted, kpi, recommended)}{legend(plan)}<ol class="plot-key">{key}</ol>'
         f'<figcaption class="note">{esc(" ".join(marks))} Speed is the estimated time to a first working version, '
         f"or to finish a process change. Effect is the estimated effect on {esc(lower_first(kpi))}, "
-        "compared with your other moves. Both are planning estimates, explained in the notes, not measurements. "
-        "Money levels are planning estimates too, set by the type of move and your tools, "
-        "for each move taken alone. They are not quotes.</figcaption></figure>"
+        "compared with your other priorities. Both are planning estimates, explained in the notes, not measurements. "
+        "Money levels are planning estimates too, set by the type of priority and your tools, "
+        "for each priority taken alone. They are not quotes.</figcaption></figure>"
     )

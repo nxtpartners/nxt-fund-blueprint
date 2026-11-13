@@ -942,7 +942,7 @@
     {
      "id": "budget",
      "header": "Budget",
-     "text": "Is money set aside to improve how the firm runs in the next 12 months? Your answer decides which moves come first. It stays in this chat.",
+     "text": "Is money set aside to improve how the firm runs in the next 12 months? Your answer decides which priorities come first. It stays in this chat.",
      "options": [
       {
        "id": "unset",

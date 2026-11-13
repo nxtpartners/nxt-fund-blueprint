@@ -13,7 +13,7 @@ DEMO_URL = f"https://{DEMO_LABEL}"
 DEMO_TEXT = "See a demo at "
 SITE_NAME = "NXT Partners AI"
 CLOSING_TITLE = "Want a second opinion on this plan?"
-CLOSING_BODY = "This plan rests on one person's answers and fixed rules. NXT Partners AI can test it with your team, correct what is wrong, and help you carry out the moves you keep. If that would help, email us this report and tell us which move you would start with."
+CLOSING_BODY = "This plan rests on one person's answers and fixed rules. NXT Partners AI can test it with your team, correct what is wrong, and help you carry out the priorities you keep. If that would help, email us this report and tell us which priority you would start with."
 SMALL_TEAM_OWNER = "Whoever does this today"
 WHO_OWNER = {
     "partners": "The partner who does this today",
@@ -51,7 +51,7 @@ VERDICT_LABELS = {
     Verdict.AGENTIC: "Let AI run the steps (agentic AI)",
     Verdict.REMOVE: "Remove",
     Verdict.BUILD_ON: "Build on existing AI",
-    Verdict.LEAVE: "Leave with people",
+    Verdict.LEAVE: "Keep with team",
 }
 VERDICT_DEFINITIONS = {
     Verdict.AUTOMATE: "Fixed rules, no AI needed",
@@ -68,7 +68,7 @@ VERDICT_DEFINITIONS = {
 RULES = {
     Rule.LEAVE: {
         "verdict": Verdict.LEAVE,
-        "reason": "The value here comes from human judgment or relationships, so this stays with your people.",
+        "reason": "The value here comes from human judgment or relationships, so this stays with your team.",
         "claim": KpiClaim.NONE,
     },
     Rule.REMOVE: {
@@ -371,19 +371,23 @@ SHAPE_KEY_FITS = {
 SHAPE_KEY_NOT = {"unset": "Needs money you have not set aside", "under_100k": "May need more than you set aside"}
 FIT_NOTES = {"unset": "Needs money", "under_100k": "May need more"}
 BUDGET_READING = {
-    "unset": "You have no money set aside yet, so moves that need none come first.",
-    "under_100k": "With under $100K set aside, moves that may need more come after the rest.",
+    "unset": "You have no money set aside yet, so priorities that need none come first.",
+    "under_100k": "With under $100K set aside, priorities that may need more come after the rest.",
 }
-BUDGET_READING_COVERED = "Taken one at a time, the moves that need money should fit what you set aside, so your budget did not change the order."
+BUDGET_READING_COVERED = "Taken one at a time, the priorities that need money should fit what you set aside, so your budget did not change the order."
 BUDGET_READING_ALL_AT_ONCE = " Doing them all at once may not fit."
-BUDGET_READING_NONE_FIT = "Every move in this plan needs money you have not set aside, so a budget decision comes first."
-BUDGET_WORTH_FUNDING = "The move most worth finding money for is {label}, rated {level} compared with your other moves."
+BUDGET_READING_NONE_FIT = "Every priority in this plan needs money you have not set aside, so a budget decision comes first."
+BUDGET_WORTH_FUNDING = "The priority most worth finding money for is {label}, rated {level} compared with your other priorities."
 LEADS_BUDGET = "It comes ahead of {next_task}, which may need money you have not set aside."
-NAMED_REASON_BUDGET = "It may need money you have not set aside, so it comes after moves that do not."
+NAMED_REASON_BUDGET = "It may need money you have not set aside, so it comes after priorities that do not."
 NAMED_REASON_BUDGET_LIFTED = "It may need money you have not set aside, but you named it, so it stays in the top three."
 BUDGET_READING_EXCEPTION = " The task you named is the one exception."
-START_NONE_FIT = "Decide the budget for move 1 before you start it."
-START_BUDGET = "Start with move 1. The next moves may need money you have not set aside."
+START_NONE_FIT = "Decide its budget before you start."
+START_BUDGET = "Take this priority on by itself first. The next priorities may need money you have not set aside."
+START_NOBODY = "With nobody assigned yet, take this priority on by itself first."
+START_SMALL = "With under 15 people, take this priority on by itself first."
+START_PAIR = "Your second priority, on {label}, can run alongside it."
+START_REST = " The rest can follow once both are running."
 MONEY_LABEL = "Money, estimated"
 CONNECT_DATA_TITLE = "Connect your core data"
 SCOPE_TITLE = "After this blueprint: what to scope"
@@ -391,7 +395,7 @@ SCOPE_LEDE = "This blueprint decides which activities to take forward. Scoping e
 SCOPE_ITEMS = (
     (
         "Data",
-        "What data the move touches, how good it is, and who may see it. This includes LP data, inside information, and personal data.",
+        "What data the priority touches, how good it is, and who may see it. This includes LP data, inside information, and personal data.",
     ),
     ("Systems", "Where that data lives, and whether it can be exported or connected."),
     ("Vendor and cost", "Which tools fit, what they cost, and how they handle your data."),
@@ -399,13 +403,25 @@ SCOPE_ITEMS = (
         "Compliance",
         "Whether compliance has cleared the tool, how outputs are kept, and whether any LP or regulatory statement is affected.",
     ),
-    ("People", "Who owns the move, and how many hours they really have."),
+    ("People", "Who owns the priority, and how many hours they really have."),
 )
 ROADMAP_WAVES = (("Start now", 3), ("Then", 4), ("After that", None))
-ROADMAP_WAVE_SPAN = "Moves {first} to {last}"
-ROADMAP_WAVE_ONE = "Move {first}"
+ROADMAP_WAVE_SPAN = "Priorities {first} to {last}"
+ROADMAP_WAVE_ONE = "Priority {first}"
+PRIORITY_WORD = "Priority"
+TOP_STRIP_LABEL = "Your first priorities"
+TOP_STRIP_META = "{verdict} · {speed} · {level} effect"
+PRIORITY_ANCHOR = "{prefix}priority-{number}"
+FACT_APPROACH = "Approach"
+FACT_TIME = "Time"
+FACT_EFFECT = "Effect"
+FACT_MONEY = "Money"
+FACT_LINK = "Link"
+FACT_OWNER = "Suggested owner"
+FACT_AI = "AI today"
+ROADMAP_WAVE_PAIR = "Priorities {first} and {last}"
 COVERAGE_LINE = "Your number depends most on {areas}, which you did not assess. Add it for a fuller plan."
-PEOPLE_ELSEWHERE = "Across the firm, these also stay with your people: {items}."
+PEOPLE_ELSEWHERE = "Across the firm, these also stay with your team: {items}."
 STRATEGY_LINE = "This is your AI strategy and blueprint, built from one person's answers. It sets which activities to take forward, and in what order."
 REPORT_NAME = "AI Strategy and Blueprint for PE Funds"
 VERSION_LABEL = "Version {version}"
@@ -423,12 +439,12 @@ STUCK_VARIES_AREA = "It runs differently by team."
 STUCK_HABIT = "{task}: done mainly out of habit."
 STUCK_SOURCES = "Information is split across {sources}, with no system holding it."
 STUCK_SOURCES_SYSTEM = "Information is split across {sources}."
-CAPACITY_TECH_OWNER = {"in_house": "Your tech team, with {owner}", "partner": "{owner}, with your outside firm"}
+CAPACITY_TECH_OWNER = {"in_house": "Your tech team, with {owner}", "partner": "{owner}, with the outside firm that sets it up"}
 Y_AXIS_TITLE = "Relative effect on {kpi}"
 KPI_TYPED_EFFECT = "change {kpi}"
-KPI_TYPED_HEADING = "How your moves compare on {kpi}"
-PLOT_HEADING = "How much each move could {effect}"
-KPI_OWN_NO_FORECAST = "The ratings rank your moves against each other. They do not predict any change in {kpi}."
+KPI_TYPED_HEADING = "How your priorities compare on {kpi}"
+PLOT_HEADING = "How much each priority could {effect}"
+KPI_OWN_NO_FORECAST = "The ratings rank your priorities against each other. They do not predict any change in {kpi}."
 KPI_TYPED_BASELINE = "Record where {kpi} stands today, and how you measure it."
 FEEDS_LINE = "This number feeds {feeds}."
 FEEDS_LINKS = {
@@ -438,12 +454,12 @@ FEEDS_LINKS = {
 }
 NO_RETURNS_CLAIM = "This plan makes no claim about IRR, MOIC, or DPI."
 KPI_MATCHED_NOTE = "You chose your own number. Effect is estimated with the rules for {matched}, the closest on our list."
-KPI_OWN_NOTE = "You chose your own number. Each move shows its link to it."
-RELATIVE_NOTE = "Effect compares your moves with each other, using each task's link and the hours behind it. It is not a forecast."
+KPI_OWN_NOTE = "You chose your own number. Each priority shows its link to it."
+RELATIVE_NOTE = "Effect compares your priorities with each other, using each task's link and the hours behind it. It is not a forecast."
 VIEW_GROUP_LABEL = "Report view"
 VIEW_TAB_BUDGET = "With your budget"
 VIEW_TAB_OPEN = "No budget limit"
-VIEW_NOTE_OPEN = "This view ignores your budget. The moves are the same, in the order they would take with no limit. Tool suggestions and money levels can differ."
+VIEW_NOTE_OPEN = "This view ignores your budget. The priorities are the same, in the order they would take with no limit. Tool suggestions and money levels can differ."
 VIEW_PRINT_BUDGET = "This printout shows the plan with your budget. The report file also has a view with no budget limit."
 VIEW_PRINT_OPEN = "This printout shows the view with no budget limit. The report file also has the plan with your budget."
 # What they already run comes first, so nobody is told to buy what they own. First hit wins.
@@ -493,7 +509,7 @@ CUSTOM_SOLUTIONS = {
     Nature.RULES: "Write the rules down and automate the routine path, sending exceptions to the owner.",
     Nature.DRAFTING: "Have AI prepare a first draft from your source material, with citations, for the owner to review.",
     Nature.MULTI_SYSTEM: "Connect the tools involved, and let an agent carry the steps, with the owner approving the result.",
-    Nature.JUDGMENT: "Keep the decision with your people. AI can prepare background and past examples.",
+    Nature.JUDGMENT: "Keep the decision with your team. AI can prepare background and past examples.",
 }
 CUSTOM_FIRST_STEP = "Write down the inputs, decisions, and who receives the result for {task}."
 CUSTOM_SERIOUS_CHECK = "Have a second person check the results while this is new."
@@ -636,7 +652,7 @@ FOUNDATIONS = {
     ("policy", "restricted"): (
         "Keep AI on hold for now",
         "Nothing in this plan needs AI, so your policy can stay as it is. If the team later wants AI, ask whoever leads compliance which low-risk uses could be approved.",
-        "Confirm with whoever leads compliance that the moves below fit your policy.",
+        "Confirm with whoever leads compliance that the priorities below fit your policy.",
     ),
     ("systems", "disconnected"): (
         "Connect your core data",
@@ -645,7 +661,7 @@ FOUNDATIONS = {
     ),
     ("systems", "manual"): (
         "Keep one master copy of your most-used data",
-        "You said most work runs on Excel and email. Pick one dataset to centralize first, and let your first move decide which.",
+        "You said most work runs on Excel and email. Pick one dataset to centralize first, and let your first priority decide which.",
         DATA_ACTION,
     ),
     ("trust", "skeptical"): (
@@ -660,7 +676,7 @@ FOUNDATIONS = {
     ),
     ("kpi_status", "untracked"): (
         "Start measuring {kpi}",
-        "You chose this number, and you do not track it today, so you cannot yet tell whether any move helps.",
+        "You chose this number, and you do not track it today, so you cannot yet tell whether any priority helps.",
         "{baseline}",
     ),
     ("kpi_status", "no_target"): (
@@ -683,13 +699,13 @@ COUNT_WORDS = {
     Verdict.BUILD_ON: ("builds on AI already here", "build on AI already here"),
 }
 NAMED_FIRST = "You named {task} as the task to take off your team, and it comes first."
-NAMED_LATER = "You named {task} as the task to take off your team. It is move {position}. {reason} If freeing that time matters more than this number, start there instead."
+NAMED_LATER = "You named {task} as the task to take off your team. It is priority {position}. {reason} If freeing that time matters more than this number, start there instead."
 NAMED_REASON_CLOSER = "{above} a closer link to {kpi}."
 NAMED_REASON_TIME = "More senior time or hours sit with {above_lower}, on your answers."
 NAMED_REASON_SCORE = "{above} a higher score under our planning rules."
 NAMED_REASON_LIFTED = "It is placed here because you named it."
 KPI_STATUS_READING = {
-    "untracked": "You chose {kpi}, and you do not track it today, so measuring it comes before judging any move.",
+    "untracked": "You chose {kpi}, and you do not track it today, so measuring it comes before judging any priority.",
     "off_target": "You said {kpi} is off target, so the plan weighs effect on it more heavily.",
     "on_target": "You said {kpi} is on target, so hours count for more in this ranking. Check that it is the right number to move.",
 }
@@ -698,7 +714,7 @@ CHAIN_LINE = "Through {measure}, a measure that feeds {kpi}. This link is a plan
 LEVER_POLICY = "whoever leads compliance approved AI tools"
 LEVER_SYSTEMS = "your tools shared data"
 LEVER_CAPACITY = "someone were responsible for this work"
-QUADRANT_NOTE_TOP = "Ringed: the moves recommended above."
+QUADRANT_NOTE_TOP = "Ringed: the priorities recommended above."
 QUADRANT_LABELS_SHORT = {
     Quadrant.QUICK_WINS: "Fast, high",
     Quadrant.STRATEGIC_BETS: "Slow, high",
@@ -706,7 +722,14 @@ QUADRANT_LABELS_SHORT = {
     Quadrant.DEPRIORITIZE: "Slow, low",
 }
 
-STAYS_WITH_PEOPLE_LEDE = "These stay with your people, because they rest on judgment or relationships."
+STAYS_WITH_PEOPLE_LEDE = "These stay with your team, because they rest on judgment or relationships."
+PEOPLE_ANCHOR = "{prefix}people"
+GLANCE_PEOPLE = "{count} {verb} with your team"
+ROADMAP_PEOPLE_NOTE = {
+    1: "Not on the roadmap: 1 activity you selected stays with your team, because it rests on judgment or relationships.",
+    "many": "Not on the roadmap: {count} activities you selected stay with your team, because they rest on judgment or relationships.",
+}
+ROADMAP_PEOPLE_LINK = "See which ones"
 NAMED_TAG = "You named this as the task to take off your team"
 
 RULE_ANCHOR_STEPS = {
@@ -742,29 +765,29 @@ ERROR_PHRASES = {
 }
 ROUTE_INTEGRATED = "Automation inside your main platform, which should need the least new software"
 HEADLINE_VERBS = {
-    Verdict.AUTOMATE: "Your first move is to automate {label}",
-    Verdict.ADD_AI: "Your first move is to use AI for {label}",
-    Verdict.AGENTIC: "Your first move is to use an AI agent for {label}",
-    Verdict.OPTIMIZE: "Your first move is to fix the process behind {label}",
-    Verdict.REMOVE: "Your first move is to test whether {label} can stop",
-    Verdict.BUILD_ON: "Your first move is to build on the AI you already use for {label}",
+    Verdict.AUTOMATE: "Your first priority is to automate {label}",
+    Verdict.ADD_AI: "Your first priority is to use AI for {label}",
+    Verdict.AGENTIC: "Your first priority is to use an AI agent for {label}",
+    Verdict.OPTIMIZE: "Your first priority is to fix the process behind {label}",
+    Verdict.REMOVE: "Your first priority is to test whether {label} can stop",
+    Verdict.BUILD_ON: "Your first priority is to build on the AI you already use for {label}",
 }
 HEADLINE_RULES = {
-    Rule.AGREE_FIRST: "Your first move is to agree the rules for {label}",
-    Rule.ONE_PLACE: "Your first move is to set up one shared place for {label}",
-    Rule.ONE_PERSON: "Your first move is to write down the steps for {label}",
-    Rule.OUTSIDE: "Your first move is to agree what your provider delivers for {label}",
-    Rule.NOT_SAME_WAY: "Your first move is to agree one standard across teams for {label}",
-    Rule.REDO: "Your first move is to fix the cause of errors in {label}",
-    Rule.SIGNOFFS: "Your first move is to shorten sign-offs on {label}",
+    Rule.AGREE_FIRST: "Your first priority is to agree the rules for {label}",
+    Rule.ONE_PLACE: "Your first priority is to set up one shared place for {label}",
+    Rule.ONE_PERSON: "Your first priority is to write down the steps for {label}",
+    Rule.OUTSIDE: "Your first priority is to agree what your provider delivers for {label}",
+    Rule.NOT_SAME_WAY: "Your first priority is to agree one standard across teams for {label}",
+    Rule.REDO: "Your first priority is to fix the cause of errors in {label}",
+    Rule.SIGNOFFS: "Your first priority is to shorten sign-offs on {label}",
     Rule.RESTRICTED: "Your AI policy rules out AI for now, so start with the process for {label}",
-    Rule.TEMPLATE_ENOUGH: "Your first move is to build one template for {label}",
-    Rule.KEEP_MINIMAL: "Your first move is to agree the minimum for {label}",
-    Rule.KEEP_CONTROL: "Your first move is to simplify the process for {label}, and keep the control",
-    Rule.LEGACY_CHECK: "Your first move is to check who still needs {label}",
-    Rule.QUICK_REVIEW: "Your first move is to review how {label} runs",
-    Rule.SERIOUS_PROCESS_FIRST: "Your first move is to settle the process for {label}",
-    Rule.CUSTOM_WRITE_RULES: "Your first move is to write down the rules for {label}",
+    Rule.TEMPLATE_ENOUGH: "Your first priority is to build one template for {label}",
+    Rule.KEEP_MINIMAL: "Your first priority is to agree the minimum for {label}",
+    Rule.KEEP_CONTROL: "Your first priority is to simplify the process for {label}, and keep the control",
+    Rule.LEGACY_CHECK: "Your first priority is to check who still needs {label}",
+    Rule.QUICK_REVIEW: "Your first priority is to review how {label} runs",
+    Rule.SERIOUS_PROCESS_FIRST: "Your first priority is to settle the process for {label}",
+    Rule.CUSTOM_WRITE_RULES: "Your first priority is to write down the rules for {label}",
 }
 CHANGE_WORDS = {
     Verdict.OPTIMIZE: "a process fix",
@@ -785,14 +808,14 @@ FOLLOWS_HOURS = "It is rated the same as {prev_task}, which comes first because 
 FOLLOWS_EFFECT = "It is rated the same as {prev_task}, which comes first because it scored slightly higher on effect under our rules."
 FOLLOWS_FASTER = "It is rated the same as {prev_task}, which comes first because it should reach a result a little sooner."
 FOLLOWS_TIE = "It is level with {prev_task} under our rules, so take whichever causes more trouble today first."
-TIE_START = "Start with moves 1 and 2. The top moves rank level, so choose what suits your team."
+TIE_START = "Your second priority, on {label}, ranks level with it, so run both and choose the order that suits your team."
 READING_TITLE = "What in your answers shaped this plan"
-PLANNING_LINE_ONE = "Under our planning rules, the one move that adds software {timing}."
+PLANNING_LINE_ONE = "Under our planning rules, the one priority that adds software {timing}."
 AI_NOT_ASKED_NOTE = "Not asked in this quick check"
 AND_OTHERS = "and others"
-START_OFF_TARGET = "Start with moves 1 and 3. Move 3 acts on {measure}, the measure you said is off target."
+START_OFF_TARGET = "Your third priority, on {label}, can run alongside it, because it acts on {measure}, the measure you said is off target."
 AI_BEHIND = "You said AI is standard across teams, but in the areas assessed it is less than that. Check whether these areas are behind, or whether the answer needs correcting."
 DATA_ACTION_START = "List the data that"
 HARDEST_FACTS = "On {task}: {facts}."
 SLOW_STEP_WHY = "You said the slowest step is: {slow_step}."
-MORE_CHANGES = "Other moves would change too."
+MORE_CHANGES = "Other priorities would change too."

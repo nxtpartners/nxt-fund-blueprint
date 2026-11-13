@@ -43,7 +43,7 @@ def change_parts(before: Dict[str, ScoredActivity], after: List[ScoredActivity])
         for (old, new), names in groups.items()
     ]
     parts += [
-        f"the estimate for {shown_names(names)} would change from {lower_first(old)} to {lower_first(new)}"
+        f"the estimate for {shown_names(names)} would be {lower_first(new)} instead of {lower_first(old)}"
         for (old, new), names in faster.items()
     ]
     return parts

@@ -1034,7 +1034,7 @@
    },
    "solution": "Draft explanations of movement against budget and prior year from the numbers and management commentary, marking anything unexplained as a question.",
    "first_step": "Choose one company as a test, and keep its latest commentary to compare against.",
-   "check": "The person who leads the investment edits and signs off, and causes the data does not support must be marked as unexplained.",
+   "check": "The person who leads the investment edits and signs off, and any cause the data does not support is marked as unexplained.",
    "effort": "medium",
    "first_step_uses_ai": true,
    "first_step_if_no_ai": "Choose one company, and write down which variances your readers actually use.",

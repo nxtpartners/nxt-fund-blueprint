@@ -1,6 +1,6 @@
 # nxt-fund-blueprint
 
-**A free AI strategy and blueprint in Claude for a private equity firm: where to automate, simplify, or add AI in how the firm itself runs, and what to leave with its people.**
+**A free AI strategy and blueprint in Claude for a private equity firm: where to automate, simplify, or add AI in how the firm itself runs, and what to keep with its team.**
 
 https://github.com/nxtpartners/nxt-fund-blueprint
 
@@ -10,7 +10,7 @@ https://github.com/nxtpartners/nxt-fund-blueprint
 ![Python: scoring and report](https://img.shields.io/badge/Python-scoring_and_report-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-2E7D32?style=for-the-badge)
 
-You answer short questions about how the work runs today, most of them multiple choice. You get a ranked plan with a first step for each move. No AI background is needed, and firms already using AI are asked what is in place, so the plan builds on it.
+You answer short questions about how the work runs today, most of them multiple choice. You get a ranked plan with a first step for each priority. No AI background is needed, and firms already using AI are asked what is in place, so the plan builds on it.
 
 It covers the firm's own operations, such as fund reporting, LP requests, and deal flow. It does not assess portfolio companies.
 
@@ -20,23 +20,23 @@ A report in your chat that you can print or forward. Every image below comes fro
 
 **The first page says what to do first and which of your answers led there.**
 
-![Top of a sample report, with the first move and the answers that shaped it](examples/report-top.png)
+![Top of a sample report, with the first priority and the answers that shaped it](examples/report-top.png)
 
-**Each move has a verdict, the reason, a first step, a suggested owner, and an estimated money level.**
+**Each priority has a verdict, the reason, a first step, a suggested owner, and an estimated money level.**
 
-![One move from a sample report](examples/report-move.png)
+![One priority from a sample report](examples/report-priority.png)
 
-**A chart places each move by estimated speed against its estimated effect on the number you chose, compared with your other moves.** The chart's y axis names your number, from a short list or typed in your own words, and says which fund result it feeds. It makes no claim about IRR, MOIC, or DPI. If you type your own, Claude estimates each task's link to it and shows those links for you to correct. A circle needs no new money or should fit your budget. A diamond may need money you have not set aside.
+**A chart places each priority by estimated speed against its estimated effect on the number you chose, compared with your other priorities.** The chart's y axis names your number, from a short list or typed in your own words, and says which fund result it feeds. It makes no claim about IRR, MOIC, or DPI. If you type your own, Claude estimates each task's link to it and shows those links for you to correct. A circle needs no new money or should fit your budget. A diamond may need money you have not set aside.
 
 ![Priority chart from a sample report](examples/report-plot.png)
 
-When your budget limits the plan, the report has two tabs. "With your budget" puts the moves that fit first and names the move most worth finding money for. "No budget limit" shows the same moves in the normal order. Money levels are planning estimates, not quotes.
+When your budget limits the plan, the report has two tabs. "With your budget" puts the priorities that fit first and names the priority most worth finding money for. "No budget limit" shows the same priorities in the normal order. Money levels are planning estimates, not quotes.
 
 The blueprint sets which activities to take forward and in what order, built from one person's answers. It does not check your data, systems, or vendors: the report lists what to scope after it.
 
-The report also has a roadmap, a view by department, the measures each team could track, and a list of work to leave with your people.
+The report also has a roadmap, a view by department, the measures each team could track, and a list of work to keep with your team.
 
-Each activity gets one verdict: remove it, automate it, optimize it, add AI that drafts for a person to review, let AI run several steps with a person approving, build on AI already in use, or leave it with people. The verdict depends on your answers: where the information lives, who does the work, where the time goes, whether it is done mainly from habit, and your AI policy and tools.
+Each activity gets one verdict: remove it, automate it, optimize it, add AI that drafts for a person to review, let AI run several steps with a person approving, build on AI already in use, or keep it with your team. The verdict depends on your answers: where the information lives, who does the work, where the time goes, whether it is done mainly from habit, and your AI policy and tools.
 
 ## Before you start
 
@@ -107,7 +107,7 @@ flowchart LR
     J --> K[Help with your first step,<br/>a draft, or finish here]
 ```
 
-Anything you type is restated for you to confirm before it counts. Everything in the report is something you said, a public fact you confirmed with its source, a labelled planning estimate, general advice from the tool's fixed text, or a short note Claude writes linking a move to the thesis you confirmed.
+Anything you type is restated for you to confirm before it counts. Everything in the report is something you said, a public fact you confirmed with its source, a labelled planning estimate, general advice from the tool's fixed text, or a short note Claude writes linking a priority to the thesis you confirmed.
 
 ## Architecture
 

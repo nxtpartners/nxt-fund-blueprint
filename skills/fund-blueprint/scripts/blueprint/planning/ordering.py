@@ -116,17 +116,18 @@ def start_line(
     if len(plotted) < 2:
         return "", list(range(len(plotted)))
     if nobody_assigned(answers):
-        return "With nobody assigned yet, start with move 1.", [0]
+        return c.START_NOBODY, [0]
     if told(answers, "team") and answers.team == c.SMALL_TEAM:
-        return "With under 15 people, start with move 1.", [0]
+        return c.START_SMALL, [0]
     if money_ordered and plotted[0].fits and not plotted[1].fits:
         return c.START_BUDGET, [0]
     if priority(plotted[0], status)[0] == priority(plotted[1], status)[0]:
-        return c.TIE_START, [0, 1]
+        return c.TIE_START.format(label=lower_first(plotted[1].label)), [0, 1]
     if len(plotted) > 2 and third_acts_on_off_target(plotted, off_target_tasks, money_ordered):
-        return c.START_OFF_TARGET.format(measure=lower_first(off_target_tasks[plotted[2].activity_id])), [0, 2]
-    rest = " The rest can follow once those are running." if len(plotted) > 3 else ""
-    return "Start with moves 1 and 2." + rest, [0, 1]
+        measure = lower_first(off_target_tasks[plotted[2].activity_id])
+        return c.START_OFF_TARGET.format(label=lower_first(plotted[2].label), measure=measure), [0, 2]
+    rest = c.START_REST if len(plotted) > 3 else ""
+    return c.START_PAIR.format(label=lower_first(plotted[1].label)) + rest, [0, 1]
 
 
 def third_acts_on_off_target(

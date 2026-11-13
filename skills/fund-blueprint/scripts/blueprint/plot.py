@@ -38,6 +38,37 @@ def mark_shape(x: float, y: float, size: float, fits: bool, attributes: str) -> 
     return f'<polygon points="{points}" {attributes}/>'
 
 
+def mark_colors(item: ScoredActivity) -> Tuple[str, str, str]:
+    """Fill, outline, and number colour: filled verdicts carry a white number, hollow ones a coloured outline."""
+    color = t.VERDICT_COLORS[item.verdict]
+    if item.verdict in t.VERDICT_HOLLOW:
+        return t.COLOR_SURFACE, color, color
+    return color, t.COLOR_SURFACE, t.COLOR_SURFACE
+
+
+def mark_glyph(item: ScoredActivity, x: float, y: float, radius: float, label: int, ringed: bool) -> str:
+    """The marker as drawn on the plot: colour, fill, shape for money, and a ring when recommended."""
+    fill, stroke, ink = mark_colors(item)
+    ring_style = f'fill="none" stroke="{t.COLOR_INK}" stroke-width="{t.PLOT_RING_STROKE}"'
+    ring = mark_shape(x, y, radius + t.PLOT_RING_GAP, item.fits, ring_style) if ringed else ""
+    mark_style = f'fill="{fill}" stroke="{stroke}" stroke-width="{t.PLOT_MARK_STROKE}"'
+    return (
+        ring
+        + mark_shape(x, y, radius, item.fits, mark_style)
+        + f'<text x="{x:.0f}" y="{y + t.PLOT_TEXT_NUDGE:.0f}" font-size="{label}" fill="{ink}" '
+        f'text-anchor="middle" font-weight="{t.PLOT_LABEL_WEIGHT}" aria-hidden="true">{item.number}</text>'
+    )
+
+
+def mark_badge(item: ScoredActivity, ringed: bool) -> str:
+    """The same marker, small, to name a priority anywhere else in the report."""
+    centre = t.BADGE_BOX / 2
+    return (
+        f'<svg class="badge" viewBox="0 0 {t.BADGE_BOX} {t.BADGE_BOX}" aria-hidden="true">'
+        f"{mark_glyph(item, centre, centre, t.BADGE_RADIUS, t.BADGE_LABEL, ringed)}</svg>"
+    )
+
+
 def level_index(impact: float) -> int:
     return c.LEVEL_NAMES.index(impact_level(impact))
 
@@ -179,22 +210,13 @@ class Canvas:
 
     def marker(self, item: ScoredActivity, x: float, y: float, kpi_text: str, ringed: bool) -> str:
         radius, label = self.spec["radius"], self.spec["label"]
-        color = t.VERDICT_COLORS[item.verdict]
-        hollow = item.verdict in t.VERDICT_HOLLOW
-        fill, stroke, ink = (t.COLOR_SURFACE, color, color) if hollow else (color, t.COLOR_SURFACE, t.COLOR_SURFACE)
         summary = (
             f"{item.number}. {item.label}: {c.VERDICT_LABELS[item.verdict]}, {item.speed_label}, "
             f"{effect_text(item.impact, kpi_text)}, {item.money_line}"
         )
-        ring_style = f'fill="none" stroke="{t.COLOR_INK}" stroke-width="{t.PLOT_RING_STROKE}"'
-        ring = mark_shape(x, y, radius + t.PLOT_RING_GAP, item.fits, ring_style) if ringed else ""
-        mark_style = f'fill="{fill}" stroke="{stroke}" stroke-width="{t.PLOT_MARK_STROKE}"'
         return (
             f'<g class="mark" tabindex="0" role="img" aria-label="{html.escape(summary, quote=True)}">'
-            f"<title>{html.escape(summary)}</title>{ring}"
-            + mark_shape(x, y, radius, item.fits, mark_style)
-            + f'<text x="{x:.0f}" y="{y + t.PLOT_TEXT_NUDGE:.0f}" font-size="{label}" fill="{ink}" '
-            f'text-anchor="middle" font-weight="{t.PLOT_LABEL_WEIGHT}" aria-hidden="true">{item.number}</text></g>'
+            f"<title>{html.escape(summary)}</title>{mark_glyph(item, x, y, radius, label, ringed)}</g>"
         )
 
     def render(self, items: List[ScoredActivity], kpi_label: str, recommended: Tuple[int, ...]) -> str:

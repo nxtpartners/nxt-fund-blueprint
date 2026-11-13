@@ -4,9 +4,11 @@ from __future__ import annotations
 import html
 from typing import Dict, Iterable, List, Tuple
 
+from .. import constants as c
 from .. import tokens as t
 from ..enums import Verdict
 from ..models import Plan, ScoredActivity
+from ..plot import mark_badge
 
 esc = html.escape
 
@@ -30,6 +32,17 @@ def section(number: int, title: str, body: str, prefix: str = "") -> str:
     )
 
 
+def priority_no(item: ScoredActivity, large: bool = False) -> str:
+    """The priority number, drawn like its marker on the chart. Work that stays with people gets a plain number."""
+    if item.verdict == Verdict.LEAVE:
+        return "<span></span>"
+    size = " badge-lg" if large else ""
+    return (
+        f'<span class="pno{size}"><span class="vh">{esc(c.PRIORITY_WORD)} {item.number}</span>'
+        f"{mark_badge(item, item.number <= c.TOP_COUNT)}</span>"
+    )
+
+
 def hours_text(plan: Plan) -> str:
     if plan.hours_high is None:
         return f"At least {plan.hours_low}"
@@ -37,7 +50,9 @@ def hours_text(plan: Plan) -> str:
 
 
 def plural(count: int, word: str) -> str:
-    return f"{count} {word}" if count == 1 else f"{count} {word}s"
+    if count == 1:
+        return f"{count} {word}"
+    return f"{count} {word[:-1]}ies" if word.endswith("y") and word[-2:-1] not in "aeiou" else f"{count} {word}s"
 
 
 def ledger_rows(rows: Iterable[Tuple[str, str]]) -> str:

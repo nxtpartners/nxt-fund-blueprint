@@ -87,7 +87,7 @@ def foundation_rows(
     found += one_person_rows(answers, library)
     found += shared_data_rows(library, items)
     seen_actions = {row[2] for row in found}
-    task = lower_first(top_label) if top_label else "your first move"
+    task = lower_first(top_label) if top_label else "your first priority"
     fill = lambda text: text.format(kpi=kpi_text, baseline=baseline, task=task)
     for key in answer_keys(answers, uses_ai):
         row = c.FOUNDATIONS.get(key)

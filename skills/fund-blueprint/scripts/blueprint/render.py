@@ -21,12 +21,17 @@ from .scoring import unlimited_view
 from .styles import data_uri, stylesheet
 
 
+def logo_link(logo: str) -> str:
+    """The NXT logo, linking to the NXT site wherever it appears."""
+    return f'<a class="logo-link" href="{c.DEMO_URL}"><img class="logo" src="{logo}" alt="{esc(c.SITE_NAME)}"></a>'
+
+
 def closing(logo: str) -> str:
     return (
-        f'<section class="close" aria-labelledby="close-title"><img class="logo" src="{logo}" alt="{c.SITE_NAME}">'
-        f'<h2 id="close-title">{esc(c.CLOSING_TITLE)}</h2><p>{esc(c.CLOSING_BODY)}</p>'
+        f'<section class="close" aria-labelledby="close-title">{logo_link(logo)}'
+        f'<div class="close-body"><h2 id="close-title">{esc(c.CLOSING_TITLE)}</h2><p>{esc(c.CLOSING_BODY)}</p>'
         f'<div class="actions"><a class="button" href="mailto:{c.CONTACT_EMAIL}?subject={c.CONTACT_SUBJECT}">'
-        f'Email {c.CONTACT_EMAIL}</a><a href="{c.DEMO_URL}">{c.DEMO_TEXT}{c.DEMO_LABEL}</a></div></section>'
+        f'Email {c.CONTACT_EMAIL}</a><a href="{c.DEMO_URL}">{c.DEMO_TEXT}{c.DEMO_LABEL}</a></div></div></section>'
     )
 
 
@@ -36,15 +41,15 @@ def view_body(answers: Answers, plan: Plan, library: Library, prefix: str = "") 
     kpi = view["label"]
     registry = [
         ("Where you stand", position(answers, plan, library)),
-        ("Recommendation", recommendation(plan)),
+        ("Recommendation", recommendation(plan, prefix)),
         ("What could move this number soonest", priorities(plan, kpi, view)),
         ("Your next 30 days", next_30_days(plan, answers, library)),
         ("How this work connects", connections(plan, kpi)),
-        ("Roadmap", roadmap(plan)),
+        ("Roadmap", roadmap(plan, prefix)),
         ("Roadmap by department", department_roadmap(plan)),
         (c.SCOPE_TITLE, scope_next() if plan.plotted else ""),
         ("Activity by activity", details_table(plan, kpi)),
-        ("Leave with your people", people(plan)),
+        ("Keep with your team", people(plan, prefix)),
         ("In plain terms", plain_terms()),
         ("Public sources", public_sources(answers)),
         ("Notes", notes(answers, plan, library)),
@@ -53,7 +58,7 @@ def view_body(answers: Answers, plan: Plan, library: Library, prefix: str = "") 
     sections = "".join(
         section(number, title, content, prefix) for number, (title, content) in enumerate(numbered, start=1)
     )
-    return opening(answers, plan, library, kpi) + sections
+    return opening(answers, plan, library, kpi, prefix) + sections
 
 
 def budget_views(answers: Answers, plan: Plan, library: Library) -> str:
@@ -88,9 +93,9 @@ def render_blueprint(answers: Answers, plan: Plan, library: Library, today: dt.d
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
         f'<title>{esc(page_title)}</title>'
         f'<style>{stylesheet()}</style></head><body><div class="page">'
-        f'<header class="letterhead"><img class="logo" src="{logo}" alt="{c.SITE_NAME}">'
+        f'<header class="letterhead">{logo_link(logo)}'
         f'<p>{esc(c.REPORT_NAME)}<br>{today.day} {today.strftime("%B %Y")}<br>{esc(c.VERSION_LABEL.format(version=c.VERSION))}</p></header><main>{body}</main>'
-        f"<footer>Created by {esc(c.SITE_NAME)} · {c.CONTACT_EMAIL}</footer></div>"
+        f'<footer>Created by <a href="{c.DEMO_URL}">{esc(c.SITE_NAME)}</a> · {c.CONTACT_EMAIL}</footer></div>'
         "<script>addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach("
         "function(d){d.open=true})})</script></body></html>"
     )

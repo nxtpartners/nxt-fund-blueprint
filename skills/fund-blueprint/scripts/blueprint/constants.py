@@ -6,6 +6,8 @@ from pathlib import Path
 from .enums import Rule, Spend, Verdict
 from .wording import *  # noqa: F401,F403
 
+TOP_COUNT = 3  # how many priorities the report recommends starting with
+
 VERSION = "0.23.7"
 
 SKILL_DIR = Path(__file__).resolve().parents[2]
@@ -14,9 +16,9 @@ QUESTIONS_PATH = SKILL_DIR / "references" / "questions.json"
 LOGO_PATH = SKILL_DIR / "assets" / "nxt-partners-logo-light.png"
 FONT_FILES = (
     ("Space Grotesk", 700, SKILL_DIR / "assets" / "fonts" / "SpaceGrotesk-Bold.woff2"),
+    ("JetBrains Mono", 400, SKILL_DIR / "assets" / "fonts" / "JetBrainsMono-Regular.woff2"),
     ("Inter", 400, SKILL_DIR / "assets" / "fonts" / "Inter-Regular.woff2"),
     ("Inter", 600, SKILL_DIR / "assets" / "fonts" / "Inter-SemiBold.woff2"),
-    ("JetBrains Mono", 400, SKILL_DIR / "assets" / "fonts" / "JetBrainsMono-Regular.woff2"),
 )
 
 # Answer fields. A firm-level field is answered once, a detail field once per work area.

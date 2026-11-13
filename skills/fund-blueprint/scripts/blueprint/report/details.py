@@ -8,11 +8,11 @@ from ..enums import Depth, Verdict
 from ..models import Plan, ScoredActivity
 from ..planning.levels import effect_text
 from ..text import join_words, lower_first
-from .common import by_workstream, esc, key_mark, ledger_rows
+from .common import by_workstream, esc, key_mark, ledger_rows, priority_no
 
 TABLE_HEAD = (
-    '<div class="table-head" aria-hidden="true"><span></span><span>Activity</span><span>Recommendation</span>'
-    "<span>Estimated time</span><span>Effect</span><span></span></div>"
+    '<div class="table-head" aria-hidden="true"><span></span><span></span><span>Activity</span><span>Recommendation</span>'
+    "<span>Estimated time</span><span>Effect</span></div>"
 )
 
 
@@ -51,9 +51,9 @@ def detail_row(item: ScoredActivity, kpi: str = "") -> str:
         speed = '<span class="col"></span><span class="col"></span>'
     body = ledger_rows(detail_fields(item, kpi, planned))
     return (
-        f'<details><summary><span class="mono soft">{item.number}</span><span class="name">{esc(item.label)}</span>'
-        f'<span class="col">{key_mark(item.verdict)}{esc(c.VERDICT_LABELS[item.verdict])}</span>{speed}'
-        '<span class="toggle" aria-hidden="true"></span></summary>'
+        f'<details><summary><span class="toggle" aria-hidden="true"></span>{priority_no(item)}'
+        f'<span class="name">{esc(item.label)}</span>'
+        f'<span class="col">{key_mark(item.verdict)}{esc(c.VERDICT_LABELS[item.verdict])}</span>{speed}</summary>'
         f'<div class="row-body"><dl>{body}</dl></div></details>'
     )
 
@@ -78,7 +78,7 @@ def details_table(plan: Plan, kpi: str) -> str:
     )
 
 
-def people(plan: Plan) -> str:
+def people(plan: Plan, prefix: str = "") -> str:
     elsewhere = ""
     if plan.people_elsewhere:
         items = join_words([lower_first(label) for label in plan.people_elsewhere])
@@ -88,5 +88,6 @@ def people(plan: Plan) -> str:
     rows = ""
     if plan.people:
         body = "".join(detail_row(item) for item in plan.people)
-        rows = f'<p class="sec-lede soft">{esc(c.STAYS_WITH_PEOPLE_LEDE)}</p><div class="rows">{body}</div>'
+        anchor = c.PEOPLE_ANCHOR.format(prefix=prefix)
+        rows = f'<p class="sec-lede soft" id="{anchor}">{esc(c.STAYS_WITH_PEOPLE_LEDE)}</p><div class="rows">{body}</div>'
     return rows + elsewhere

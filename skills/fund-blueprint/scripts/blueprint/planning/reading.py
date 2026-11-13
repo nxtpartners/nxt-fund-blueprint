@@ -55,9 +55,9 @@ def named_reason(
         return c.NAMED_REASON_LIFTED
     above = plotted[: plotted.index(named)]
     if len(above) == 1:
-        subject = ("The move above it", "the move above it", "has")
+        subject = ("The priority above it", "the priority above it", "has")
     else:
-        subject = ("The moves above it", "the moves above it", "have")
+        subject = ("The priorities above it", "the priorities above it", "have")
     if all(item.relevance > named.relevance for item in above):
         return c.NAMED_REASON_CLOSER.format(above=f"{subject[0]} {subject[2]}", kpi=kpi_text)
     if all(item.value > named.value for item in above):
@@ -73,7 +73,7 @@ def named_lines(r: Reading) -> List[str]:
     if named.verdict == Verdict.LEAVE:
         return [
             f"You named {task} as the task to take off your team. "
-            "It rests on judgment or relationships, so it stays with your people, and the moves below work around it."
+            "It rests on judgment or relationships, so it stays with your team, and the priorities below work around it."
         ]
     position = r.plotted.index(named) + 1
     if position == 1:
@@ -130,7 +130,7 @@ def restricted_lines(r: Reading) -> List[str]:
     uses_ai = any(item.verdict in c.AI_VERDICTS + (Verdict.BUILD_ON,) for item in plotted)
     if r.answers.policy != Policy.RESTRICTED.value or not plotted or uses_ai:
         return []
-    scope = "the one move does not use AI" if len(plotted) == 1 else f"none of the {len(plotted)} moves uses AI"
+    scope = "the one priority does not use AI" if len(plotted) == 1 else f"none of the {len(plotted)} priorities uses AI"
     return [f"Your AI policy is restricted, so {scope}: {verdict_counts(plotted)}."]
 
 
@@ -172,7 +172,7 @@ def kpi_status_lines(r: Reading) -> List[str]:
 
 def owner_lines(r: Reading) -> List[str]:
     if nobody_assigned(r.answers):
-        return ["Nobody is set to carry out this work yet, so naming an owner comes before any move."]
+        return ["Nobody is set to carry out this work yet, so naming an owner comes before any priority."]
     return []
 
 

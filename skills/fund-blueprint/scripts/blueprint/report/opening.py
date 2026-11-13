@@ -10,34 +10,34 @@ from ..models import Answers, Plan
 from ..planning.facts import told
 from ..planning.levels import impact_level
 from ..text import join_words, label_list, lower_first
-from .common import esc, hours_text, ledger_rows, plural
+from .common import esc, hours_text, ledger_rows, plural, priority_no
 
 
 def headline(plan: Plan, kpi: str) -> str:
     if not plan.top:
-        return "Your answers point to work that should stay with your people"
+        return "Your answers point to work that should stay with your team"
     item = plan.top[0]
     label = lower_first(item.label)
     if item.ai_assumed and item.restricted_in_use:
-        return f"Your first move is to settle how AI is used in {lower_first(item.workstream_label)}"
+        return f"Your first priority is to settle how AI is used in {lower_first(item.workstream_label)}"
     if item.ai_assumed and item.verdict == Verdict.BUILD_ON:
         area = lower_first(item.workstream_label)
-        return f"Your first move is to review how AI is used in {area}, starting with {label}"
+        return f"Your first priority is to review how AI is used in {area}, starting with {label}"
     if item.restricted_in_use:
-        return f"Your first move is to settle how AI is used for {label}"
+        return f"Your first priority is to settle how AI is used for {label}"
     if item.quadrant == Quadrant.DEPRIORITIZE and not any(impact_level(row.impact) != "Low" for row in plan.plotted):
         return f"Nothing here ranks highly against {lower_first(kpi)}, so start with {label}"
     if item.rule in c.HEADLINE_RULES:
         return c.HEADLINE_RULES[item.rule].format(label=label)
     if item.ai_unknown:
-        return f"Your first move is to check whether AI is already used for {label}, and if not, to add it"
+        return f"Your first priority is to check whether AI is already used for {label}, and if not, to add it"
     return c.HEADLINE_VERBS[item.verdict].format(label=label)
 
 
 def standfirst(plan: Plan) -> str:
     """At most one sentence. How the moves were estimated belongs with the roadmap."""
     if not plan.plotted:
-        return "The work you selected depends on judgment and relationships, so it stays with your people."
+        return "The work you selected depends on judgment and relationships, so it stays with your team."
     return ""
 
 
@@ -55,18 +55,20 @@ def firm_line(answers: Answers, library: Library) -> str:
     return " · ".join(bits)
 
 
-def glance_line(plan: Plan) -> str:
+def glance_line(plan: Plan, prefix: str = "") -> str:
+    """Markup: the count of work that stays with people links to where that work is listed."""
     quick = sum(1 for item in plan.plotted if item.quadrant == Quadrant.QUICK_WINS)
     stops = sum(1 for item in plan.plotted if item.verdict == Verdict.REMOVE)
     glance = []
     if plan.hours_known:
-        glance.append(f"{hours_text(plan)} hours a month reported")
+        glance.append(esc(f"{hours_text(plan)} hours a month reported"))
     if plan.plotted:
-        glance += [plural(len(plan.plotted), "move"), f"{quick} at Medium effect or above within 60 days"]
+        glance += [esc(plural(len(plan.plotted), "priority")), esc(f"{quick} at Medium effect or above within 60 days")]
     if stops:
-        glance.append(f"{stops} to test stopping")
+        glance.append(esc(f"{stops} to test stopping"))
     if plan.people:
-        glance.append(f"{len(plan.people)} {'stays' if len(plan.people) == 1 else 'stay'} with your people")
+        text = c.GLANCE_PEOPLE.format(count=len(plan.people), verb="stays" if len(plan.people) == 1 else "stay")
+        glance.append(f'<a href="#{c.PEOPLE_ANCHOR.format(prefix=prefix)}">{esc(text)}</a>')
     return " · ".join(glance)
 
 
@@ -77,16 +79,31 @@ def opening_rows(answers: Answers, plan: Plan, library: Library, kpi: str) -> Li
         ("Prepared for", answers.firm_name),
         ("Firm", firm_line(answers, library)),
         ("Thesis", thesis),
-        ("Priority", library.option_label("pressure", answers.pressure) if told(answers, "pressure") else ""),
+        ("Goal", library.option_label("pressure", answers.pressure) if told(answers, "pressure") else ""),
         ("Measured against", f"{kpi} ({answers.kpi_value})" if answers.kpi_value else kpi),
         ("Assessed", ", ".join(library.workstreams[work.id]["label"] for work in answers.workstreams)),
-        ("At a glance", glance_line(plan)),
     ]
 
 
-def opening(answers: Answers, plan: Plan, library: Library, kpi: str) -> str:
+def top_strip(plan: Plan, prefix: str) -> str:
+    """The recommended priorities on the first screen, each linking to its card. One priority needs no list."""
+    if len(plan.top) < 2:
+        return ""
+    rows = "".join(
+        f'<li><a href="#{c.PRIORITY_ANCHOR.format(prefix=prefix, number=item.number)}">{priority_no(item)}'
+        f'<span class="name">{esc(item.label)}</span><span class="meta">'
+        f'{esc(c.TOP_STRIP_META.format(verdict=c.VERDICT_LABELS[item.verdict], speed=item.speed_label, level=impact_level(item.impact)))}'
+        "</span></a></li>"
+        for item in plan.top
+    )
+    return f'<ol class="top-strip" aria-label="{esc(c.TOP_STRIP_LABEL)}">{rows}</ol>'
+
+
+def opening(answers: Answers, plan: Plan, library: Library, kpi: str, prefix: str = "") -> str:
     rows = opening_rows(answers, plan, library, kpi)
-    ledger = ledger_rows((key, value) for key, value in rows if value)
+    glance = glance_line(plan, prefix)
+    glance_row = f"<div><dt>At a glance</dt><dd>{glance}</dd></div>" if glance else ""
+    ledger = ledger_rows((key, value) for key, value in rows if value) + glance_row
     reading = "".join(f"<li>{esc(line)}</li>" for line in plan.reading + plan.changes)
     reading_html = ""
     if reading:
@@ -95,6 +112,6 @@ def opening(answers: Answers, plan: Plan, library: Library, kpi: str) -> str:
     first = standfirst(plan)
     first_html = f'<p class="standfirst">{esc(first)}</p>' if first else ""
     return (
-        f'<div class="opening"><h1>{esc(headline(plan, kpi))}</h1>{first_html}{start}{reading_html}</div>'
+        f'<div class="opening"><h1>{esc(headline(plan, kpi))}</h1>{first_html}{start}{top_strip(plan, prefix)}{reading_html}</div>'
         f'<dl class="ledger">{ledger}</dl><div class="spacer"></div>'
     )

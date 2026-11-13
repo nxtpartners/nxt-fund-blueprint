@@ -218,4 +218,4 @@ class Plan:
 
     @property
     def top(self) -> List[ScoredActivity]:
-        return self.plotted[:3]
+        return self.plotted[: c.TOP_COUNT]

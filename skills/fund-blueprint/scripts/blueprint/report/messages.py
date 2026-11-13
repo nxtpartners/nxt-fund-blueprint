@@ -45,7 +45,7 @@ def render_email(answers: Answers, plan: Plan, library: Library) -> str:
         *([f"Strategy: {library.option_label('strategy', answers.strategy)}"] if told(answers, "strategy") else []),
         *([f"AUM: {library.option_label('aum', answers.aum)}"] if answers.aum else []),
         *([f"AI today: {library.option_label('ai_stage', answers.ai_stage)}"] if told(answers, "ai_stage") else []),
-        *([f"Priority: {library.option_label('pressure', answers.pressure)}"] if told(answers, "pressure") else []),
+        *([f"Goal: {library.option_label('pressure', answers.pressure)}"] if told(answers, "pressure") else []),
         f"KPI: {library.kpi_view(answers.kpi, answers.kpi_name)['label']}",
         *(["Top priorities: " + "; ".join(catalog_top)] if catalog_top else []),
         "",

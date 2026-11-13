@@ -445,7 +445,7 @@ def parse_answers(library: Library, raw: Any) -> Answers:
     workstreams = parse_workstreams(library, raw, assumed, skipped, ai_assumed_areas)
     named_task = parse_named_task(raw, workstreams)
     focus = parse_thesis_focus(library, raw)
-    notes = parse_thesis_notes(raw)
+    notes = parse_thesis_notes(raw) if raw.get(c.KEY_THESIS_SUMMARY) else {}
     check_kpi_links(kpi_links, workstreams)
     return Answers(
         kpi=kpi,

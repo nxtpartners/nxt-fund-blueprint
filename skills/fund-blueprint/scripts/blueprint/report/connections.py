@@ -32,5 +32,5 @@ def connections(plan: Plan, kpi: str) -> str:
         f"<p class=\"sec-lede soft\">How each team's own number feeds {esc(lower_first(kpi))}. "
         "These links are planning assumptions, so ask each team whether they hold.</p>"
         '<table class="link-table"><thead><tr><th scope="col">Team\'s number</th><th scope="col">Link</th>'
-        f'<th scope="col">Today</th><th scope="col">Moves</th></tr></thead><tbody>{rows}</tbody></table>{tail}'
+        f'<th scope="col">Today</th><th scope="col">Priorities</th></tr></thead><tbody>{rows}</tbody></table>{tail}'
     )

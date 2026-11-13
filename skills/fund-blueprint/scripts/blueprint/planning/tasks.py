@@ -96,7 +96,8 @@ def owner_for(
     if verdict in c.TECH_VERDICTS and needs_money and not serious and told(answers, "capacity"):
         for value in answers.capacity:
             if value in c.CAPACITY_TECH_OWNER:
-                return c.CAPACITY_TECH_OWNER[value].format(owner=lower_first(base))
+                pattern = c.CAPACITY_TECH_OWNER[value]
+                return pattern.format(owner=base if pattern.startswith("{owner}") else lower_first(base))
     return base
 
 

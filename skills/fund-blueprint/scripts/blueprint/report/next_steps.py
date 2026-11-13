@@ -35,7 +35,7 @@ def next_30_days(plan: Plan, answers: Answers, library: Library) -> str:
     by_opening = {action.split(". ")[0].lower(): (task, action, owner) for task, action, owner in reversed(rows)}
     rows = list(by_opening.values())[::-1]
     lines = "".join(
-        f'<li><span class="mono soft">{index}</span>'
+        f'<li><span class="num">{index}</span>'
         f'<span>{f"<span class=lead>{esc(task)}.</span> " if task else ""}{esc(action)}</span>'
         f'<span class="owner">{esc(owner)}</span></li>'
         for index, (task, action, owner) in enumerate(rows, start=1)

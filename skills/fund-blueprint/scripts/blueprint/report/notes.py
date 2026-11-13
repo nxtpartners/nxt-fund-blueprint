@@ -36,7 +36,7 @@ def notes(answers: Answers, plan: Plan, library: Library) -> str:
     rows = [
         c.METHOD_NOTE,
         "The answers behind this report come from one person. Other people at your firm may see it differently.",
-        "Money levels are broad estimates, not prices. Ask for a price on your first move before committing.",
+        "Money levels are broad estimates, not prices. Ask for a price on your first priority before committing.",
         "This is operational guidance generated with AI. It is not investment, legal, tax, or compliance advice, "
         "so have the right people review it before acting.",
         c.REGION_NOTES[answers.region],
