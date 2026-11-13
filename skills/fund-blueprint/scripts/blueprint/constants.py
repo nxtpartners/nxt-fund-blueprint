@@ -8,7 +8,7 @@ from .wording import *  # noqa: F401,F403
 
 TOP_COUNT = 3  # how many priorities the report recommends starting with
 
-VERSION = "0.23.7"
+VERSION = "0.23.8"
 
 SKILL_DIR = Path(__file__).resolve().parents[2]
 CATALOG_PATH = SKILL_DIR / "references" / "catalog.json"
