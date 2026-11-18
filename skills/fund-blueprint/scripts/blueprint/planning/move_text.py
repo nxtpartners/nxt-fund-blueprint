@@ -7,7 +7,7 @@ from typing import Tuple
 from .. import constants as c
 from ..enums import AiHere, AiStage, ErrorCost, KpiClaim, Nature, Policy, Rule, Verdict
 from ..models import Activity, Answers, WorkstreamAnswers
-from ..text import lower_first
+from ..text import lower_first, upper_first
 from .decisions import agent_blocker
 from .facts import (
     HUMAN_NATURES,
@@ -158,7 +158,7 @@ def why_line(
     if reason:
         parts.append(reason)
     if off_target:
-        parts.append(f"You said {lower_first(off_target)} is off target.")
+        parts.append(f"{upper_first(off_target)} is off target.")
     elif linked:
         parts.append(f"It {c.LINK_WORDS[relevance]} {kpi_text}.")
     return " ".join(parts)

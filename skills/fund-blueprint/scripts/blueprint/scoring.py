@@ -5,7 +5,7 @@ The catalog supplies priors, and the firm's answers decide.
 from __future__ import annotations
 
 from dataclasses import replace
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 from . import constants as c
 from .data import Library
@@ -20,7 +20,7 @@ from .planning.measures import measure_view, off_target_map
 from .planning.ordering import add_comparison, order_moves, start_line
 from .planning.reading import read_together
 from .planning.tasks import score_activity, work_context
-from .text import lower_first
+from .text import join_words, lower_first
 
 
 def reported_hours(answers: Answers) -> Tuple[int, Optional[int], bool]:
@@ -45,6 +45,20 @@ def walkthroughs_for(answers: Answers, library: Library) -> Dict[str, List[str]]
         for work in answers.workstreams
         if work.walkthrough_steps
     }
+
+
+def stage_gaps(answers: Answers, library: Library, assessed: Set[str]) -> List[str]:
+    """One line per fund stage they named whose own work area was not assessed. A plain fact, never a ranking."""
+    lines = []
+    for stage in answers.fund_stage:
+        missing = [lower_first(library.workstreams[area]["label"]) for area in c.FUND_STAGE_AREAS.get(stage, ()) if area not in assessed]
+        if missing:
+            many = len(missing) > 1
+            lines.append(c.STAGE_GAP.format(
+                stage=c.FUND_STAGE_WORDS[stage], areas=join_words(missing),
+                verb="were" if many else "was", pronoun="them" if many else "it",
+            ))
+    return lines
 
 
 def score_answers(library: Library, answers: Answers, with_levers: bool = True) -> Plan:
@@ -82,6 +96,7 @@ def score_answers(library: Library, answers: Answers, with_levers: bool = True) 
         measure_rows=measure_rows,
         measure_actions=measure_actions,
         focus_missing=[library.workstreams[item]["label"] for item in answers.thesis_focus if item not in assessed],
+        stage_gaps=stage_gaps(answers, library, assessed),
         walkthroughs=walkthroughs_for(answers, library),
         budget=answers.budget,
         people_elsewhere=[

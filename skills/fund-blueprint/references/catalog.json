@@ -113,7 +113,7 @@
    "area": "investing",
    "label": "Investment committee",
    "description": "Memos, precedents, decisions",
-   "owner": "Investment committee chair or whoever runs the IC process",
+   "owner": "Investment committee chair, or the person responsible for the IC process",
    "measures": [
     {
      "id": "ic_memo_days",
@@ -196,7 +196,7 @@
    "area": "portfolio",
    "label": "Portfolio reporting",
    "description": "Collecting and explaining KPIs",
-   "owner": "Head of portfolio monitoring or whoever collects portfolio data",
+   "owner": "Head of portfolio monitoring, or the person responsible for portfolio data",
    "measures": [
     {
      "id": "rp_days",
@@ -363,7 +363,7 @@
    "area": "investors",
    "label": "LP reporting",
    "description": "Letters, templates, portals",
-   "owner": "Head of IR or whoever handles investors",
+   "owner": "Head of IR, or the person responsible for investor relations",
    "measures": [
     {
      "id": "lr_days",
@@ -409,7 +409,7 @@
    "area": "investors",
    "label": "LP requests",
    "description": "DDQs, ad hoc questions, surveys",
-   "owner": "Head of IR or whoever handles investors",
+   "owner": "Head of IR, or the person responsible for investor relations",
    "measures": [
     {
      "id": "rq_ddq",
@@ -451,7 +451,7 @@
    "area": "investors",
    "label": "Fundraising",
    "description": "Materials, track record, investor paperwork",
-   "owner": "Head of IR, a fundraising lead, or whoever handles investors",
+   "owner": "Head of IR, a fundraising lead, or the person responsible for investor relations",
    "measures": [
     {
      "id": "fr_refresh",
@@ -490,7 +490,7 @@
    "area": "investors",
    "label": "LP relations",
    "description": "CRM, notes, follow-ups, LPAC",
-   "owner": "Head of IR or whoever handles investors",
+   "owner": "Head of IR, or the person responsible for investor relations",
    "measures": [
     {
      "id": "rl_followups",
@@ -527,7 +527,7 @@
    "area": "firm",
    "label": "Fund accounting",
    "description": "Calls, fees, valuation packs, administrator review",
-   "owner": "CFO or whoever leads finance",
+   "owner": "CFO, or the person responsible for finance",
    "measures": [
     {
      "id": "ac_close",
@@ -573,7 +573,7 @@
    "area": "firm",
    "label": "Compliance",
    "description": "Obligations, filings, attestations",
-   "owner": "CCO or whoever leads compliance",
+   "owner": "CCO, or the person responsible for compliance",
    "measures": [
     {
      "id": "cp_filings",
@@ -615,7 +615,7 @@
    "area": "firm",
    "label": "Firm knowledge",
    "description": "Past work, search, onboarding",
-   "owner": "COO or whoever runs operations",
+   "owner": "COO, or the person responsible for operations",
    "measures": [
     {
      "id": "kn_find",
@@ -656,7 +656,7 @@
    "area": "firm",
    "label": "Internal operations",
    "description": "Vendors, expenses, IT, meetings",
-   "owner": "COO or whoever runs operations",
+   "owner": "COO, or the person responsible for operations",
    "measures": [
     {
      "id": "in_invoice",
@@ -708,7 +708,7 @@
    "first_step": "Write your investment criteria as explicit pass and proceed rules.",
    "check": "A deal professional reviews every pass close to the line and samples clear passes each week.",
    "effort": "low",
-   "check_ai": "Load CIMs only into tools your NDAs and whoever leads compliance allow."
+   "check_ai": "Load CIMs only into tools your NDAs and the person responsible for compliance allow."
   },
   {
    "id": "market_mapping",
@@ -800,7 +800,7 @@
     "senior_hours": 1
    },
    "solution": "Turn call transcripts into structured notes by theme, showing where sources agree and disagree, with quotes to back each point.",
-   "first_step": "Agree a standard note format, then, in a tool whoever leads compliance has approved, process the calls from one closed deal.",
+   "first_step": "Agree a standard note format, then, in a tool the person responsible for compliance has approved, process the calls from one closed deal.",
    "check": "Confirm recording consent and expert network rules first. If a call may contain confidential or material non-public information, stop and send it to compliance before it is summarized or shared. Verify quotes before reuse.",
    "effort": "low",
    "first_step_uses_ai": true,
@@ -821,7 +821,7 @@
    "effort": "high",
    "required": false,
    "input_documents": true,
-   "check_ai": "Load CIMs and management accounts only into tools your NDAs and whoever leads compliance allow."
+   "check_ai": "Load CIMs and management accounts only into tools your NDAs and the person responsible for compliance allow."
   },
   {
    "id": "memo_drafting",
@@ -868,7 +868,7 @@
    },
    "solution": "Assemble the pack from approved versions, circulate it, and track actions until they close. A person keeps the minutes.",
    "first_step": "Define one folder and naming standard that marks which version is final.",
-   "check": "Whoever chairs the meeting approves the minutes, as they form part of the firm's record.",
+   "check": "The meeting chair approves the minutes, as they form part of the firm's record.",
    "effort": "low",
    "required": true
   },
@@ -944,8 +944,8 @@
     "underperformance_detection": 1
    },
    "solution": "Build the post-close record from the memo, model, and final documents: key terms, covenants, reporting duties, and the 100-day plan's owners and dates.",
-   "first_step": "Define what whoever runs the investment after close needs on day one, then build it by hand once from a recent deal.",
-   "check": "The deal lead and whoever takes over the investment both confirm covenant dates and reporting duties.",
+   "first_step": "Define what the person responsible for the investment after close needs on day one, then build it by hand once from a recent deal.",
+   "check": "The deal lead and the person who takes over the investment both confirm covenant dates and reporting duties.",
    "effort": "high",
    "required": true,
    "no_agent": true
@@ -976,7 +976,7 @@
    },
    "solution": "Log every adviser engagement, budget, and invoice in one place, and flag spend against budget and broken-deal costs.",
    "first_step": "List the adviser engagements on your last two deals, with budget and final cost.",
-   "check": "Whoever leads finance approves how costs are allocated between the firm, its funds, and any co-investors, under your LPA.",
+   "check": "The person responsible for finance approves how costs are allocated between the firm, its funds, and any co-investors, under your LPA.",
    "effort": "low",
    "required": true,
    "no_agent": true
@@ -1324,7 +1324,7 @@
    "required": true,
    "no_agent": true,
    "shared_data": "portfolio",
-   "process_solution": "List which templates an LPA, side letter, or investor request requires, and have whoever owns LP reporting approve retiring any other."
+   "process_solution": "List which templates an LPA, side letter, or investor request requires, and have the person responsible for LP reporting approve retiring any other."
   },
   {
    "id": "report_consolidation",
@@ -1374,7 +1374,7 @@
    },
    "solution": "Build an approved answer library and draft each new DDQ from it, with citations and a flag on anything stale or unanswered.",
    "first_step": "Put your last three completed DDQs in one document and mark which answers remain approved.",
-   "check": "Whoever signs off answers today still approves each one, and whoever leads compliance reviews any new statement, because these are representations to investors.",
+   "check": "The person who approves answers today still approves each one, and the person responsible for compliance reviews any new statement, because these are representations to investors.",
    "effort": "medium",
    "required": true,
    "no_agent": true,
@@ -1391,7 +1391,7 @@
    },
    "solution": "Classify each incoming question, gather the data and past answers, and draft a reply for IR to review.",
    "first_step": "List last quarter's LP questions to find which types recur.",
-   "check": "IR reviews and sends every reply. Whoever leads compliance reviews any reply that gives information not already given to all investors, or that draws on another investor's question or data.",
+   "check": "IR reviews and sends every reply. The person responsible for compliance reviews any reply that gives information not already given to all investors, or that draws on another investor's question or data.",
    "effort": "medium",
    "required": true,
    "no_agent": true
@@ -1422,7 +1422,7 @@
    "kpis": {},
    "solution": "Keep these conversations with partners and IR. AI can prepare a short brief on the investor's history and open points.",
    "first_step": "Decide what a good pre-call brief includes for your top ten LPs.",
-   "check": "A partner decides what is said and sent, and the brief contains nothing about any other investor. Whoever leads compliance reviews anything that gives this investor information not already given to all investors.",
+   "check": "A partner decides what is said and sent, and the brief contains nothing about any other investor. The person responsible for compliance reviews anything that gives this investor information not already given to all investors.",
    "effort": "medium",
    "required": true,
    "no_agent": true
@@ -1438,7 +1438,7 @@
    },
    "solution": "Send one standard ESG data request to each company, check answers against last year's, and flag gaps.",
    "first_step": "List the ESG fields you report, note which an LP, side letter, or regulation requires, and mark the rest for review.",
-   "check": "Whoever signs off ESG reporting reviews any figure that changed sharply, and any public claim or statement to investors goes through compliance.",
+   "check": "The person responsible for ESG reporting reviews any figure that changed sharply, and any public claim or statement to investors goes through compliance.",
    "effort": "medium",
    "reads_documents": true,
    "required": true,
@@ -1492,7 +1492,7 @@
    "effort": "medium",
    "required": true,
    "no_agent": true,
-   "owner": "Whoever leads compliance"
+   "owner": "The person responsible for compliance"
   },
   {
    "id": "lp_targeting",
@@ -1560,7 +1560,7 @@
    },
    "solution": "Draft the agenda, pack, and minutes from approved materials, track the consents and votes the LPA requires, and keep the record of each decision.",
    "first_step": "List every LPAC consent and annual meeting item from the last two years, with the LPA clause behind each one.",
-   "check": "Counsel and whoever leads compliance review every conflict or consent item, and a partner approves what goes to LPAC members.",
+   "check": "Counsel and the person responsible for compliance review every conflict or consent item, and a partner approves what goes to LPAC members.",
    "effort": "medium",
    "required": true,
    "no_agent": true
@@ -1577,7 +1577,7 @@
    },
    "solution": "Calculate or check each investor's share from commitments and LPA terms, draft the notices for finance to approve, match notices to bank movements, and send the breaks to a person.",
    "first_step": "Measure how many items match automatically on last quarter's calls using simple rules.",
-   "check": "Finance approves every notice and allocation, including excused investors, later-close adjustments, and the distribution waterfall. Payment approvals should have two-person sign-off, separate from this work. A missed payment goes to whoever leads finance and to counsel, because the LPA may set default terms.",
+   "check": "Finance approves every notice and allocation, including excused investors, later-close adjustments, and the distribution waterfall. Payment approvals should have two-person sign-off, separate from this work. A missed payment goes to the person responsible for finance and to counsel, because the LPA may set default terms.",
    "effort": "high",
    "required": true,
    "no_agent": true,
@@ -1615,11 +1615,11 @@
    },
    "solution": "Check administrator packs against your own records, list breaks and unusual movements for review, and keep the auditor's request list current with each item's owner and status.",
    "first_step": "List the checks your team runs each close, and the items the auditor requested last year.",
-   "check": "Whoever leads finance signs off, the review leaves an audit trail, and a person in finance sends everything that goes to the auditor.",
+   "check": "The person responsible for finance signs off, the review leaves an audit trail, and a person in finance sends everything that goes to the auditor.",
    "effort": "high",
    "required": true,
    "no_agent": true,
-   "process_solution": "List what is re-checked each quarter and which breaks recur, fix the cause of those breaks with your administrator, and have whoever leads finance approve any change to the checks."
+   "process_solution": "List what is re-checked each quarter and which breaks recur, fix the cause of those breaks with your administrator, and have the person responsible for finance approve any change to the checks."
   },
   {
    "id": "valuations",
@@ -1632,7 +1632,7 @@
    },
    "solution": "Keep the judgment with the people who set your marks. AI can compile comparables, prior marks, and policy references.",
    "first_step": "Write down who sets each mark, who challenges it, and where the reason is recorded.",
-   "check": "Whoever sets each mark records why under any valuation policy, and the deal team does not set its own mark alone.",
+   "check": "The person responsible for each mark records why under any valuation policy, and the deal team does not set its own mark alone.",
    "effort": "medium",
    "required": true,
    "no_agent": true
@@ -1685,7 +1685,7 @@
    },
    "solution": "Gather data for recurring filings such as Form ADV, Form PF, Form D, or AIFMD Annex IV reporting, validate it, and show changes since the last filing.",
    "first_step": "Map each field of one filing to its data source.",
-   "check": "Compliance and whoever signs for the firm review and submit every filing.",
+   "check": "Compliance and the firm's signatory review and submit every filing.",
    "effort": "high",
    "required": true,
    "no_agent": true,
@@ -1703,7 +1703,7 @@
    },
    "solution": "Schedule attestations, personal trading and gift declarations, restricted list updates, and the annual compliance review, chase responses, and keep the record for exams.",
    "first_step": "Put all recurring compliance tasks on one calendar with one owner.",
-   "check": "Whoever leads compliance reviews exceptions and conflicts and decides every restricted list change.",
+   "check": "The person responsible for compliance reviews exceptions and conflicts and decides every restricted list change.",
    "effort": "low",
    "required": true,
    "no_agent": true,
@@ -1717,7 +1717,7 @@
    "kpis": {
     "report_errors": 1
    },
-   "solution": "Keep decisions with whoever leads compliance and counsel. AI can surface the relevant policy and past decisions.",
+   "solution": "Keep decisions with the person responsible for compliance and counsel. AI can surface the relevant policy and past decisions.",
    "first_step": "Create a searchable log of past compliance decisions.",
    "check": "They stay responsible for the decision, and counsel decides whether privileged advice goes in the log.",
    "effort": "medium",
@@ -1735,7 +1735,7 @@
    },
    "solution": "Find the records a request asks for, draft an index, and track what has been provided and when.",
    "first_step": "List the records your last regulatory request asked for, or if you have had none, the records you must keep, and where each one sits.",
-   "check": "Whoever leads compliance and counsel approve everything before it is sent, and counsel reviews for privileged material. Keep this work within approved tools.",
+   "check": "The person responsible for compliance and counsel approve everything before it is sent, and counsel reviews for privileged material. Keep this work within approved tools.",
    "effort": "medium",
    "required": true,
    "no_agent": true
@@ -1830,7 +1830,7 @@
    },
    "solution": "Keep one register of software and AI vendors, draft each review from the contract and security answers, and flag changes to data use, retention, and who can see your data.",
    "first_step": "List every AI tool in use today, including individual accounts, and what firm data has gone into each.",
-   "check": "Whoever leads compliance and whoever runs operations approve each tool before firm data goes in, and a person reads the contract terms on confidentiality and model training.",
+   "check": "The person responsible for compliance and the person responsible for operations approve each tool before firm data goes in, and a person reads the contract terms on confidentiality and model training.",
    "effort": "low",
    "required": true,
    "no_agent": true,
@@ -1875,7 +1875,7 @@
    "kpis": {},
    "solution": "Keep the decision with the partners who own it. AI can compile the covenant terms, history, and correspondence.",
    "first_step": "Write down who decides a waiver or workout, and where the reason is recorded.",
-   "check": "The deal lead and whoever leads compliance record each decision and why.",
+   "check": "The deal lead and the person responsible for compliance record each decision and why.",
    "effort": "medium",
    "required": true,
    "no_agent": true

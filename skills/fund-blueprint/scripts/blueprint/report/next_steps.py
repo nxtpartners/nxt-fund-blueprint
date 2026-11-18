@@ -10,7 +10,7 @@ from .common import esc
 
 
 def foundation_owner(action: str, data_owner: str) -> str:
-    """Data work goes to the first move's owner, written-down know-how to whoever does the work."""
+    """Data work goes to the first move's owner, written-down know-how to the person who does the work."""
     if action.startswith(c.DATA_ACTION_START):
         return data_owner
     if action.startswith(c.ONE_PERSON_ACTION_START):

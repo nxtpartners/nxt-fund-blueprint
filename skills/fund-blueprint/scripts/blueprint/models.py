@@ -203,6 +203,7 @@ class Plan:
     measure_rows: List[Tuple[str, str, int, str, str]] = field(default_factory=list)
     measure_actions: List[Tuple[str, str]] = field(default_factory=list)
     focus_missing: List[str] = field(default_factory=list)
+    stage_gaps: List[str] = field(default_factory=list)
     walkthroughs: Dict[str, List[str]] = field(default_factory=dict)
     budget: str = ""
     stuck: List[Tuple[str, List[str]]] = field(default_factory=list)

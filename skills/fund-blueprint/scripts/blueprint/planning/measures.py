@@ -32,7 +32,7 @@ def measure_status(
     asked: bool,
 ) -> Optional[str]:
     if measure["id"] in measures_off:
-        return "Off target, you said"
+        return "Off target"
     if measure["id"] in tracked:
         return "Tracked"
     if measure["id"] in same_as_kpi:

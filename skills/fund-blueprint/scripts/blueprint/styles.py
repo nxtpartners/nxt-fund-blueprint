@@ -179,6 +179,10 @@ details[open] .toggle{{transform:rotate(45deg)}}
 .close-body{{display:grid;gap:1rem;justify-items:start}}
 @container (min-width:{t.RAIL_BREAKPOINT}){{.close{{grid-template-columns:{t.SECTION_RAIL} minmax(0,1fr);column-gap:{t.SPACE_GAP};align-items:start}}.close h2{{margin-top:0}}}}
 .close h2{{font-size:{t.TEXT_SECTION};line-height:1.2;margin-top:.5rem}}
+.pilot{{justify-self:stretch;display:grid;gap:.6rem;border-block:{t.RULE_HEAVY};padding-block:{t.SPACE_BLOCK};margin-block:.4rem}}
+.pilot-title{{font-family:{t.FONT_DISPLAY};font-size:{t.TEXT_HEADLINE};line-height:1.1;letter-spacing:-.018em;color:{t.COLOR_ACCENT}}}
+.pilot-text{{font-size:{t.TEXT_ITEM}}}
+.pilot-promise strong{{display:block;font-family:{t.FONT_DISPLAY};font-size:{t.TEXT_SECTION};line-height:1.25;color:{t.COLOR_ACCENT}}}
 .actions{{display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;align-items:center;margin-top:.4rem}}
 .button{{display:inline-flex;align-items:center;min-height:{t.MIN_TARGET};padding:.55rem 1.15rem;background:{t.COLOR_ACCENT};color:{t.COLOR_SURFACE};border-radius:{t.RADIUS_BUTTON};font-weight:600;text-decoration:none}}
 .button:hover{{background:{t.COLOR_ACCENT_HOVER}}}

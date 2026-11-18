@@ -46,7 +46,7 @@ Each activity gets one verdict: remove it, automate it, optimize it, add AI that
 
 **How long it is:** about 35 short questions for one part of the firm, plus 3 to 9 for each part you add. You can skip questions, and you choose how deep to go. We have not timed it with a real respondent, so we give no time estimate. In our test on claude.ai, we left the chat, came back, and it carried on with the next question.
 
-**What it costs:** it is free. The report ends with an offer of implementation help from NXT Partners AI, which you can ignore. NXT Partners AI benefits if you hire it, so weigh the plan with that in mind. The scoring rules are in this repo for anyone to read, and they do not refer to NXT Partners AI or its services. It runs on your own Claude plan.
+**What it costs:** it is free. The report ends with an offer from NXT Partners AI, which you can ignore: a second opinion on the plan, or a 90-day pilot on one priority. NXT Partners AI benefits if you hire it, so weigh the plan with that in mind. The scoring rules are in this repo for anyone to read, and they do not refer to NXT Partners AI or its services. It runs on your own Claude plan.
 
 ## Install
 
@@ -146,17 +146,6 @@ REVIEW.md                      How to try it and what feedback we ask for
 LICENSE                        MIT
 README.md                      This file
 ```
-
-## Status
-
-| Area | State |
-|---|---|
-| Plugin, question set, scoring, and report | In testing, 2026-11-08 |
-| Tested on | Test firms on claude.ai with one paid account, and in Claude Code, 2026-11-08. No real firm has used it yet |
-| Full question-by-question run in Claude Code | Done with test firms, 2026-11-08 |
-| Review by a practitioner | Not started |
-| Ready-made download | Available, 2026-11-08 |
-| Claude directory listing | Not started |
 
 ## About NXT Partners AI
 

@@ -30,8 +30,11 @@ def closing(logo: str) -> str:
     return (
         f'<section class="close" aria-labelledby="close-title">{logo_link(logo)}'
         f'<div class="close-body"><h2 id="close-title">{esc(c.CLOSING_TITLE)}</h2><p>{esc(c.CLOSING_BODY)}</p>'
+        f'<div class="pilot"><h3 class="pilot-title">{esc(c.PILOT_TITLE)}</h3><p class="pilot-text">{esc(c.PILOT_TEXT)}</p>'
+        f'<p class="pilot-promise"><strong>{esc(c.PILOT_PROMISE)}</strong> {esc(c.PILOT_PROMISE_TEXT)}</p></div>'
+        f'<p>{esc(c.CLOSING_ASK)}</p>'
         f'<div class="actions"><a class="button" href="mailto:{c.CONTACT_EMAIL}?subject={c.CONTACT_SUBJECT}">'
-        f'Email {c.CONTACT_EMAIL}</a><a href="{c.DEMO_URL}">{c.DEMO_TEXT}{c.DEMO_LABEL}</a></div></div></section>'
+        f'Email {c.CONTACT_EMAIL}</a><a href="{c.PILOT_URL}">{c.PILOT_LINK_TEXT}{c.DEMO_LABEL}</a></div></div></section>'
     )
 
 

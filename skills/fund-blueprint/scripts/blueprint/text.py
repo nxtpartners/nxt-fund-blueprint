@@ -19,3 +19,8 @@ def lower_first(label: str) -> str:
     """Lowercase for use mid-sentence, but keep acronyms such as LP, DDQ, and NDAs."""
     first = label.split()[0]
     return label if first[:2].isupper() else label[0].lower() + label[1:]
+
+
+def upper_first(label: str) -> str:
+    """Capitalised to start a sentence, leaving the rest as written."""
+    return label[:1].upper() + label[1:]

@@ -59,7 +59,8 @@ def position(answers: Answers, plan: Plan, library: Library) -> str:
     if plan.foundations:
         lines = "".join(lead_item(title, text) for title, text, _ in plan.foundations)
         clear = f'<h3 class="subhead">Clear these first</h3><ol class="list">{lines}</ol>'
-    if not (ledger or existing_html or stuck or clear):
+    gaps = "".join(f'<p class="sec-lede">{esc(line)}</p>' for line in plan.stage_gaps)
+    if not (ledger or gaps or existing_html or stuck or clear):
         return ""
     ledger_html = f'<dl class="ledger">{ledger}</dl>' if ledger else ""
-    return f"{ledger_html}{stuck}{existing_html}{clear}"
+    return f"{gaps}{ledger_html}{stuck}{existing_html}{clear}"

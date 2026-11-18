@@ -8,7 +8,7 @@ from .wording import *  # noqa: F401,F403
 
 TOP_COUNT = 3  # how many priorities the report recommends starting with
 
-VERSION = "0.23.8"
+VERSION = "1.0.0"
 
 SKILL_DIR = Path(__file__).resolve().parents[2]
 CATALOG_PATH = SKILL_DIR / "references" / "catalog.json"
@@ -243,6 +243,9 @@ ASKED_LISTS_AT_DEPTH = {
 CHANGE_GROUPS_MAX = 2
 COUNTED_AS_UNTOLD = ("ai_adoption", "ai_results", "thesis")
 CREDIT_NOTE_STRATEGY = "credit"
+# The work area each fund stage is made of, by definition: raising a fund is fundraising work.
+# Used only to say that the matching area was not assessed, never to rank or score.
+FUND_STAGE_AREAS = {"raising": ("fundraising",), "deploying": ("sourcing", "diligence"), "harvesting": ("exit",)}
 NAMED_PRIORITY_FACTOR = 1.35
 PROCESS_TEXT_RULES = (
     Rule.KEEP_MINIMAL,

@@ -14,11 +14,11 @@ from .text import lower_first
 
 
 def band_index(weeks: float) -> int:
-    """0 is the slowest band, on the left. Faster work sits further right."""
+    """0 is the fastest band, on the left. Time runs to the right, as on any time axis."""
     for index, (_, high, _) in enumerate(c.SPEED_BANDS):
         if weeks < high:
-            return len(c.SPEED_BANDS) - 1 - index
-    return 0
+            return index
+    return len(c.SPEED_BANDS) - 1
 
 
 def timeline_share(weeks: float) -> float:
@@ -119,8 +119,36 @@ class Canvas:
     def step(self) -> float:
         return 2 * self.spec["radius"] + t.PLOT_MARK_GAP
 
+    def pad(self) -> float:
+        """Room kept inside each band edge, so the widest marker with its ring never crosses into the next band."""
+        return self.spec["radius"] * t.PLOT_DIAMOND_FACTOR + t.PLOT_RING_GAP + t.PLOT_RING_STROKE
+
+    def band_span(self, band: int) -> Tuple[float, float]:
+        """The left and right x a marker centre may take inside one speed band."""
+        left = self.left + band * self.band_width
+        return left + self.pad(), left + self.band_width - self.pad()
+
     def per_row(self) -> int:
-        return max(int((self.band_width - 4) // self.step()), 1)
+        low, high = self.band_span(0)
+        return max(int((high - low) // self.step()) + 1, 1)
+
+    def wanted_x(self, weeks: float) -> float:
+        """Where the estimate falls inside its band: the fast edge on the left, the slow edge on the right."""
+        band = band_index(weeks)
+        fast_end, slow_end = c.SPEED_BANDS[band][0], c.SPEED_BANDS[band][1]
+        share = (min(weeks, slow_end) - fast_end) / (slow_end - fast_end)
+        low, high = self.band_span(band)
+        return low + share * (high - low)
+
+    def spread(self, wanted: List[float], band: int) -> List[float]:
+        """One row of markers, each as close to its estimate as it can be without touching its neighbour or leaving the band."""
+        low, high = self.band_span(band)
+        step, xs = self.step(), list(wanted)
+        for index, x in enumerate(xs):
+            xs[index] = max(x, low if index == 0 else xs[index - 1] + step)
+        for index in range(len(xs) - 1, -1, -1):
+            xs[index] = min(xs[index], high if index == len(xs) - 1 else xs[index + 1] - step)
+        return xs
 
     def fit_height(self, items: List[ScoredActivity]) -> None:
         """A crowded cell makes the plot taller, so marks never leave their row or cover a label."""
@@ -134,21 +162,26 @@ class Canvas:
             self.level_height = (self.bottom - self.top) / len(c.LEVEL_NAMES)
 
     def place_markers(self, items: List[ScoredActivity]) -> Dict[int, Tuple[float, float]]:
-        """Each band and impact level is one cell, and markers sit in a tidy grid inside it."""
+        """Each marker sits at its own estimate inside its band. A crowded cell spreads sideways first, then stacks.
+
+        A crowded cell fills column by column in speed order, so a slower marker is never left of a faster one.
+        """
         spots: Dict[int, Tuple[float, float]] = {}
         step, per_row = self.step(), self.per_row()
+        weeks = {item.number: item.weeks for item in items}
         for (band, level), numbers in self.cells(items).items():
-            center_x = self.left + (band + 0.5) * self.band_width
+            ordered = sorted(numbers, key=lambda number: (self.wanted_x(weeks[number]), number))
+            depth = -(-len(ordered) // per_row)
+            columns = [ordered[i : i + depth] for i in range(0, len(ordered), depth)]
             center_y = self.bottom - (level + 0.5) * self.level_height
-            rows = [numbers[i : i + per_row] for i in range(0, len(numbers), per_row)]
-            top = center_y - (len(rows) - 1) * step / 2
+            top = center_y - (depth - 1) * step / 2
             top_edge = self.bottom - (level + 1) * self.level_height + t.PLOT_LABEL_STRIP + self.spec["radius"]
             bottom_edge = self.bottom - level * self.level_height - t.PLOT_LABEL_STRIP - self.spec["radius"]
-            top = max(top_edge, min(top, bottom_edge - (len(rows) - 1) * step))
-            for row_index, row in enumerate(rows):
-                left = center_x - (len(row) - 1) * step / 2
-                for column, number in enumerate(row):
-                    spots[number] = (left + column * step, top + row_index * step)
+            top = max(top_edge, min(top, bottom_edge - (depth - 1) * step))
+            wanted = [sum(self.wanted_x(weeks[number]) for number in column) / len(column) for column in columns]
+            for column, x in zip(columns, self.spread(wanted, band)):
+                for row_index, number in enumerate(column):
+                    spots[number] = (x, top + row_index * step)
         return spots
 
     def line(self, x1: Any, x2: Any, y1: Any, y2: Any, stroke: str, extra: str = "") -> str:
@@ -183,10 +216,10 @@ class Canvas:
         top = self.top + t.PLOT_CORNER_INSET_TOP
         bottom = self.bottom - t.PLOT_CORNER_INSET_BOTTOM
         corners = (
-            (right, top, "end", Quadrant.QUICK_WINS, t.COLOR_INK),
-            (left, top, "start", Quadrant.STRATEGIC_BETS, t.COLOR_INK_SOFT),
-            (right, bottom, "end", Quadrant.FILL_INS, t.COLOR_INK_SOFT),
-            (left, bottom, "start", Quadrant.DEPRIORITIZE, t.COLOR_INK_SOFT),
+            (left, top, "start", Quadrant.QUICK_WINS, t.COLOR_INK),
+            (right, top, "end", Quadrant.STRATEGIC_BETS, t.COLOR_INK_SOFT),
+            (left, bottom, "start", Quadrant.FILL_INS, t.COLOR_INK_SOFT),
+            (right, bottom, "end", Quadrant.DEPRIORITIZE, t.COLOR_INK_SOFT),
         )
         names = c.QUADRANT_LABELS_SHORT if self.kind == "narrow" else c.QUADRANT_LABELS
         return [
@@ -198,12 +231,12 @@ class Canvas:
         label, axis = self.spec["label"], self.spec["axis"]
         y = self.bottom + t.PLOT_BAND_LABEL_OFFSET
         parts = [
-            self.text(self.right - (index + 0.5) * self.band_width, y, band, label)
+            self.text(self.left + (index + 0.5) * self.band_width, y, band, label)
             for index, band in enumerate(self.band_labels)
         ]
         parts.append(self.text(
             (self.left + self.right) / 2, self.spec["height"] - t.PLOT_AXIS_TITLE_OFFSET,
-            "Estimated speed, faster to the right", axis, fill=t.COLOR_INK, weight=t.PLOT_LABEL_WEIGHT,
+            c.X_AXIS_TITLE, axis, fill=t.COLOR_INK, weight=t.PLOT_LABEL_WEIGHT,
         ))
         parts.append(self.y_title(kpi_text))
         return parts

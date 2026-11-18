@@ -184,7 +184,7 @@ def tools_lines(r: Reading) -> List[str]:
         return []
     area = lower_first(r.library.workstreams[bare[0].id]["label"])
     return [
-        f"You said your tools do not hold this work together, and {area} "
+        f"Your tools do not hold this work together, and {area} "
         f"runs on {sources_text(bare[0].sources)}, so process fixes come first."
     ]
 
@@ -207,7 +207,7 @@ def habit_lines(r: Reading) -> List[str]:
             f"but {pronoun[0]} may be required, or costly if wrong, "
             f"so the plan simplifies {pronoun[1]} instead of stopping {pronoun[1]}."
         )
-    return [f"You said {count} done mainly out of habit, {ending}"]
+    return [f"{count.capitalize()} done mainly out of habit, {ending}"]
 
 
 def ai_behind_lines(r: Reading) -> List[str]:
@@ -232,7 +232,7 @@ def signoff_lines(r: Reading) -> List[str]:
     if not sign_off:
         return []
     return [
-        "You said time goes on internal sign-off, which more drafting will not shorten, "
+        "Time goes on internal sign-off, which more drafting will not shorten, "
         f"so pair {lower_first(sign_off[0].label)} with a clear sign-off path."
     ]
 
