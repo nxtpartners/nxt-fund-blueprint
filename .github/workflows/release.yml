@@ -37,4 +37,4 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" nxt-fund-blueprint.zip \
             --title "AI Strategy and Blueprint for PE Funds ${GITHUB_REF_NAME#v}" \
-            --notes "AI Strategy and Blueprint for a private equity firm's own operations. How to install: see the README."
+            --notes "AI Strategy and Blueprint for a private equity firm's own operations. In Claude Code or Codex, install with the commands in the README. On claude.ai or ChatGPT, upload nxt-fund-blueprint.zip as the README describes."

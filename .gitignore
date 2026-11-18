@@ -18,6 +18,3 @@ evals/
 dist/
 *.zip
 output/
-
-# The sample report stays local: the Claude directory accepts no HTML outside the plugin
-examples/sample-report.html

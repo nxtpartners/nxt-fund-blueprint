@@ -4,9 +4,11 @@ An AI Strategy and Blueprint for a PE firm's own operations, in Claude or ChatGP
 
 **To try it**
 
-1. In Claude Code, type `/plugin install nxt-fund-blueprint --marketplace nxtpartners/nxt-fund-blueprint`. On claude.ai and in ChatGPT, it will install from each app's plugin directory once it is listed there.
+1. In Claude Code, type `/plugin install nxt-fund-blueprint --marketplace nxtpartners/nxt-fund-blueprint`. On claude.ai, [download the plugin file](https://github.com/nxtpartners/nxt-fund-blueprint/releases/latest/download/nxt-fund-blueprint.zip) and upload it under **Customize > Plugins > Add > Upload plugin**, with code execution on.
 2. Start a new chat and ask: "Where could automation or AI help how we run our firm?"
 3. Answer for your own firm. Most questions are multiple choice.
+
+To see a report without running it, [download the sample](examples/sample-report.html) and open it in a browser.
 
 **Please tell us**
 

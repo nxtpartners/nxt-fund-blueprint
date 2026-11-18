@@ -17,7 +17,7 @@ It covers the firm's own operations, such as fund reporting, LP requests, and de
 
 ## What you get
 
-A report in your chat that you can print or forward. Every image below comes from a sample report for a fictional firm.
+A report in your chat that you can print or forward. Every image below comes from a sample report for a fictional firm: [download the full sample](examples/sample-report.html) and open it in a browser.
 
 **The first page says what to do first and which of your answers led there.**
 
@@ -51,22 +51,40 @@ Each activity gets one verdict: remove it, automate it, optimize it, add AI that
 
 ## Install
 
-**Requirements:** a regular Claude chat with code execution turned on, Claude Code, or ChatGPT in Work mode. It does not run in incognito chats. For the best results, use Claude Opus 5.5 or newer with thinking effort set to Medium or higher: the plan's scores come from fixed rules, but reading your typed answers and researching your firm depend on the model. We have tested it on one paid claude.ai account. We have not tested Free, Team, or Enterprise plans, where an administrator may need to allow it.
+It is prepared for Claude Code and Codex, where it installs with one command. You can still use it in claude.ai and ChatGPT by uploading the plugin file, as the table below shows.
 
-In Claude Code (version 2.1.275 or later), type:
+**In Claude Code** (version 2.1.275 or later), type:
 
 ```
 /plugin install nxt-fund-blueprint --marketplace nxtpartners/nxt-fund-blueprint
 ```
 
-In Codex, run:
+**In Codex**, run:
 
 ```sh
 codex plugin marketplace add nxtpartners/nxt-fund-blueprint   # add this repository as a source
 codex plugin add nxt-fund-blueprint@nxtpartners                # install the plugin
 ```
 
-On claude.ai and in ChatGPT, it will install from each app's plugin directory once it is listed there. We will add the steps here when each listing is live.
+**In other coding agents**, such as Cursor, Gemini CLI, or Cline, run:
+
+```sh
+npx skills add nxtpartners/nxt-fund-blueprint --skill fund-blueprint
+```
+
+**Where it runs today:**
+
+| Where | Status |
+|---|---|
+| Claude Code | Installs with the command above. Tested. |
+| Codex | Installs with the commands above. Tested. |
+| Other coding agents | Installs with `npx skills`. We have not yet run the assessment in them. |
+| claude.ai | Not yet listed in Claude's plugin directory. You can still upload it: [download the plugin file](https://github.com/nxtpartners/nxt-fund-blueprint/releases/latest/download/nxt-fund-blueprint.zip) and add it under **Customize > Plugins > Add > Upload plugin**. Tested. |
+| ChatGPT | Not yet listed in ChatGPT's plugin directory. You can still upload the same [plugin file](https://github.com/nxtpartners/nxt-fund-blueprint/releases/latest/download/nxt-fund-blueprint.zip) under **Skills > Add > Upload from your computer**, then use it in Work mode, not Chat. Tested. |
+
+When you upload, choose the `.zip` file itself. If your browser unzipped it into a folder (Safari on a Mac does this by default), download it again in another browser, or turn off "Open safe files after downloading" in Safari's settings.
+
+**Requirements:** the assistant must be able to run a small Python script, so it does not run where code execution is off, such as incognito chats. For the best results, use Claude Opus 5.5 or newer with thinking effort set to Medium or higher: the plan's scores come from fixed rules, but reading your typed answers and researching your firm depend on the model.
 
 Or run it from a copy of the code:
 
@@ -162,7 +180,7 @@ skills/fund-blueprint/
   scripts/blueprint/           Validation, planning rules, and report sections
   assets/                      NXT logo and fonts
   agents/openai.yaml           Name, icon, and starting prompt for ChatGPT and Codex
-examples/                      Images from a sample report for a fictional firm
+examples/                      Sample report for a fictional firm, and its images
 REVIEW.md                      How to try it and what feedback we ask for
 .github/                       Publishes each release
 LICENSE                        MIT
