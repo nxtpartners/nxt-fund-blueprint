@@ -1,0 +1,15 @@
+{
+  "name": "nxtpartners",
+  "description": "Claude plugins from NXT Partners AI.",
+  "owner": {
+    "name": "NXT Partners AI",
+    "email": "info@nxtpartners.ai"
+  },
+  "plugins": [
+    {
+      "name": "nxt-fund-blueprint",
+      "source": "./",
+      "description": "A guided assessment that shows a private equity firm where to automate, simplify, or add AI in its own operations, and ends with a roadmap and priority plot tailored to its thesis."
+    }
+  ]
+}

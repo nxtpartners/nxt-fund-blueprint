@@ -6,5 +6,9 @@
   "author": {"name": "NXT Partners AI", "email": "info@nxtpartners.ai", "url": "https://nxtpartners.ai"},
   "homepage": "https://github.com/nxtpartners/nxt-fund-blueprint",
   "repository": "https://github.com/nxtpartners/nxt-fund-blueprint",
-  "license": "MIT"
+  "license": "MIT",
+  "icon": "skills/fund-blueprint/assets/icon.png",
+  "documentationUrl": "https://github.com/nxtpartners/nxt-fund-blueprint#readme",
+  "supportUrl": "https://github.com/nxtpartners/nxt-fund-blueprint/issues",
+  "privacyPolicyUrl": "https://github.com/nxtpartners/nxt-fund-blueprint/blob/main/PRIVACY.md"
 }

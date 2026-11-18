@@ -18,17 +18,31 @@ from .report.priorities import priorities
 from .report.recommendation import recommendation
 from .report.roadmap import department_roadmap, roadmap
 from .scoring import unlimited_view
-from .styles import data_uri, stylesheet
+from .styles import data_uri, png_size, stylesheet
 
 
-def logo_link(logo: str) -> str:
-    """The NXT logo, linking to the NXT site wherever it appears."""
-    return f'<a class="logo-link" href="{c.DEMO_URL}"><img class="logo" src="{logo}" alt="{esc(c.SITE_NAME)}"></a>'
-
-
-def closing(logo: str) -> str:
+def logo_defs() -> str:
+    """The logo image, embedded once. Every logo on the page draws this one copy, which keeps the file small."""
+    width, height = png_size(c.LOGO_PATH)
     return (
-        f'<section class="close" aria-labelledby="close-title">{logo_link(logo)}'
+        '<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false"><defs>'
+        f'<image id="{c.LOGO_ID}" href="{data_uri(c.LOGO_PATH, "image/png")}" width="{width}" height="{height}"/>'
+        "</defs></svg>"
+    )
+
+
+def logo_link() -> str:
+    """The NXT logo, linking to the NXT site wherever it appears."""
+    width, height = png_size(c.LOGO_PATH)
+    return (
+        f'<a class="logo-link" href="{c.DEMO_URL}"><svg class="logo" viewBox="0 0 {width} {height}" '
+        f'width="{width}" height="{height}" role="img" aria-label="{esc(c.SITE_NAME)}"><use href="#{c.LOGO_ID}"/></svg></a>'
+    )
+
+
+def closing() -> str:
+    return (
+        f'<section class="close" aria-labelledby="close-title">{logo_link()}'
         f'<div class="close-body"><h2 id="close-title">{esc(c.CLOSING_TITLE)}</h2><p>{esc(c.CLOSING_BODY)}</p>'
         f'<div class="pilot"><h3 class="pilot-title">{esc(c.PILOT_TITLE)}</h3><p class="pilot-text">{esc(c.PILOT_TEXT)}</p>'
         f'<p class="pilot-promise"><strong>{esc(c.PILOT_PROMISE)}</strong> {esc(c.PILOT_PROMISE_TEXT)}</p></div>'
@@ -88,15 +102,14 @@ def budget_views(answers: Answers, plan: Plan, library: Library) -> str:
 
 
 def render_blueprint(answers: Answers, plan: Plan, library: Library, today: dt.date) -> str:
-    logo = data_uri(c.LOGO_PATH, "image/png")
-    body = budget_views(answers, plan, library) + closing(logo)
+    body = budget_views(answers, plan, library) + closing()
     page_title = f"{c.REPORT_NAME}: {answers.firm_name}" if answers.firm_name else f"{c.REPORT_NAME} by {c.SITE_NAME}"
     return (
         '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
         f'<title>{esc(page_title)}</title>'
         f'<style>{stylesheet()}</style></head><body><div class="page">'
-        f'<header class="letterhead">{logo_link(logo)}'
+        f'{logo_defs()}<header class="letterhead">{logo_link()}'
         f'<p>{esc(c.REPORT_NAME)}<br>{today.day} {today.strftime("%B %Y")}<br>{esc(c.VERSION_LABEL.format(version=c.VERSION))}</p></header><main>{body}</main>'
         f'<footer>Created by <a href="{c.DEMO_URL}">{esc(c.SITE_NAME)}</a> · {c.CONTACT_EMAIL}</footer></div>'
         "<script>addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach("

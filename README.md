@@ -57,7 +57,13 @@ On claude.ai:
 1. [Download the plugin file](https://github.com/nxtpartners/nxt-fund-blueprint/releases/latest/download/nxt-fund-blueprint.zip).
 2. Upload it under **Customize > Plugins > Add > Upload plugin**. Upload the `.zip` file itself. If your browser unzipped it into a folder (Safari on a Mac does this by default), download it again in another browser, or turn off "Open safe files after downloading" in Safari's settings.
 
-In Claude Code:
+In Claude Code (version 2.1.275 or later), type:
+
+```
+/plugin install nxt-fund-blueprint --marketplace nxtpartners/nxt-fund-blueprint
+```
+
+Or run it from a copy of the code:
 
 ```sh
 git clone https://github.com/nxtpartners/nxt-fund-blueprint.git   # get the code
@@ -65,7 +71,13 @@ cd nxt-fund-blueprint
 claude --plugin-dir .   # start Claude Code with the plugin loaded
 ```
 
-Then ask, for example: "Where could automation or AI help how we run our firm?" To remove it on claude.ai, open **Customize > Plugins > Yours** and choose **Remove** from the plugin's menu. In Claude Code, stop passing `--plugin-dir`.
+Then ask, for example:
+
+- "Where could automation or AI help how we run our firm?"
+- "How can we cut manual work in our investor relations and fund finance teams?"
+- "Give us an AI roadmap for our fund's own operations."
+
+To remove it on claude.ai, open **Customize > Plugins > Yours** and choose **Remove** from the plugin's menu. In Claude Code, run `/plugin uninstall nxt-fund-blueprint`, or stop passing `--plugin-dir` if you ran it from a copy.
 
 ## Where your answers go
 
@@ -78,14 +90,14 @@ Two things happen only if you choose them:
 
 The tool does not need names of people, portfolio companies, LPs, or deals: ranges and general descriptions are enough. The only name it may ask for is your own firm's, and only if you choose to personalize.
 
-**What your compliance team may want to check:** whether your firm's Claude account and its terms are approved for this kind of operational description, and whether a public web search on the firm's name is acceptable. The code is here for anyone to read.
+**What your compliance team may want to check:** whether your firm's Claude account and its terms are approved for this kind of operational description, and whether a public web search on the firm's name is acceptable. The code is here for anyone to read, and the plugin's privacy page is [PRIVACY.md](PRIVACY.md).
 
 ## What it does not do
 
 - It does not connect to your systems or ask for your files.
 - It gives no investment, legal, tax, or compliance advice.
 - It makes no claims about what other firms do, and it has no benchmarks.
-- It does not measure anything. Speed and effect are planning estimates from fixed rules applied to your answers, shown as bands. The same answers give the same plan, which makes it repeatable, not proven. The rules were drafted with AI and have not yet been reviewed by a practitioner, so treat them as a starting point for your own judgment.
+- It does not measure anything. Speed and effect are planning estimates from fixed rules applied to your answers, shown as bands. The same answers give the same plan, which makes it repeatable, not proven. The rules were drafted with AI and checked by a practitioner, not validated against real projects, so treat them as a starting point for your own judgment.
 
 ## How it works
 

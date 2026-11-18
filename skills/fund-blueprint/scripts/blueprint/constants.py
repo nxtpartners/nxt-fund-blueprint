@@ -14,6 +14,7 @@ SKILL_DIR = Path(__file__).resolve().parents[2]
 CATALOG_PATH = SKILL_DIR / "references" / "catalog.json"
 QUESTIONS_PATH = SKILL_DIR / "references" / "questions.json"
 LOGO_PATH = SKILL_DIR / "assets" / "nxt-partners-logo-light.png"
+LOGO_ID = "nxt-logo"
 FONT_FILES = (
     ("Space Grotesk", 700, SKILL_DIR / "assets" / "fonts" / "SpaceGrotesk-Bold.woff2"),
     ("JetBrains Mono", 400, SKILL_DIR / "assets" / "fonts" / "JetBrainsMono-Regular.woff2"),

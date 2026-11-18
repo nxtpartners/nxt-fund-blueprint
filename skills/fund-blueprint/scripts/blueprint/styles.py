@@ -11,6 +11,12 @@ def data_uri(path, mime: str) -> str:
     return f"data:{mime};base64,{base64.b64encode(path.read_bytes()).decode('ascii')}"
 
 
+def png_size(path) -> tuple:
+    """Width and height from the PNG header, so the logo keeps its shape wherever it is drawn."""
+    header = path.read_bytes()[16:24]
+    return int.from_bytes(header[:4], "big"), int.from_bytes(header[4:], "big")
+
+
 def font_faces() -> str:
     faces = []
     for family, weight, path in c.FONT_FILES:
@@ -42,6 +48,7 @@ a:focus-visible,summary:focus-visible,.mark:focus-visible{{outline:2px solid {t.
 .badge{{display:block;width:100%;height:100%;overflow:visible;font-family:{t.FONT_BODY}}}
 .letterhead{{display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-end;justify-content:space-between;padding-block:{t.SPACE_BLOCK} .9rem;border-bottom:{t.RULE_HEAVY}}}
 .logo{{height:{t.LOGO_HEIGHT};width:auto;display:block}}
+.defs{{position:absolute;width:0;height:0;overflow:hidden}}
 .logo-link{{display:block;width:fit-content}}
 .logo-link:focus-visible{{outline:2px solid {t.COLOR_ACCENT};outline-offset:4px}}
 .letterhead p{{font-family:{t.FONT_MONO};font-size:{t.TEXT_SMALL};color:{t.COLOR_INK_SOFT};text-align:end;line-height:1.4}}
