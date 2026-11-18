@@ -1,6 +1,6 @@
 ---
 name: fund-blueprint
-description: "Runs a guided, script-based assessment of a private equity firm's own operations and produces an AI blueprint: where to automate, optimize, remove work, or add AI, including agentic AI where the firm is ready, with a roadmap and a plot of speed of execution against a KPI that fits the firm's thesis. Use this whenever someone at a PE firm, fund, or GP asks where AI could help their firm, how to reduce manual work in deal teams, IR, finance, or portfolio monitoring, or wants an AI roadmap or AI readiness assessment for their fund, even if they do not say 'blueprint'. Not for assessing portfolio companies."
+description: "Use when someone at a PE firm, fund, or GP wants an AI strategy for how the firm runs: an AI roadmap or blueprint, an AI readiness assessment, or where automation or AI could cut manual work in deal teams, IR, finance, or portfolio monitoring, even if they do not say 'strategy' or 'blueprint'. Runs a guided, script-based assessment of the firm's own operations and produces an AI blueprint: where to automate, optimize, remove work, or add AI, including agentic AI where the firm is ready, with a roadmap and a plot of speed of execution against a KPI that fits the firm's thesis. Not for assessing portfolio companies."
 ---
 
 # AI Strategy and Blueprint for PE Funds
