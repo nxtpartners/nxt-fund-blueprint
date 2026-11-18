@@ -1,6 +1,6 @@
 ---
 name: fund-blueprint
-description: "Use when someone at a PE firm, fund, or GP wants an AI strategy for how the firm runs: an AI roadmap or blueprint, an AI readiness assessment, or where automation or AI could cut manual work in deal teams, IR, finance, or portfolio monitoring, even if they do not say 'strategy' or 'blueprint'. Runs a guided, script-based assessment of the firm's own operations and produces an AI blueprint: where to automate, optimize, remove work, or add AI, including agentic AI where the firm is ready, with a roadmap and a plot of speed of execution against a KPI that fits the firm's thesis. Not for assessing portfolio companies."
+description: "Use when someone at a PE firm, fund, or GP wants an AI strategy for how the firm runs: an AI roadmap or blueprint, an AI readiness assessment, or where automation or AI could cut manual work in deal teams, IR, finance, or portfolio monitoring, even if they do not say 'strategy' or 'blueprint'. Runs a guided, script-based assessment of the firm's own operations and ends with a ranked roadmap and a plot of speed against a KPI that fits the firm's thesis. Not for assessing portfolio companies."
 ---
 
 # AI Strategy and Blueprint for PE Funds
@@ -17,7 +17,7 @@ Guide a COO, partner, or similar senior person at a private equity firm through 
 
 The respondent is busy and senior. Earn their time: ask only what the plan uses, adapt to what they have said, and keep your own messages short. Go deep on the one or two work areas that hurt most, rather than shallow on everything. The result has to feel written for their firm, because a generic list of AI ideas is worth nothing to them.
 
-Do not assume they know AI terms. Use everyday words, and if a term is needed, explain it in a few words. Write plainly. Do not use em dashes. Do not add filler such as "I'll wait for your answer", because the question already makes that clear.
+Do not assume they know AI terms. Use everyday words, and if a term is needed, explain it in a few words. Write plainly. Do not use em dashes anywhere, including between a bold label and its text: write "**Goal:** deploy capital well", with a colon. Do not add filler such as "I'll wait for your answer", because the question already makes that clear.
 
 ## Never make anything up
 
@@ -97,7 +97,15 @@ Only confirmed facts count. They go into `public_facts`, and the name into `firm
 
 ## Asking questions
 
-Use the tool that shows clickable options to the user, such as `AskUserQuestion` or `request_user_input`, whenever it exists. If no such tool exists, show lettered options and accept replies like "A, C". If a reply's numbers do not match the questions shown, do not record it as given: say how you read it and confirm before it counts. Without that tool there is no "Something else" box, so end each set of lettered questions with one line: "You can also answer in your own words, or reply "skip" to move on." Leave out "or reply "skip" to move on" when none of them can be skipped. When an open question shares a message with lettered ones, show it last and include it in the reply example.
+Use the tool that shows clickable options to the user, such as `AskUserQuestion` or `request_user_input`, whenever it exists. If no such tool exists, write the questions as text, and make how to answer impossible to miss:
+
+- Number the questions when a message has several, and put each option on its own line as "A. <label>: <description>", or "A. <label>" when it has none. Write a section line as "Section 1 of 4: <title>", with a colon, never a dash.
+- When a question allows several answers, end its question line with the hint in code format, so it stands out even when the line is bold: `Choose all that apply`. Without it, people pick only one.
+- End every message that has lettered options, even a single question, with this line, the example in code format: You can reply like `1A, 2B+D, 3C`, or in your own words. Reply "skip" for any question. Fit the example to the questions shown: `+` only for a question that allows several answers, and for a single question `A`, or `A+C` when it allows several. Leave out the "skip" sentence when none of them can be skipped.
+- When an open question shares a message with lettered ones, show it last and include it in the reply example.
+- If a reply's numbers do not match the questions shown, do not record it as given: say how you read it and confirm before it counts.
+
+On every surface:
 
 - Show `Section N of M: <title>` once at the start of each section, in the first question's text. Before the first section, work out which sections will have no questions for them, for example the firm section when the research settled it, or the work-area section when the task they named already chose it. Leave those out, number the rest in order from 1, and use their count as M, so the numbers never jump.
 - Group related questions into one call when the tool allows several (up to four), which keeps the number of screens low.
@@ -111,7 +119,7 @@ Use the tool that shows clickable options to the user, such as `AskUserQuestion`
 - If `ai_stage` is "Not used yet", leave "Some rely on it daily" out of `trust`, because it would contradict their answer.
 - If the number they chose for `kpi` also appears in the list of measures, leave it out of that list: you already know whether they track it.
 - A question can show at most four options, and the flow never needs more. Do not add an "Other" option, because the tool already adds its own way to type an answer, called "Something else". Do not mention "Other" in the question text.
-- A question with `multi: true` allows several answers.
+- A question with `multi: true` allows several answers. Keep "Choose all that apply" in its text, on every surface, so nobody picks only one by mistake, and in text questions write it in code format.
 - `options_from` and `options_by` point to the right list in the flow. Use the list for the respondent's earlier answer.
 
 A reply such as "skip", "pass", "next", or "no idea" counts as skipping, for any question. If they skip a closed question, record `null` for it and move on. The report treats it as not answered. A few answers are needed to build a plan: `pressure` and `kpi`, at least one work area, and at least one task in each work area. Ask for a skipped one once more. If they skip it again, explain that the plan cannot be built without it, and stop.

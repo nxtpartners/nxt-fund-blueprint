@@ -499,7 +499,7 @@
      "id": "activities",
      "header": "Tasks",
      "multi": true,
-     "text": "In {workstream}, which of these take real time, whether regular or occasional?",
+     "text": "In {workstream}, which of these take real time, whether regular or occasional? Choose all that apply.",
      "options_from": "activities_for_workstream",
      "depth": [
       "deep",
@@ -554,7 +554,7 @@
      "header": "Where",
      "multi": true,
      "show_if": "ai_here is not none",
-     "text": "Which of these tasks already use AI?",
+     "text": "Which of these tasks already use AI? Choose all that apply.",
      "options_from": "selected_activities",
      "depth": [
       "deep",
@@ -686,7 +686,7 @@
       "deep",
       "second"
      ],
-     "text": "Which of these are done mainly out of habit, so few would notice if they stopped? Skip if none.",
+     "text": "Which of these are done mainly out of habit, so few would notice if they stopped? Choose all that apply, or skip if none.",
      "options_from": "selected_activities"
     },
     {
@@ -795,7 +795,7 @@
       "deep"
      ],
      "show_if": "error_cost is severe, and more than one selected task is not marked required. Offer only tasks not marked required.",
-     "text": "Which of these tasks could cause that harm?",
+     "text": "Which of these tasks could cause that harm? Choose all that apply.",
      "options_from": "selected_activities"
     },
     {
@@ -817,7 +817,7 @@
       "deep"
      ],
      "show_if": "a measure is tracked",
-     "text": "Which of those are off target today? Skip if none, or if you are not sure.",
+     "text": "Which of those are off target today? Choose all that apply, or skip if none or if you are not sure.",
      "options_from": "selected_measures"
     },
     {
