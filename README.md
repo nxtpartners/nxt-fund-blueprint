@@ -66,6 +66,8 @@ codex plugin marketplace add nxtpartners/nxt-fund-blueprint   # add this reposit
 codex plugin add nxt-fund-blueprint@nxtpartners                # install the plugin
 ```
 
+In Claude Code and Codex, the report is saved as `fund-blueprint.html` in the folder you start in, with two working files: `answers.json` and a `fund-blueprint-tool` folder. Start in an empty folder, for example `mkdir blueprint && cd blueprint`, then run `claude` or `codex`.
+
 **In other coding agents**, such as Cursor, Gemini CLI, or Cline, run:
 
 ```sh
