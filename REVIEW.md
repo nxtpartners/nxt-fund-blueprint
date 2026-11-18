@@ -1,6 +1,6 @@
 # AI Strategy and Blueprint for PE Funds: quick review
 
-An AI Strategy and Blueprint for a PE firm's own operations, in Claude. We would like your view.
+An AI Strategy and Blueprint for a PE firm's own operations, in Claude or ChatGPT. We would like your view.
 
 **To try it**
 

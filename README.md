@@ -1,12 +1,13 @@
 # nxt-fund-blueprint
 
-**A free AI strategy and blueprint in Claude for a private equity firm: where to automate, simplify, or add AI in how the firm itself runs, and what to keep with its team.**
+**A free AI strategy and blueprint in Claude or ChatGPT for a private equity firm: where to automate, simplify, or add AI in how the firm itself runs, and what to keep with its team.**
 
 https://github.com/nxtpartners/nxt-fund-blueprint
 
 ![Format: Agent Skill](https://img.shields.io/badge/Format-Agent_Skill-D97757?style=for-the-badge&logo=claude&logoColor=white)
 ![Runs in: claude.ai](https://img.shields.io/badge/Runs_in-claude.ai-191919?style=for-the-badge&logo=claude&logoColor=white)
 ![Runs in: Claude Code](https://img.shields.io/badge/Runs_in-Claude_Code-191919?style=for-the-badge&logo=claude&logoColor=white)
+![Runs in: ChatGPT Work](https://img.shields.io/badge/Runs_in-ChatGPT_Work-191919?style=for-the-badge&logo=openai&logoColor=white)
 ![Python: scoring and report](https://img.shields.io/badge/Python-scoring_and_report-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-2E7D32?style=for-the-badge)
 
@@ -26,7 +27,7 @@ A report in your chat that you can print or forward. Every image below comes fro
 
 ![One priority from a sample report](examples/report-priority.png)
 
-**A chart places each priority by estimated speed against its estimated effect on the number you chose, compared with your other priorities.** The chart's y axis names your number, from a short list or typed in your own words, and says which fund result it feeds. It makes no claim about IRR, MOIC, or DPI. If you type your own, Claude estimates each task's link to it and shows those links for you to correct. A circle needs no new money or should fit your budget. A diamond may need money you have not set aside.
+**A chart places each priority by estimated speed against its estimated effect on the number you chose, compared with your other priorities.** The chart's y axis names your number, from a short list or typed in your own words, and says which fund result it feeds. It makes no claim about IRR, MOIC, or DPI. If you type your own, the assistant estimates each task's link to it and shows those links for you to correct. A circle needs no new money or should fit your budget. A diamond may need money you have not set aside.
 
 ![Priority chart from a sample report](examples/report-plot.png)
 
@@ -46,11 +47,11 @@ Each activity gets one verdict: remove it, automate it, optimize it, add AI that
 
 **How long it is:** about 35 short questions for one part of the firm, plus 3 to 9 for each part you add. You can skip questions, and you choose how deep to go. We have not timed it with a real respondent, so we give no time estimate. In our test on claude.ai, we left the chat, came back, and it carried on with the next question.
 
-**What it costs:** it is free. The report ends with an offer from NXT Partners AI, which you can ignore: a second opinion on the plan, or a 90-day pilot on one priority. NXT Partners AI benefits if you hire it, so weigh the plan with that in mind. The scoring rules are in this repo for anyone to read, and they do not refer to NXT Partners AI or its services. It runs on your own Claude plan.
+**What it costs:** it is free. The report ends with an offer from NXT Partners AI, which you can ignore: a second opinion on the plan, or a 90-day pilot on one priority. NXT Partners AI benefits if you hire it, so weigh the plan with that in mind. The scoring rules are in this repo for anyone to read, and they do not refer to NXT Partners AI or its services. It runs on your own Claude or ChatGPT plan.
 
 ## Install
 
-**Requirements:** a regular Claude chat with code execution turned on, or Claude Code. It does not run in incognito chats. For the best results, use Claude Opus 5.5 or newer with thinking effort set to Medium or higher: the plan's scores come from fixed rules, but reading your typed answers and researching your firm depend on the model. We have tested it on one paid claude.ai account. We have not tested Free, Team, or Enterprise plans, where an administrator may need to allow it.
+**Requirements:** a regular Claude chat with code execution turned on, Claude Code, or ChatGPT in Work mode. It does not run in incognito chats. For the best results, use Claude Opus 5.5 or newer with thinking effort set to Medium or higher: the plan's scores come from fixed rules, but reading your typed answers and researching your firm depend on the model. We have tested it on one paid claude.ai account. We have not tested Free, Team, or Enterprise plans, where an administrator may need to allow it.
 
 On claude.ai:
 
@@ -71,17 +72,25 @@ cd nxt-fund-blueprint
 claude --plugin-dir .   # start Claude Code with the plugin loaded
 ```
 
+On ChatGPT (tested on one Plus account, on the web):
+
+1. [Download the same plugin file](https://github.com/nxtpartners/nxt-fund-blueprint/releases/latest/download/nxt-fund-blueprint.zip).
+2. Upload it under **Skills > Add > Upload from your computer**.
+3. Use it in **Work**, not Chat: in our tests, ChatGPT used uploaded skills only in Work. ChatGPT shows the questions as text, and you reply with the question number and the option letter, such as `1A, 2B+C`.
+
 Then ask, for example:
 
 - "Where could automation or AI help how we run our firm?"
 - "How can we cut manual work in our investor relations and fund finance teams?"
 - "Give us an AI roadmap for our fund's own operations."
 
-To remove it on claude.ai, open **Customize > Plugins > Yours** and choose **Remove** from the plugin's menu. In Claude Code, run `/plugin uninstall nxt-fund-blueprint`, or stop passing `--plugin-dir` if you ran it from a copy.
+**Running it again on ChatGPT:** ask for it by name, for example "Run the AI Strategy and Blueprint for PE Funds again, from the start." In our tests, when memory or Library search was on, a general question was answered from the earlier report in the Library instead of starting a new assessment. Asking by name started a new one.
+
+To remove it on claude.ai, open **Customize > Plugins > Yours** and choose **Remove** from the plugin's menu. In Claude Code, run `/plugin uninstall nxt-fund-blueprint`, or stop passing `--plugin-dir` if you ran it from a copy. On ChatGPT, open **Skills** and choose **Delete** from the skill's menu.
 
 ## Where your answers go
 
-NXT Partners AI runs no server for this tool and does not receive your answers. They stay in your Claude conversation, which Claude processes under your account's terms, and in one working file created there. You can ask to see or delete that file at any time.
+NXT Partners AI runs no server for this tool and does not receive your answers. They stay in your conversation, which your AI provider (Anthropic for Claude, OpenAI for ChatGPT) processes under your account's terms, and in one working file created there. You can ask to see or delete that file at any time. On ChatGPT, the report is also saved to your ChatGPT Library, like any file ChatGPT creates, and if memory is on in your account, ChatGPT may refer to this conversation in later chats.
 
 Two things happen only if you choose them:
 
@@ -90,7 +99,7 @@ Two things happen only if you choose them:
 
 The tool does not need names of people, portfolio companies, LPs, or deals: ranges and general descriptions are enough. The only name it may ask for is your own firm's, and only if you choose to personalize.
 
-**What your compliance team may want to check:** whether your firm's Claude account and its terms are approved for this kind of operational description, and whether a public web search on the firm's name is acceptable. The code is here for anyone to read, and the plugin's privacy page is [PRIVACY.md](PRIVACY.md).
+**What your compliance team may want to check:** whether your firm's Claude or ChatGPT account and its terms are approved for this kind of operational description, and whether a public web search on the firm's name is acceptable. The code is here for anyone to read, and the plugin's privacy page is [PRIVACY.md](PRIVACY.md).
 
 ## What it does not do
 
@@ -119,13 +128,13 @@ flowchart LR
     J --> K[Help with your first step,<br/>a draft, or finish here]
 ```
 
-Anything you type is restated for you to confirm before it counts. Everything in the report is something you said, a public fact you confirmed with its source, a labelled planning estimate, general advice from the tool's fixed text, or a short note Claude writes linking a priority to the thesis you confirmed.
+Anything you type is restated for you to confirm before it counts. Everything in the report is something you said, a public fact you confirmed with its source, a labelled planning estimate, general advice from the tool's fixed text, or a short note the assistant writes linking a priority to the thesis you confirmed.
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-    U[COO or partner] --> C[Claude conversation<br/>on the user's account]
+    U[COO or partner] --> C[Claude or ChatGPT conversation<br/>on the user's account]
     C --> S[Skill instructions<br/>and question set]
     C --> R[Local scoring and<br/>report script]
     C -. only if they opt in .-> W[Public web search]
@@ -139,7 +148,7 @@ flowchart LR
 | Area | Technology | Use |
 |---|---|---|
 | Distribution | Claude plugin bundle | The route to the Claude directory |
-| Conversation | Agent Skill (`SKILL.md`) | The assessment logic for both Claude surfaces |
+| Conversation | Agent Skill (`SKILL.md`) | The assessment logic for Claude and ChatGPT |
 | Scoring and report | Python standard library | Same answers, same plan, with nothing to install |
 | Output | Self-contained HTML and SVG | A report that opens anywhere and can be printed |
 

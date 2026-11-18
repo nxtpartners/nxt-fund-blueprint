@@ -1,6 +1,6 @@
 # Privacy
 
-AI Strategy and Blueprint for PE Funds is a Claude plugin made by NXT Partners AI. This page covers the plugin only.
+AI Strategy and Blueprint for PE Funds is a plugin for Claude and ChatGPT made by NXT Partners AI. This page covers the plugin only.
 
 ## What NXT Partners AI receives
 
@@ -8,7 +8,9 @@ Nothing. NXT Partners AI runs no server for this tool, and the plugin sends no d
 
 ## Where your answers go
 
-Your answers stay in your Claude conversation, which Claude processes under your account's terms, and in one working file created in that conversation. You can ask to see or delete that file at any time.
+Your answers stay in your conversation, which your AI provider (Anthropic for Claude, OpenAI for ChatGPT) processes under your account's terms, and in one working file created in that conversation. You can ask to see or delete that file at any time.
+
+On ChatGPT, the report is also saved to your ChatGPT Library, like any file ChatGPT creates, and if memory is on in your account, ChatGPT may refer to this conversation in later chats. Both follow your ChatGPT settings.
 
 ## Two things that happen only if you choose them
 
