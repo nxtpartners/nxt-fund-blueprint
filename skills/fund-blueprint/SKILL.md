@@ -49,16 +49,16 @@ After the notice, end the same message with this consent question in plain text,
 
 Then stop and wait for the answer. Run no command and call no tool after this message, not even the options tool: on some surfaces everything before the last message of a turn is folded away, so the notice is seen only when it and the question end your turn. Write nothing between the notice and the question, such as "Now the consent question". If they reply "not now" or skip it, thank them and stop. If they ask a question about it, answer only from the notice and ask again. The one exception: if they have said they want no questions, show the notice and continue without asking.
 
-Once they agree, copy the tool into your working folder, so that later commands stay simple and do not touch hidden configuration folders. A permission warning about settings files would alarm the respondent for no reason. Replace `<skill folder>` with this skill's folder:
+Once they agree, create one `fund-blueprint` folder for this assessment and copy the tool into it, so that everything it writes stays in that one folder and later commands stay simple and do not touch hidden configuration folders. A permission warning about settings files would alarm the respondent for no reason. Replace `<skill folder>` with this skill's folder:
 
 ```
-mkdir -p fund-blueprint-tool && cp -r "<skill folder>/scripts" "<skill folder>/references" "<skill folder>/assets" fund-blueprint-tool/
+mkdir -p fund-blueprint/tool && cp -r "<skill folder>/scripts" "<skill folder>/references" "<skill folder>/assets" fund-blueprint/tool/
 ```
 
 Then run this, and use its output as the source of every question and option:
 
 ```
-python3 fund-blueprint-tool/scripts/build_blueprint.py --print-flow
+python3 fund-blueprint/tool/scripts/build_blueprint.py --print-flow
 ```
 
 If `python3` is missing, try `python`. Do not read `references/catalog.json` directly: it is long, and the script already uses it.
@@ -100,7 +100,7 @@ Only confirmed facts count. They go into `public_facts`, and the name into `firm
 Use the tool that shows clickable options to the user, such as `AskUserQuestion` or `request_user_input`, whenever it exists. If no such tool exists, never lay out questions yourself: the script does it, so every message looks the same. Put the questions you would have passed to the options tool into this command, with the same text, labels, and descriptions, and `"multi": true` where several answers are allowed. Add `"section"` on the first question of a section, `"skippable": false` on a question that cannot be skipped, and `"open"` for an open question that shares the message:
 
 ```
-python3 fund-blueprint-tool/scripts/build_blueprint.py --ask - <<'EOF'
+python3 fund-blueprint/tool/scripts/build_blueprint.py --ask - <<'EOF'
 {"section": {"number": 1, "of": 4, "title": "Your firm"},
  "questions": [{"text": "...", "multi": true, "options": [{"label": "...", "description": "..."}]}]}
 EOF
@@ -162,7 +162,7 @@ Before each deep work area, show how far along they are: "Work area 1 of 2: Port
 
 ## Keeping the answers on file
 
-Save `answers.json` with your file tool after each section, not only at the end, using the format under "Building the blueprint" for whatever you have so far. Before writing the summary, and before building, read the file back and use it, not your memory of the conversation. If they correct an answer, correct the file too. Do not run the script until the end, because a partial file is expected to fail its checks. If they ask to see the file, show it. If they ask to delete it, delete it and tell them the report can no longer be built from it.
+Save `fund-blueprint/answers.json` with your file tool after each section, not only at the end, using the format under "Building the blueprint" for whatever you have so far. Before writing the summary, and before building, read the file back and use it, not your memory of the conversation. If they correct an answer, correct the file too. Do not run the script until the end, because a partial file is expected to fail its checks. If they ask to see the file, show it. If they ask to delete it, delete it and tell them the report can no longer be built from it.
 
 ## Where the number stands
 
@@ -257,10 +257,10 @@ Write the answers as JSON using the option ids from the flow:
 
 If they skip a multi-select question, record `null`, except `legacy_tasks` and `measures_off`, where skipping means none. If they choose "We do not track any of these", record `measures_tracked` as `["untracked"]`. Leave `aum` and `budget` out unless they answered them.
 
-First write one line: "Building your plan now. This takes a minute or two." Then save it as `answers.json` using your file creation tool, not a shell command, and run this as a single simple command, with no pipes or other commands attached:
+First write one line: "Building your plan now. This takes a minute or two." Then save it as `fund-blueprint/answers.json` using your file creation tool, not a shell command, and run this as a single simple command, with no pipes or other commands attached:
 
 ```
-python3 fund-blueprint-tool/scripts/build_blueprint.py --answers answers.json --output fund-blueprint.html
+python3 fund-blueprint/tool/scripts/build_blueprint.py --answers fund-blueprint/answers.json --output fund-blueprint/fund-blueprint.html
 ```
 
 Use the folder this environment provides for files shared with the user as the output location, if there is one. If the script prints `ANSWER ERROR`, it says which question to ask again. Ask only that question and run it again.
@@ -269,7 +269,7 @@ If the script prints `ANSWER ERROR` about AI use, follow what it says, because s
 
 1. For each of the first three activities in the table, write one sentence in `thesis_notes`, keyed by the activity id, linking that priority to their confirmed thesis.
 2. Use only their confirmed words and the activity itself. Do not add figures, market claims, promised results, or anything about their history or motives. If their thesis makes a priority less relevant, say so plainly, for example that a sourcing priority matters less if they source deals directly. Never call one part of their thesis the thesis itself: say "your thesis includes" instead. If the link is not clear from what they said, leave that note out. Use at most 220 characters and no links.
-3. Update `answers.json` using your file editing tool, and run the same command again.
+3. Update `fund-blueprint/answers.json` using your file editing tool, and run the same command again.
 
 The script writes the whole page, including the scores and the NXT branding. Do not edit its scores or rewrite its text. The scores are calculated so that the same answers always give the same plan.
 
@@ -289,7 +289,7 @@ After that message, ask `fixed.next_step`:
 - **Draft something for my team or compliance:** ask `fixed.draft_kind`, then write that draft.
   - **A note to my team or partners:** the first priority, the first steps, and a short plain-language version of the plan.
   - **Questions for compliance:** only questions, taken from the report's blockers and human checks. Do not draft a policy or give compliance advice.
-- **Summary to send to NXT Partners AI:** if `aum` is not known yet, ask `aum` from `after_plan`, add it to `answers.json`, and run the command again. Then show the script's email draft as it is, and tell them to review it and send it themselves. This tool never sends anything.
+- **Summary to send to NXT Partners AI:** if `aum` is not known yet, ask `aum` from `after_plan`, add it to `fund-blueprint/answers.json`, and run the command again. Then show the script's email draft as it is, and tell them to review it and send it themselves. This tool never sends anything.
 - **That's all for now:** close the session in two short lines: the report is above (in Claude Code, at its path), and they can ask to see or delete the working files. Ask nothing more.
 
 Anything you draft must use only the report and what they confirmed. Label it as a draft for them to review. In the note and the compliance questions, keep every timeline and impact marked as estimated, and include the line that this is not investment, legal, tax, or compliance advice. After a draft or the first step, ask `fixed.next_step` again without the options they have used, always keeping "That's all for now". If they skip, close the same way.
