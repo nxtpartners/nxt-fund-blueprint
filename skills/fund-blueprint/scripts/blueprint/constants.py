@@ -259,3 +259,19 @@ PROCESS_TEXT_RULES = (
 BUDGET_ALL_AT_ONCE = "under_100k"
 NO_SIGNOFF_WORKSTREAMS = ("knowledge", "sourcing")
 CAPACITY_OUTSIDE = "partner"
+
+# Fields of an --ask request: the questions the model would otherwise pass to an options tool.
+ASK_SECTION = "section"
+ASK_SECTION_NUMBER = "number"
+ASK_SECTION_COUNT = "of"
+ASK_SECTION_TITLE = "title"
+ASK_QUESTIONS = "questions"
+ASK_TEXT = "text"
+ASK_OPTIONS = "options"
+ASK_LABEL = "label"
+ASK_DESCRIPTION = "description"
+ASK_MULTI = "multi"
+ASK_SKIPPABLE = "skippable"
+ASK_OPEN = "open"
+ASK_MAX_QUESTIONS = 4
+ASK_MAX_OPTIONS = 4

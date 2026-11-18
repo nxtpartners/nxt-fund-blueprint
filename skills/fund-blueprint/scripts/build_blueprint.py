@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Print the question flow, or turn validated answers into the blueprint."""
+"""Print the question flow, print questions as text, or turn validated answers into the blueprint."""
 from __future__ import annotations
 
 import sys
@@ -11,6 +11,7 @@ import datetime as dt
 import json
 from pathlib import Path
 
+from blueprint.ask import AskError, render_questions
 from blueprint.data import Library
 from blueprint.render import render_blueprint, render_email, render_summary
 from blueprint.scoring import score_answers
@@ -20,6 +21,7 @@ from blueprint.validate import AnswerError, parse_answers
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--print-flow", action="store_true", help="Print the questions and options as JSON")
+    parser.add_argument("--ask", help="Path to a JSON list of questions to print as text, or - to read it from stdin")
     parser.add_argument("--answers", help="Path to the answers JSON")
     parser.add_argument("--output", help="Path for the blueprint HTML")
     args = parser.parse_args()
@@ -28,8 +30,16 @@ def main() -> int:
     if args.print_flow:
         print(json.dumps(library.flow(), ensure_ascii=False))
         return 0
+    if args.ask:
+        try:
+            raw = sys.stdin.read() if args.ask == "-" else Path(args.ask).read_text(encoding="utf-8")
+            print(render_questions(json.loads(raw)))
+        except (OSError, ValueError) as error:
+            print(f"ASK ERROR: {error}", file=sys.stderr)
+            return 2
+        return 0
     if not args.answers or not args.output:
-        parser.error("use --print-flow, or both --answers and --output")
+        parser.error("use --print-flow, --ask, or both --answers and --output")
 
     try:
         with open(args.answers, encoding="utf-8") as handle:

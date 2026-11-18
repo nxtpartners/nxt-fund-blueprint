@@ -63,7 +63,7 @@ python3 fund-blueprint-tool/scripts/build_blueprint.py --print-flow
 
 If `python3` is missing, try `python`. Do not read `references/catalog.json` directly: it is long, and the script already uses it.
 
-Then ask `fixed.personalize` from the flow. If you are Claude, ask `fixed.model_check` with it, in one call to the options tool, with `fixed.model_check` first, and use its text exactly as written. It names Claude's own settings, so any other assistant leaves it out. If you know you are running on an older or smaller model, add one short sentence to its text saying which model this chat uses. Either answer continues the assessment: a setting they change applies from your next reply.
+Then ask `fixed.personalize` from the flow, as described under "Asking questions". If you are Claude, ask `fixed.model_check` with it, in one call to the options tool, with `fixed.model_check` first, and use its text exactly as written. It names Claude's own settings, so any other assistant leaves it out. If you know you are running on an older or smaller model, add one short sentence to its text saying which model this chat uses. Either answer continues the assessment: a setting they change applies from your next reply.
 
 Handle the `fixed.personalize` answer as described under "Personalizing with public information". Then ask `pain_first` from the flow as plain text, followed by "If you would rather not answer, just reply "skip"." It comes right after, because it is what they came for. Handle the answer as described under "The task they named". 
 
@@ -97,13 +97,16 @@ Only confirmed facts count. They go into `public_facts`, and the name into `firm
 
 ## Asking questions
 
-Use the tool that shows clickable options to the user, such as `AskUserQuestion` or `request_user_input`, whenever it exists. If no such tool exists, write the questions as text, and make how to answer impossible to miss:
+Use the tool that shows clickable options to the user, such as `AskUserQuestion` or `request_user_input`, whenever it exists. If no such tool exists, never lay out questions yourself: the script does it, so every message looks the same. Put the questions you would have passed to the options tool into this command, with the same text, labels, and descriptions, and `"multi": true` where several answers are allowed. Add `"section"` on the first question of a section, `"skippable": false` on a question that cannot be skipped, and `"open"` for an open question that shares the message:
 
-- Number the questions when a message has several, and put each option on its own line as "A. <label>: <description>", or "A. <label>" when it has none. Write a section line as "Section 1 of 4: <title>", with a colon, never a dash.
-- When a question allows several answers, end its question line with the hint in code format, so it stands out even when the line is bold: `Choose all that apply`. Without it, people pick only one.
-- End every message that has lettered options, even a single question, with this line, the example in code format: You can reply like `1A, 2B+D, 3C`, or in your own words. Reply "skip" for any question. Fit the example to the questions shown: `+` only for a question that allows several answers, and for a single question `A`, or `A+C` when it allows several. Leave out the "skip" sentence when none of them can be skipped.
-- When an open question shares a message with lettered ones, show it last and include it in the reply example.
-- If a reply's numbers do not match the questions shown, do not record it as given: say how you read it and confirm before it counts.
+```
+python3 fund-blueprint-tool/scripts/build_blueprint.py --ask - <<'EOF'
+{"section": {"number": 1, "of": 4, "title": "Your firm"},
+ "questions": [{"text": "...", "multi": true, "options": [{"label": "...", "description": "..."}]}]}
+EOF
+```
+
+Your whole message is its output, exactly as printed, with nothing added before or after it. Read replies the way it tells people to answer: a number for the question and a letter for the option, such as "1A, 2B+C". If a reply's numbers do not match the questions shown, do not record it as given: say how you read it and confirm before it counts.
 
 On every surface:
 
@@ -119,7 +122,7 @@ On every surface:
 - If `ai_stage` is "Not used yet", leave "Some rely on it daily" out of `trust`, because it would contradict their answer.
 - If the number they chose for `kpi` also appears in the list of measures, leave it out of that list: you already know whether they track it.
 - A question can show at most four options, and the flow never needs more. Do not add an "Other" option, because the tool already adds its own way to type an answer, called "Something else". Do not mention "Other" in the question text.
-- A question with `multi: true` allows several answers. Keep "Choose all that apply" in its text, on every surface, so nobody picks only one by mistake, and in text questions write it in code format.
+- A question with `multi: true` allows several answers. Keep "Choose all that apply" in its text, on every surface, so nobody picks only one by mistake.
 - `options_from` and `options_by` point to the right list in the flow. Use the list for the respondent's earlier answer.
 
 A reply such as "skip", "pass", "next", or "no idea" counts as skipping, for any question. If they skip a closed question, record `null` for it and move on. The report treats it as not answered. A few answers are needed to build a plan: `pressure` and `kpi`, at least one work area, and at least one task in each work area. Ask for a skipped one once more. If they skip it again, explain that the plan cannot be built without it, and stop.

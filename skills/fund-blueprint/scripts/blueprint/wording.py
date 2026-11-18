@@ -836,3 +836,12 @@ DATA_ACTION_START = "List the data that"
 HARDEST_FACTS = "On {task}: {facts}."
 SLOW_STEP_WHY = "The slowest step is: {slow_step}."
 MORE_CHANGES = "Other priorities would change too."
+
+# Questions printed as text, for assistants with no options tool (see ask.py).
+ASK_SECTION_LINE = "**Section {number} of {count}: {title}**"
+ASK_MULTI_HINT = "Choose all that apply"
+ASK_OPTION_LINE = "- **{letter}.** {label}"
+ASK_OPTION_DESCRIBED = "- **{letter}.** {label}: {description}"
+ASK_REPLY = "You can reply like `{example}`, or in your own words."
+ASK_REPLY_SKIP = ' Reply "skip" for any question.'
+ASK_OPEN_EXAMPLE = "your answer"
