@@ -53,16 +53,20 @@ Each activity gets one verdict: remove it, automate it, optimize it, add AI that
 
 **Requirements:** a regular Claude chat with code execution turned on, Claude Code, or ChatGPT in Work mode. It does not run in incognito chats. For the best results, use Claude Opus 5.5 or newer with thinking effort set to Medium or higher: the plan's scores come from fixed rules, but reading your typed answers and researching your firm depend on the model. We have tested it on one paid claude.ai account. We have not tested Free, Team, or Enterprise plans, where an administrator may need to allow it.
 
-On claude.ai:
-
-1. [Download the plugin file](https://github.com/nxtpartners/nxt-fund-blueprint/releases/latest/download/nxt-fund-blueprint.zip).
-2. Upload it under **Customize > Plugins > Add > Upload plugin**. Upload the `.zip` file itself. If your browser unzipped it into a folder (Safari on a Mac does this by default), download it again in another browser, or turn off "Open safe files after downloading" in Safari's settings.
-
 In Claude Code (version 2.1.275 or later), type:
 
 ```
 /plugin install nxt-fund-blueprint --marketplace nxtpartners/nxt-fund-blueprint
 ```
+
+In Codex, run:
+
+```sh
+codex plugin marketplace add nxtpartners/nxt-fund-blueprint   # add this repository as a source
+codex plugin add nxt-fund-blueprint@nxtpartners                # install the plugin
+```
+
+On claude.ai and in ChatGPT, it will install from each app's plugin directory once it is listed there. We will add the steps here when each listing is live.
 
 Or run it from a copy of the code:
 
@@ -72,21 +76,17 @@ cd nxt-fund-blueprint
 claude --plugin-dir .   # start Claude Code with the plugin loaded
 ```
 
-On ChatGPT (tested on one Plus account, on the web):
-
-1. [Download the same plugin file](https://github.com/nxtpartners/nxt-fund-blueprint/releases/latest/download/nxt-fund-blueprint.zip).
-2. Upload it under **Skills > Add > Upload from your computer**.
-3. Use it in **Work**, not Chat: in our tests, ChatGPT used uploaded skills only in Work. ChatGPT shows the questions as text, and you reply with the question number and the option letter, such as `1A, 2B+C`.
-
 Then ask, for example:
 
 - "Where could automation or AI help how we run our firm?"
 - "How can we cut manual work in our investor relations and fund finance teams?"
 - "Give us an AI roadmap for our fund's own operations."
 
+**On ChatGPT**, use it in Work, not Chat: in our tests, ChatGPT used skills only in Work. It shows the questions as text, and you reply with the question number and the option letter, such as `1A, 2B+C`.
+
 **Running it again on ChatGPT:** ask for it by name, for example "Run the AI Strategy and Blueprint for PE Funds again, from the start." In our tests, when memory or Library search was on, a general question was answered from the earlier report in the Library instead of starting a new assessment. Asking by name started a new one.
 
-To remove it on claude.ai, open **Customize > Plugins > Yours** and choose **Remove** from the plugin's menu. In Claude Code, run `/plugin uninstall nxt-fund-blueprint`, or stop passing `--plugin-dir` if you ran it from a copy. On ChatGPT, open **Skills** and choose **Delete** from the skill's menu.
+To remove it in Claude Code, run `/plugin uninstall nxt-fund-blueprint`, or stop passing `--plugin-dir` if you ran it from a copy. In Codex, run `codex plugin remove nxt-fund-blueprint@nxtpartners`.
 
 ## Where your answers go
 
@@ -164,7 +164,7 @@ skills/fund-blueprint/
   agents/openai.yaml           Name, icon, and starting prompt for ChatGPT and Codex
 examples/                      Sample report for a fictional firm, and its images
 REVIEW.md                      How to try it and what feedback we ask for
-.github/                       Builds the download and publishes each release
+.github/                       Publishes each release
 LICENSE                        MIT
 README.md                      This file
 ```

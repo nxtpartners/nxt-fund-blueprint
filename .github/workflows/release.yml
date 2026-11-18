@@ -29,8 +29,7 @@ jobs:
 
       - name: 📦 Build the plugin zip
         run: |
-          zip_path=$(bash .github/scripts/package.sh)
-          cp "$zip_path" nxt-fund-blueprint.zip
+          zip -qr nxt-fund-blueprint.zip .claude-plugin skills README.md LICENSE -x '*/.DS_Store' '*__pycache__*'
 
       - name: 🏷️ Publish the release
         env:
@@ -38,4 +37,4 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" nxt-fund-blueprint.zip \
             --title "AI Strategy and Blueprint for PE Funds ${GITHUB_REF_NAME#v}" \
-            --notes "AI Strategy and Blueprint for a private equity firm's own operations. Download nxt-fund-blueprint.zip and upload it on claude.ai under Customize > Plugins > Add > Upload plugin, or on ChatGPT under Skills > Add > Upload from your computer, then use it in Work."
+            --notes "AI Strategy and Blueprint for a private equity firm's own operations. How to install: see the README."
