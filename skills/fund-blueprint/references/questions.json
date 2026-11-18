@@ -1061,21 +1061,6 @@
   ]
  },
  "fixed": {
-  "consent": {
-   "id": "consent",
-   "header": "Notice",
-   "text": "Before we start, are you comfortable with this?",
-   "options": [
-    {
-     "id": "yes",
-     "label": "I understand, let's start"
-    },
-    {
-     "id": "no",
-     "label": "Not now"
-    }
-   ]
-  },
   "model_check": {
    "id": "model_check",
    "header": "Settings",

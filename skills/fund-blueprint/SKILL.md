@@ -11,7 +11,7 @@ description: "Use when someone at a PE firm, fund, or GP wants an AI strategy fo
 
 If you cannot run shell commands in this conversation, for example in an incognito chat or where code execution is turned off, do not ask any assessment questions, do not write your own version, and do not offer a shorter alternative, even if the person asks. Reply only with this, then stop:
 
-> AI Strategy and Blueprint for PE Funds needs to run a small script, and that is not available in this chat. To use it, open a regular Claude chat with code execution turned on in your settings. This tool is free, and it does not send your answers to NXT Partners AI.
+> AI Strategy and Blueprint for PE Funds needs to run a small script, and that is not available in this chat. To use it, open a regular chat with code execution turned on in your settings. This tool is free, and it does not send your answers to NXT Partners AI.
 
 Guide a COO, partner, or similar senior person at a private equity firm through a guided assessment of how their firm runs, then give them a blueprint they can act on.
 
@@ -35,7 +35,7 @@ Begin your first message, before running any command, with one neutral sentence 
 >
 > This free tool is open to everyone. In about 35 short questions for one part of your firm, plus 3 to 9 for each part you add, you tell me how the work runs today. You get a ranked plan of what to automate, what AI could draft, what to stop, and what to keep with your team, with a first step for each. Most of it is multiple choice.
 >
-> **NXT Partners AI does not receive your answers,** and this tool sends them to no one. They stay in this Claude conversation, which Claude processes under your account's terms, and in working files created here. If you choose to personalize it, your firm's name is used in a public web search.
+> **NXT Partners AI does not receive your answers,** and this tool sends them to no one. They stay in this conversation, which your AI provider processes under your account's terms, and in working files created here. If you choose to personalize it, your firm's name is used in a public web search.
 >
 > **It does not need names** of people, portfolio companies, LPs, or deals: ranges and general descriptions are enough. The only name it may ask for is your own firm's, and only if you choose to personalize.
 >
@@ -43,7 +43,13 @@ Begin your first message, before running any command, with one neutral sentence 
 >
 > The result is operational guidance generated with AI, using planning estimates. It is not investment, legal, tax, or compliance advice.
 
-After the notice, copy the tool into your working folder, so that later commands stay simple and do not touch hidden configuration folders. A permission warning about settings files would alarm the respondent for no reason. Replace `<skill folder>` with this skill's folder:
+After the notice, end the same message with this consent question in plain text, exactly as written, and add nothing to it, such as a summary of the notice:
+
+> Before we start, are you comfortable with this? Reply "yes" to start, or "not now".
+
+Then stop and wait for the answer. Run no command and call no tool after this message, not even the options tool: on some surfaces everything before the last message of a turn is folded away, so the notice is seen only when it and the question end your turn. Write nothing between the notice and the question, such as "Now the consent question". If they reply "not now" or skip it, thank them and stop. If they ask a question about it, answer only from the notice and ask again. The one exception: if they have said they want no questions, show the notice and continue without asking.
+
+Once they agree, copy the tool into your working folder, so that later commands stay simple and do not touch hidden configuration folders. A permission warning about settings files would alarm the respondent for no reason. Replace `<skill folder>` with this skill's folder:
 
 ```
 mkdir -p fund-blueprint-tool && cp -r "<skill folder>/scripts" "<skill folder>/references" "<skill folder>/assets" fund-blueprint-tool/
@@ -57,15 +63,13 @@ python3 fund-blueprint-tool/scripts/build_blueprint.py --print-flow
 
 If `python3` is missing, try `python`. Do not read `references/catalog.json` directly: it is long, and the script already uses it.
 
-Then ask `fixed.consent` from the flow, and wait for the answer. Write nothing between those commands and the consent question: no line such as "Now the consent question". On claude.ai, use its text exactly as written and add nothing to it, such as a summary of the notice. In Claude Code, where a message before a command can get cut down, also put the notice's full text, word for word, at the start of the question you ask, so nobody can consent without seeing it. If they choose "Not now" or skip it, thank them and stop. If they ask a question about it, answer only from the notice and ask again. The one exception: if they have said they want no questions, continue without asking.
-
-Once they agree, ask `fixed.model_check` and `fixed.personalize` together, in one call to the options tool, with `fixed.model_check` first. Use its text exactly as written. If you know you are running on an older or smaller model, add one short sentence to its text saying which model this chat uses. Either answer continues the assessment: a setting they change applies from your next reply.
+Then ask `fixed.personalize` from the flow. If you are Claude, ask `fixed.model_check` with it, in one call to the options tool, with `fixed.model_check` first, and use its text exactly as written. It names Claude's own settings, so any other assistant leaves it out. If you know you are running on an older or smaller model, add one short sentence to its text saying which model this chat uses. Either answer continues the assessment: a setting they change applies from your next reply.
 
 Handle the `fixed.personalize` answer as described under "Personalizing with public information". Then ask `pain_first` from the flow as plain text, followed by "If you would rather not answer, just reply "skip"." It comes right after, because it is what they came for. Handle the answer as described under "The task they named". 
 
 ## Personalizing with public information
 
-This is asked together with `fixed.model_check`, before `pain_first`, so the firm is known before they describe their work. If they stay anonymous, skip the rest of this section, do not ask again, and leave `firm_name` empty even if they mention the name later.
+This is asked right after consent, before `pain_first`, so the firm is known before they describe their work. If they stay anonymous, skip the rest of this section, do not ask again, and leave `firm_name` empty even if they mention the name later.
 
 If yes, ask for the firm's name in plain text. This is the one name the tool asks for, so the rule against repeating names does not apply to it. Never include their answers in a search. If you have no web search here, say so in one line, leave `firm_name` empty, and continue with the normal questions.
 
@@ -93,7 +97,7 @@ Only confirmed facts count. They go into `public_facts`, and the name into `firm
 
 ## Asking questions
 
-Use the tool that shows clickable options to the user, such as `AskUserQuestion`, whenever it exists. If no such tool exists, show lettered options and accept replies like "A, C". If a reply's numbers do not match the questions shown, do not record it as given: say how you read it and confirm before it counts. Without that tool there is no "Something else" box, so end each set of lettered questions with one line: "You can also answer in your own words, or reply "skip" to move on." Leave out "or reply "skip" to move on" when none of them can be skipped. When an open question shares a message with lettered ones, show it last and include it in the reply example.
+Use the tool that shows clickable options to the user, such as `AskUserQuestion` or `request_user_input`, whenever it exists. If no such tool exists, show lettered options and accept replies like "A, C". If a reply's numbers do not match the questions shown, do not record it as given: say how you read it and confirm before it counts. Without that tool there is no "Something else" box, so end each set of lettered questions with one line: "You can also answer in your own words, or reply "skip" to move on." Leave out "or reply "skip" to move on" when none of them can be skipped. When an open question shares a message with lettered ones, show it last and include it in the reply example.
 
 - Show `Section N of M: <title>` once at the start of each section, in the first question's text. Before the first section, work out which sections will have no questions for them, for example the firm section when the research settled it, or the work-area section when the task they named already chose it. Leave those out, number the rest in order from 1, and use their count as M, so the numbers never jump.
 - Group related questions into one call when the tool allows several (up to four), which keeps the number of screens low.

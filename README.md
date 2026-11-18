@@ -152,6 +152,7 @@ skills/fund-blueprint/
   references/                  Question set and activity catalog
   scripts/blueprint/           Validation, planning rules, and report sections
   assets/                      NXT logo and fonts
+  agents/openai.yaml           Name, icon, and starting prompt for ChatGPT and Codex
 examples/                      Sample report for a fictional firm, and its images
 REVIEW.md                      How to try it and what feedback we ask for
 .github/                       Builds the download and publishes each release

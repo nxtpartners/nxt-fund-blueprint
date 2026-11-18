@@ -1,0 +1,9 @@
+interface:
+  display_name: "AI Strategy and Blueprint for PE Funds"
+  short_description: "An AI strategy and roadmap for how your PE firm runs"
+  icon_small: "./assets/icon.png"
+  icon_large: "./assets/icon.png"
+  brand_color: "#7B61FF"
+  default_prompt: "Use $fund-blueprint to build an AI strategy and roadmap for how my firm runs."
+policy:
+  allow_implicit_invocation: true
