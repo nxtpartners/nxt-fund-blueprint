@@ -8,8 +8,6 @@ An AI Strategy and Blueprint for a PE firm's own operations, in Claude or ChatGP
 2. Start a new chat and ask: "Where could automation or AI help how we run our firm?"
 3. Answer for your own firm. Most questions are multiple choice.
 
-To see a report without running it, [download the sample](examples/sample-report.html) and open it in a browser.
-
 **Please tell us**
 
 1. Are the task choices and their order right? Which move would you call wrong?

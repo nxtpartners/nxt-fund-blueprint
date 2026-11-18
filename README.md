@@ -17,7 +17,7 @@ It covers the firm's own operations, such as fund reporting, LP requests, and de
 
 ## What you get
 
-A report in your chat that you can print or forward. Every image below comes from a sample report for a fictional firm: [download the full sample](examples/sample-report.html) and open it in a browser.
+A report in your chat that you can print or forward. Every image below comes from a sample report for a fictional firm.
 
 **The first page says what to do first and which of your answers led there.**
 
@@ -162,7 +162,7 @@ skills/fund-blueprint/
   scripts/blueprint/           Validation, planning rules, and report sections
   assets/                      NXT logo and fonts
   agents/openai.yaml           Name, icon, and starting prompt for ChatGPT and Codex
-examples/                      Sample report for a fictional firm, and its images
+examples/                      Images from a sample report for a fictional firm
 REVIEW.md                      How to try it and what feedback we ask for
 .github/                       Publishes each release
 LICENSE                        MIT
