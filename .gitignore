@@ -12,6 +12,9 @@ CLAUDE.md
 tasks/
 docs/
 
+# LinkedIn posts: drafted here, never published from the repo
+/linkedin/
+
 # Build output and local test runs
 dev/
 evals/
